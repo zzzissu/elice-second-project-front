@@ -18,7 +18,6 @@ export const S = {
 
     border-radius: 5px;
 
-    /* background-color: gray; */
     background-image: url(${(props) => props.imgUrl});
     background-repeat: no-repeat;
     background-size: cover;
