@@ -9,6 +9,10 @@ const theme: DefaultTheme = {
     lightGrey: "#D9D9D9",
     grey: "#A9A9A9",
     deepGrey: "#919191",
+    black: "#000000",
+    background: "#f5f5f5",
+    primary: "rgba(255, 140, 0, 0.7)",
+    primaryHover: "rgba(255, 140, 0, 1.0)",
   },
   font: {
     title: "28px",
