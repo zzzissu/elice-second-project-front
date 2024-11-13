@@ -11,6 +11,10 @@ export const S = {
     height: 227px;
 
     border-radius: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
   `,
   ProductImg: styled.div<imgUrlProps>`
     width: 100%;
