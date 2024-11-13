@@ -33,10 +33,15 @@ const List = () => {
       <Nav />
       <S.List>
         <S.Carousel />
-        {items.map((item) => {
-          return <ItemCard {...item} key={item.id} />;
-        })}
-        <Dropdown options={options} />
+        <S.DropdownWrap>
+          <Dropdown options={options} />
+        </S.DropdownWrap>
+
+        <S.ItemGrid>
+          {items.map((item) => {
+            return <ItemCard {...item} key={item.id} />;
+          })}
+        </S.ItemGrid>
       </S.List>
     </S.ListWrap>
   );

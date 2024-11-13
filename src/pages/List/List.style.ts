@@ -7,6 +7,7 @@ export const S = {
     justify-content: center;
     align-items: center;
 
+    margin-top: 100px;
     width: 1260px;
   `,
   List: styled.div``,
@@ -16,5 +17,19 @@ export const S = {
     width: 982px;
     height: 252px;
   `,
-  Item: styled.div``,
+  DropdownWrap: styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    width: 982px;
+    height: 84px;
+  `,
+
+  ItemGrid: styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    gap: 12px;
+  `,
 };
