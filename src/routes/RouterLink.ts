@@ -1,5 +1,5 @@
 const ROUTE_LINK = {
-  LIST: { path: "/", link: "/" },
+  LIST: { path: "/" },
 };
 
 export default ROUTE_LINK;
