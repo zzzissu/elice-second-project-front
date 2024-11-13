@@ -32,6 +32,7 @@ const List = () => {
     <S.ListWrap>
       <Nav />
       <S.List>
+        <S.Carousel />
         {items.map((item) => {
           return <ItemCard {...item} key={item.id} />;
         })}

@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const S = {
   Nav: styled.div`
     position: fixed;
-    top: 4px;
+    top: 0px;
     left: 50%;
     transform: translateX(-50%);
 
@@ -18,6 +18,8 @@ export const S = {
 
     width: 1260px;
     height: 60px;
+
+    background-color: #fff;
   `,
   Logo: styled.div`
     display: flex;

@@ -10,5 +10,11 @@ export const S = {
     width: 1260px;
   `,
   List: styled.div``,
+  Carousel: styled.div`
+    background-color: gray;
+
+    width: 982px;
+    height: 252px;
+  `,
   Item: styled.div``,
 };
