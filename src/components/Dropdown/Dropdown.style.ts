@@ -22,7 +22,7 @@ export const S = {
     }
   `,
   DropdownList: styled.div`
-    visibility: hidden;
+    /* visibility: hidden; */
     position: absolute;
     left: -2px;
     top: 40px;
