@@ -43,7 +43,7 @@ export const S = {
 
     &:hover {
       cursor: pointer;
-      background-color: ${(props) => props.theme.color.orange30};
+      background-color: ${(props) => props.theme.color.blue30};
       border-radius: 5px;
     }
   `,
