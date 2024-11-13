@@ -4,7 +4,7 @@ import Nav from "../../components/Nav/Nav.tsx";
 import ItemCard from "../../components/ItemCard/ItemCard.tsx";
 import Dropdown from "../../components/Dropdown/Dropdown.tsx";
 
-import { fetchItems } from "../../utils/fetchItem.ts";
+import { fetchItems } from "../../utils/fetchItems.ts";
 
 import { ItemProps } from "../../types/types.ts";
 
