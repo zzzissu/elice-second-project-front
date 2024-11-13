@@ -8,9 +8,7 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <div className="container">
-          <AppRouter />
-        </div>
+        <AppRouter />
       </ThemeProvider>
     </>
   );

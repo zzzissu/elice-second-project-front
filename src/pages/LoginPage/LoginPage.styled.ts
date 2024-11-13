@@ -1,22 +1,30 @@
 import styled from "styled-components";
 
-
-
 export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 400px;
   padding: 40px;
-  border: 1px solid ${({ theme }) => theme.color.lightGrey};
   border-radius: 5px;
   background-color: #fff;
 `;
 
-export const LogoImage = styled.img`
-  height: 60px;
-  margin-bottom: 10px;
+export const Logo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  font-family: ${({ theme }) => theme.font.LogoFont};
+  color: ${({ theme }) => theme.color.orange};
+  font-size: ${({ theme }) => theme.font.title};
 `;
+
+export const LogoImage = styled.img`
+  height: 50px;
+`;
+
+export const LogoTitle = styled.img``;
 
 export const Input = styled.input`
   width: 100%;

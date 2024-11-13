@@ -13,18 +13,16 @@ export const FormContainer = styled.form`
   border-radius: 8px;
 `;
 
-export const Title = styled.h1`
-  font-size: ${({ theme }) => theme.font.title};
-  color: ${({ theme }) => theme.color.black};
-  margin-top: 0;
-  margin-bottom: 20px;
-`;
+
 
 export const InputContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   margin-bottom: 16px;
+  input {
+    margin-bottom: 0;
+  }
 `;
 
 export const CheckButton = styled.button`
