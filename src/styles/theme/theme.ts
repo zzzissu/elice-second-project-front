@@ -3,6 +3,7 @@ import { DefaultTheme } from "styled-components";
 const theme: DefaultTheme = {
   color: {
     orange: "#FF7105",
+    orange30: "rgba(255, 113, 5, 0.3)",
     blue: "#419AA9",
     brown: "#4E3D28",
     ivory: "#F9F4E4",

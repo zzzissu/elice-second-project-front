@@ -6,6 +6,8 @@ export const S = {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    width: 1260px;
   `,
   List: styled.div``,
   Item: styled.div``,
