@@ -1,12 +1,13 @@
 import { S } from "./List.style";
 import Nav from "../../components/Nav/Nav.tsx";
+import Dropdown from "../../components/Dropdown/Dropdown.tsx";
 
 const List = () => {
   return (
     <S.ListWrap>
       <Nav />
       <S.List>
-        <S.Item>hello</S.Item>
+        <Dropdown />
       </S.List>
     </S.ListWrap>
   );
