@@ -15,22 +15,23 @@ interface CategoryButtonProps {
 export const CategoryButton = styled.button<CategoryButtonProps>`
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 11px;
   color: ${({ theme }) => theme.color.black};
   background: none;
-  border: none;
+  border: hidden;
   border-radius: 5px;
   cursor: pointer;
-  transition: border 0.3s ease;
 
   ${({ isSelected, theme }) =>
     isSelected &&
     css`
-      border: 2px solid ${theme.color.orange};
+      padding: 10px;
+      border: 1px solid ${theme.color.orange};
     `}
 
   &:hover {
-    border: 2px solid ${({ theme }) => theme.color.orange};
+    padding: 10px;
+    border: 1px solid ${({ theme }) => theme.color.orange30};
   }
 
   svg {

@@ -10,7 +10,6 @@ import { ItemProps } from "../../types/types.ts";
 import { CarouselItem } from "../../types/types.ts";
 
 import { S } from "./List.style";
-import Sidebar from '../../components/Sidebar/Sidebar.tsx';
 import Carousel from "./Carousel/Carousel.tsx";
 import { getCarousel } from "../../utils/getCarousel.ts";
 
@@ -49,7 +48,6 @@ const List = () => {
   return (
     <S.ListWrap>
       <Nav />
-      <Sidebar />
       <S.List>
         <Carousel carouselData={carouselData} />
         <S.DropdownWrap>
