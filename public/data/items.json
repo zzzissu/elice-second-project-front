@@ -3,7 +3,8 @@
     "id": 1,
     "name": "핸드폰",
     "price": 22222,
-    "imgUrl": "/images/phone1.jpg"
+    "imgUrl": "/images/phone1.jpg",
+    "description": "내 핸드폰"
   },
   {
     "id": 2,
