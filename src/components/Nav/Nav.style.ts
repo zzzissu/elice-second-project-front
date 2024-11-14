@@ -18,7 +18,10 @@ export const S = {
 
     width: 1260px;
     height: 60px;
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
     background-color: #fff;
   `,
   Logo: styled.div`
