@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const S = {
   ListWrap: styled.main`
+    position: relative;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -19,6 +21,9 @@ export const S = {
   `,
   ListContent: styled.div`
     padding-top: 40px;
+
+    overflow-y: auto;
+    height: calc(100vh - 60px);
   `,
   DropdownWrap: styled.div`
     display: flex;
@@ -34,5 +39,7 @@ export const S = {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto;
     gap: 12px;
+
+    margin-bottom: 100px;
   `,
 };
