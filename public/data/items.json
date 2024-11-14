@@ -32,9 +32,9 @@
   },
   {
     "id": 6,
-    "name": "스피커",
+    "name": "lp",
     "price": 22222,
-    "imgUrl": "/images/speaker2.jpg"
+    "imgUrl": "/images/lp.jpg"
   },
   {
     "id": 7,

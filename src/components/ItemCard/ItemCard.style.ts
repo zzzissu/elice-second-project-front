@@ -7,10 +7,14 @@ interface imgUrlProps {
 export const S = {
   ItemCard: styled.div`
     position: relative;
-    width: 227px;
+    width: 236px;
     height: 227px;
 
     border-radius: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
   `,
   ProductImg: styled.div<imgUrlProps>`
     width: 100%;
