@@ -5,6 +5,7 @@ import LoginPage from "../pages/LoginPage/LoginPage.tsx";
 import SignupPage from "../pages/SignupPage/SignupPage.tsx";
 import Detail from "../pages/Detail/Detail.tsx";
 import AddOrEditProduct from "../pages/AddOrEditProduct/AddOrEditProduct.tsx";
+import CartPage from "../pages/CartPage/CartPage.tsx";
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -33,6 +34,10 @@ function AppRouter() {
     {
       path: ROUTE_LINK.ADD_PRODUCT.path,
       element: <AddOrEditProduct />,
+    },
+    {
+      path: ROUTE_LINK.CART.path,
+      element: <CartPage />,
     },
   ]);
 
