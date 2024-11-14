@@ -13,6 +13,8 @@ import { S } from "./List.style";
 import Carousel from "./Carousel/Carousel.tsx";
 import { getCarousel } from "../../utils/getCarousel.ts";
 import Sidebar from "../../components/Sidebar/Sidebar.tsx";
+import { Link } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink.ts";
 
 const List = () => {
   const options = ["최신순", "오래된순", "인기순"];
