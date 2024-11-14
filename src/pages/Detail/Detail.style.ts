@@ -18,6 +18,9 @@ export const S = {
   `,
   Detail: styled.div`
     margin-top: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   `,
   UpperWrap: styled.div`
     display: flex;
@@ -25,7 +28,7 @@ export const S = {
 
     margin-top: 40px;
 
-    width: 100%;
+    width: 982px;
     height: 408px;
   `,
   ProductImg: styled.div<ProductImgProps>`
@@ -109,7 +112,8 @@ export const S = {
     grid-template-columns: repeat(2, 1fr);
 
     margin-top: 46px;
-    width: 100%;
+    width: 982px;
+
     height: 48px;
     border-top: 1px solid ${(props) => props.theme.color.lightGrey};
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
@@ -127,7 +131,9 @@ export const S = {
     }
   `,
 
-  LowerWrap: styled.div``,
+  LowerWrap: styled.div`
+    width: 982px;
+  `,
   Description: styled.div`
     padding: 20px;
   `,
