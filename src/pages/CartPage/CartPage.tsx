@@ -160,27 +160,29 @@ const CartPage: React.FC = () => {
                       상점삭제
                     </S.DeleteShopText>
                   </S.WrapBox>
-                  <S.TotalAmount>
-                    총 상품 금액:{" "}
-                    {shop.items
-                      .reduce(
-                        (sum, item) =>
-                          sum +
-                          (item.checked
-                            ? parseInt(item.price.replace(/,/g, ""))
-                            : 0),
-                        0,
-                      )
-                      .toLocaleString()}
-                    원
-                  </S.TotalAmount>
-                  <Button
-                    btnText="구매하기"
-                    handleClick={() => console.log("구매하기 클릭")}
-                    width="100%"
-                    height="48px"
-                    bgcolor="#ff8a00"
-                  />
+                  <div>
+                    <S.TotalAmount>
+                      총 상품 금액:{" "}
+                      {shop.items
+                        .reduce(
+                          (sum, item) =>
+                            sum +
+                            (item.checked
+                              ? parseInt(item.price.replace(/,/g, ""))
+                              : 0),
+                          0,
+                        )
+                        .toLocaleString()}
+                      원
+                    </S.TotalAmount>
+                    <Button
+                      btnText="구매하기"
+                      handleClick={() => console.log("구매하기 클릭")}
+                      width="100%"
+                      height="48px"
+                      bgcolor="orange70"
+                    />
+                  </div>
                 </S.PurchaseContainer>
               </S.WrapBox>
             </S.ShopContainer>

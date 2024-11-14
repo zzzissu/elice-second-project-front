@@ -83,13 +83,20 @@ export const RemoveButton = styled.button`
 
 export const PurchaseContainer = styled.div`
   width: 33%;
+  flex: 1;
   display: flex;
-  /* align-items: center; */
+  align-self: stretch;
   flex-direction: column;
   justify-content: space-between;
   margin-top: 16px;
   padding-left: 20px;
   border-left: 1px solid ${({ theme }) => theme.color.lightGrey};
+
+  button {
+    transition: all 0.2s;
+    font-size: 20px;
+    font-weight: bold;
+  }
 `;
 
 export const TotalAmount = styled.div`
@@ -97,6 +104,7 @@ export const TotalAmount = styled.div`
   color: ${({ theme }) => theme.color.black};
   font-weight: bold;
   text-align: right;
+  margin-bottom: 10px;
 `;
 
 export const DeleteShopText = styled.span`
