@@ -14,8 +14,8 @@ const GlobalStyle = createGlobalStyle`
 
     body {
         font-family: "Noto Sans KR", sans-serif;
-        /* display: flex;
-        justify-content: center; */
+        display: flex;
+        justify-content: center;
 
     }
 
@@ -24,7 +24,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     margin: 0 auto;
     padding: 0 16px;
-    /* background-color: #f5f5f5; */
+    background-color: ${(props) => props.theme.color.ivory};
   }
 `;
 

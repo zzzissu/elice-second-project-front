@@ -13,8 +13,10 @@ export const S = {
 
     width: 110px;
     height: 40px;
+    font-size: 14px;
 
     border: 2px solid ${(props) => props.theme.color.orange};
+    background-color: #fff;
     border-radius: 5px;
 
     &:hover {
@@ -22,20 +24,26 @@ export const S = {
     }
   `,
   DropdownList: styled.div`
-    /* visibility: hidden; */
     position: absolute;
-    left: -2px;
+    left: -1px;
     top: 40px;
+    font-size: 14px;
 
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
 
-    border: 2px solid ${(props) => props.theme.color.orange};
+    border: 1px solid ${(props) => props.theme.color.orange};
     border-radius: 5px;
+
+    background-color: #fff;
 
     width: inherit;
     padding: 6px;
+
+    &:hover {
+      cursor: pointer;
+    }
   `,
   DropdownItem: styled.div`
     width: 100px;
