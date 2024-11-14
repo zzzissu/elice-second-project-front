@@ -1,6 +1,9 @@
 import styled, { css } from "styled-components";
 
 export const SidebarContainer = styled.div`
+  position: sticky;
+  top: 14px;
+
   width: 200px;
   padding: 20px;
   display: flex;

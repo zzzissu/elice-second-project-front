@@ -38,7 +38,7 @@ const Detail = () => {
       <S.Detail>
         <Sidebar />
 
-        <div>
+        <S.StickyWrap>
           <S.UpperWrap>
             <S.ProductImg imgUrl={item.imgUrl} />
             <S.ProductInfo>
@@ -89,7 +89,7 @@ const Detail = () => {
               <S.greyText>랄랄라</S.greyText>
             </S.SellerBox>
           </S.LowerWrap>
-        </div>
+        </S.StickyWrap>
       </S.Detail>
     </S.DetailWrap>
   );
