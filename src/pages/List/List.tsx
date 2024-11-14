@@ -64,7 +64,11 @@ const List = () => {
               const column = 4;
               const row = Math.floor(idx / column) + 1;
 
-              return <ItemCard {...item} key={item.id} idx={idx} row={row} />;
+              return (
+                <Link to={ROUTE_LINK.DETAIL.link}>
+                  <ItemCard {...item} key={item.id} idx={idx} row={row} />
+                </Link>
+              );
             })}
           </S.ItemGrid>
         </S.ListContent>
