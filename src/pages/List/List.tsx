@@ -58,8 +58,11 @@ const List = () => {
           </S.DropdownWrap>
 
           <S.ItemGrid>
-            {items.map((item) => {
-              return <ItemCard {...item} key={item.id} />;
+            {items.map((item, idx) => {
+              const column = 4;
+              const row = Math.floor(idx / column) + 1;
+
+              return <ItemCard {...item} key={item.id} idx={idx} row={row} />;
             })}
           </S.ItemGrid>
         </S.ListContent>
