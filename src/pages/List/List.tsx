@@ -12,6 +12,7 @@ import { CarouselItem } from "../../types/types.ts";
 import { S } from "./List.style";
 import Carousel from "./Carousel/Carousel.tsx";
 import { getCarousel } from "../../utils/getCarousel.ts";
+import Button from "../../components/Button/Button.tsx";
 
 const List = () => {
   const options = ["최신순", "오래된순", "인기순"];

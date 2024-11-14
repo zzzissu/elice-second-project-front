@@ -1,0 +1,23 @@
+import styled from "styled-components";
+
+interface ButtonProps {
+  width?: string;
+  height?: string;
+  bgcolor?: string;
+}
+
+export const S = {
+  Button: styled.button<ButtonProps>`
+    width: ${(props) => (props.width ? `${props.width}` : "198px")};
+    height: ${(props) => (props.height ? `${props.height}` : "52px")};
+    background-color: ${(props) =>
+      props.bgcolor ? props.theme.color[props.bgcolor] : "#fff"};
+    color: ${(props) => (props.bgcolor ? "#fff" : props.theme.color.orange)};
+    border: ${(props) =>
+      props.bgcolor ? "none" : `2px solid ${props.theme.color.orange}`};
+    border-radius: 5px;
+    &:hover {
+      cursor: pointer;
+    }
+  `,
+};
