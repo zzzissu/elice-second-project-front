@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import ShopTitle from "../../components/ShopTitle/ShopTitle";
 import CartItem from "../../components/CartItem/CartItem";
-import EmptyCartMessage from "../../components/EmptyCartMessage/EmptyCartMessage";
 import Button from "../../components/Button/Button";
 import * as S from "./CartPage.styled";
 import { IoCloseOutline } from "react-icons/io5";
 import Nav from "../../components/Nav/Nav";
+import EmptyMessage from "../../components/EmptyMessage/EmptyMessage";
+import { useNavigate } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink";
 
 interface CartItemData {
   id: number;
@@ -56,6 +58,7 @@ const sampleData: ShopData[] = [
 ];
 
 const CartPage: React.FC = () => {
+  const navigate = useNavigate();
   const [cartData, setCartData] = useState(sampleData);
 
   const handleItemCheck = (shopIndex: number, itemId: number) => {
@@ -107,7 +110,20 @@ const CartPage: React.FC = () => {
   const isCartEmpty =
     cartData.length === 0 || cartData.every((shop) => shop.items.length === 0);
 
-  if (isCartEmpty) return <EmptyCartMessage />;
+  if (isCartEmpty)
+    return (
+      <EmptyMessage
+        iconType="cart"
+        message="장바구니가 비었습니다."
+        buttons={[
+          {
+            label: "상품 담으러 가기",
+            onClick: () => navigate(ROUTE_LINK.LIST.path),
+            color: "blue70",
+          },
+        ]}
+      />
+    );
 
   return (
     <>
