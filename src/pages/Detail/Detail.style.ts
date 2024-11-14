@@ -142,8 +142,6 @@ export const S = {
   `,
   Description: styled.div`
     padding: 20px;
-
-    height: 1000px;
   `,
   SellerBox: styled.div`
     display: flex;
