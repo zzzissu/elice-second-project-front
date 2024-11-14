@@ -12,6 +12,7 @@ import { CarouselItem } from "../../types/types.ts";
 import { S } from "./List.style";
 import Carousel from "./Carousel/Carousel.tsx";
 import { getCarousel } from "../../utils/getCarousel.ts";
+import Sidebar from "../../components/Sidebar/Sidebar.tsx";
 
 const List = () => {
   const options = ["최신순", "오래된순", "인기순"];
@@ -49,16 +50,19 @@ const List = () => {
     <S.ListWrap>
       <Nav />
       <S.List>
-        <Carousel carouselData={carouselData} />
-        <S.DropdownWrap>
-          <Dropdown options={options} />
-        </S.DropdownWrap>
+        <Sidebar />
+        <S.ListContent>
+          <Carousel carouselData={carouselData} />
+          <S.DropdownWrap>
+            <Dropdown options={options} />
+          </S.DropdownWrap>
 
-        <S.ItemGrid>
-          {items.map((item) => {
-            return <ItemCard {...item} key={item.id} />;
-          })}
-        </S.ItemGrid>
+          <S.ItemGrid>
+            {items.map((item) => {
+              return <ItemCard {...item} key={item.id} />;
+            })}
+          </S.ItemGrid>
+        </S.ListContent>
       </S.List>
     </S.ListWrap>
   );

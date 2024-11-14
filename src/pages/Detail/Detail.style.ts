@@ -11,7 +11,6 @@ export const S = {
     justify-content: center;
     align-items: center;
 
-    margin-top: 100px;
     width: 1260px;
 
     margin: 0 auto;
