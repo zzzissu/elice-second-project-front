@@ -1,8 +1,11 @@
 export interface ItemProps {
   id: number;
+  idx: number;
+  row: number;
   name: string;
   price: number;
   imgUrl: string;
+  description: string;
 }
 
 export interface CarouselItemProps {
