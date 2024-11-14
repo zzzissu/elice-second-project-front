@@ -1,23 +1,24 @@
+import ROUTE_LINK from "../../routes/RouterLink.ts";
+
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Nav from "../../components/Nav/Nav.tsx";
 import ItemCard from "../../components/ItemCard/ItemCard.tsx";
 import Dropdown from "../../components/Dropdown/Dropdown.tsx";
+import Sidebar from "../../components/Sidebar/Sidebar.tsx";
+import Carousel from "./Carousel/Carousel.tsx";
 
 import { getItems } from "../../utils/getItems.ts";
+import { getCarousel } from "../../utils/getCarousel.ts";
 
 import { ItemProps } from "../../types/types.ts";
 import { CarouselItem } from "../../types/types.ts";
 
 import { S } from "./List.style";
-import Carousel from "./Carousel/Carousel.tsx";
-import { getCarousel } from "../../utils/getCarousel.ts";
-import Sidebar from "../../components/Sidebar/Sidebar.tsx";
-import { Link } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink.ts";
 
 const List = () => {
-  const options = ["최신순", "오래된순", "인기순"];
+  const options = ["최신순", "오래된순"];
 
   const [items, setItems] = useState<ItemProps[]>([]);
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
