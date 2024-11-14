@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const S = {
   Nav: styled.div`
+    z-index: 10;
     position: fixed;
     top: 0px;
     left: 50%;

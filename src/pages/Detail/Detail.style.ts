@@ -6,6 +6,8 @@ interface ProductImgProps {
 
 export const S = {
   DetailWrap: styled.main`
+    position: relative;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,13 +23,18 @@ export const S = {
     flex-wrap: wrap;
     justify-content: space-between;
   `,
+  StickyWrap: styled.div`
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+    width: 982px;
+  `,
   UpperWrap: styled.div`
     display: flex;
     gap: 60px;
 
     margin-top: 40px;
 
-    width: 982px;
+    width: 100%;
     height: 408px;
   `,
   ProductImg: styled.div<ProductImgProps>`
@@ -111,7 +118,7 @@ export const S = {
     grid-template-columns: repeat(2, 1fr);
 
     margin-top: 46px;
-    width: 982px;
+    width: 100%;
 
     height: 48px;
     border-top: 1px solid ${(props) => props.theme.color.lightGrey};
@@ -131,10 +138,12 @@ export const S = {
   `,
 
   LowerWrap: styled.div`
-    width: 982px;
+    width: 100%;
   `,
   Description: styled.div`
     padding: 20px;
+
+    height: 1000px;
   `,
   SellerBox: styled.div`
     display: flex;
@@ -144,6 +153,7 @@ export const S = {
     width: 100%;
     padding: 20px;
     margin-top: 20px;
+    margin-bottom: 100px;
 
     border-radius: 10px;
     border: 1px solid ${(props) => props.theme.color.lightGrey};
