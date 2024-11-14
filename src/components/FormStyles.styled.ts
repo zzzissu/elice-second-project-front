@@ -7,11 +7,6 @@ export const Container = styled.div`
   justify-content: center;
   min-height: 100vh;
   height: 100%;
-  overflow-y: auto;
-
-  @media (max-width: 1320px) {
-    margin: 80px 0 50px;
-  }
 `;
 
 export const Title = styled.h1`

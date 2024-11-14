@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import * as S from "./Signup.styled";
 import {
-  Container,
   Input,
   Label,
   ErrorMessage,
@@ -51,7 +50,7 @@ export default function SignupPage() {
   return (
     <>
       <Nav />
-      <Container>
+      <S.Container>
         <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
           <Title>회원가입</Title>
 
@@ -150,7 +149,7 @@ export default function SignupPage() {
 
           <SubmitButton type="submit">회원가입</SubmitButton>
         </S.FormContainer>
-      </Container>
+      </S.Container>
     </>
   );
 }

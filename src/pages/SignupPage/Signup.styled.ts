@@ -1,5 +1,19 @@
 import styled from "styled-components";
 
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
+
+  @media (max-width: 1320px) {
+    margin: 80px 0 50px;
+  }
+`;
+
 export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
@@ -12,8 +26,6 @@ export const FormContainer = styled.form`
   border: 1px solid ${({ theme }) => theme.color.lightGrey};
   border-radius: 8px;
 `;
-
-
 
 export const InputContainer = styled.div`
   width: 100%;
