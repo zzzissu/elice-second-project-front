@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
 `;
 
@@ -15,14 +15,17 @@ export const Image = styled.img`
 export const Info = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 6px;
 `;
 
 export const Price = styled.span`
   display: flex;
   flex-direction: column;
+  font-weight: bold;
+  font-size: 18px;
 `;
 
 export const Description = styled.span`
-  color: ${({ theme }) => theme.color.black};
+  color: ${({ theme }) => theme.color.deepGrey};
   font-size: ${({ theme }) => theme.font.small};
 `;

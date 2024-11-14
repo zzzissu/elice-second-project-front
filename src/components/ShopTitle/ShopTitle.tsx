@@ -1,6 +1,6 @@
 import React from "react";
 import * as S from "./ShopTitle.styled";
-import { FiShoppingCart } from "react-icons/fi";
+import { BsShop } from "react-icons/bs";
 
 interface ShopTitleProps {
   shopName: string;
@@ -9,7 +9,7 @@ interface ShopTitleProps {
 const ShopTitle: React.FC<ShopTitleProps> = ({ shopName }) => (
   <S.Container>
     <S.Logo>
-      <FiShoppingCart />
+      <BsShop />
     </S.Logo>
     <S.ShopName>{shopName}</S.ShopName>
   </S.Container>
