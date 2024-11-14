@@ -13,6 +13,7 @@ export const S = {
 
     width: 110px;
     height: 40px;
+    font-size: 14px;
 
     border: 2px solid ${(props) => props.theme.color.orange};
     background-color: #fff;
@@ -26,6 +27,7 @@ export const S = {
     position: absolute;
     left: -1px;
     top: 40px;
+    font-size: 14px;
 
     display: flex;
     justify-content: center;
