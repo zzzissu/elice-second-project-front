@@ -9,6 +9,7 @@ import { fetchItems } from "../../utils/fetchItems.ts";
 import { ItemProps } from "../../types/types.ts";
 
 import { S } from "./List.style";
+import Sidebar from '../../components/Sidebar/Sidebar.tsx';
 
 const List = () => {
   const options = ["최신순", "오래된순", "인기순"];
@@ -31,6 +32,7 @@ const List = () => {
   return (
     <S.ListWrap>
       <Nav />
+      <Sidebar />
       <S.List>
         {items.map((item) => {
           return <ItemCard {...item} key={item.id} />;
