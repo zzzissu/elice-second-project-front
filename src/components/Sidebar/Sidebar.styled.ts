@@ -6,8 +6,6 @@ export const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-
-  margin-top: 14px;
 `;
 
 interface CategoryButtonProps {

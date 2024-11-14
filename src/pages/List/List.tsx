@@ -12,9 +12,7 @@ import { CarouselItem } from "../../types/types.ts";
 import { S } from "./List.style";
 import Carousel from "./Carousel/Carousel.tsx";
 import { getCarousel } from "../../utils/getCarousel.ts";
-import Sidebar from "../../components/Sidebar/Sidebar.tsx";
-import { Link } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink.ts";
+import Button from "../../components/Button/Button.tsx";
 
 const List = () => {
   const options = ["최신순", "오래된순", "인기순"];
@@ -52,23 +50,16 @@ const List = () => {
     <S.ListWrap>
       <Nav />
       <S.List>
-        <Sidebar />
-        <S.ListContent>
-          <Carousel carouselData={carouselData} />
-          <S.DropdownWrap>
-            <Dropdown options={options} />
-          </S.DropdownWrap>
+        <Carousel carouselData={carouselData} />
+        <S.DropdownWrap>
+          <Dropdown options={options} />
+        </S.DropdownWrap>
 
-          <S.ItemGrid>
-            {items.map((item) => {
-              return (
-                <Link to={ROUTE_LINK.DETAIL.path}>
-                  <ItemCard {...item} key={item.id} />
-                </Link>
-              );
-            })}
-          </S.ItemGrid>
-        </S.ListContent>
+        <S.ItemGrid>
+          {items.map((item) => {
+            return <ItemCard {...item} key={item.id} />;
+          })}
+        </S.ItemGrid>
       </S.List>
     </S.ListWrap>
   );
