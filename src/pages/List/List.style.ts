@@ -7,19 +7,10 @@ export const S = {
     justify-content: center;
     align-items: center;
 
+    margin-top: 100px;
     width: 1260px;
-
-    margin: 0 auto;
   `,
-  List: styled.div`
-    margin-top: 60px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  `,
-  ListContent: styled.div`
-    padding-top: 40px;
-  `,
+  List: styled.div``,
   DropdownWrap: styled.div`
     display: flex;
     justify-content: flex-end;

@@ -18,12 +18,6 @@ export const S = {
     border-radius: 5px;
     &:hover {
       cursor: pointer;
-      background-color: ${(props) => {
-        if (props.bgcolor) {
-          const baseColor = props.bgcolor.replace(/\d+$/, "");
-          return props.theme.color[baseColor];
-        }
-      }};
     }
   `,
 };
