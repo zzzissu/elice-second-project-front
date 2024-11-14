@@ -34,5 +34,7 @@ export const S = {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto;
     gap: 12px;
+
+    margin-bottom: 100px;
   `,
 };
