@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
-interface imgUrlProps {
+interface CellProps {
+  idx: number;
+  row: number;
+}
+
+interface ImgUrlProps {
   imgUrl: string;
 }
 
@@ -16,7 +21,7 @@ export const S = {
       cursor: pointer;
     }
   `,
-  ProductImg: styled.div<imgUrlProps>`
+  ProductImg: styled.div<ImgUrlProps>`
     width: 100%;
     height: 100%;
 
@@ -27,7 +32,7 @@ export const S = {
     background-size: cover;
     background-position: center;
   `,
-  ProductInfo: styled.div`
+  ProductInfo: styled.div<CellProps>`
     position: absolute;
     bottom: 0px;
     left: 0px;
@@ -35,7 +40,17 @@ export const S = {
     padding: 4px 10px;
     width: 100%;
 
-    background-color: ${(props) => props.theme.color.orange30};
+    background-color: ${(props) => {
+      if (props.row % 2 !== 0 && (props.idx + 1) % 2 === 0) {
+        return props.theme.color.orange30;
+      }
+      if (props.row % 2 !== 0 && (props.idx + 1) % 2 !== 0) {
+        return props.theme.color.blue30;
+      }
+      if (props.row % 2 === 0 && (props.idx + 1) % 2 !== 0) {
+        return props.theme.color.orange30;
+      } else return props.theme.color.blue30;
+    }};
     color: #fff;
   `,
   ProductName: styled.div`
