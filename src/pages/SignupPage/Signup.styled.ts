@@ -23,7 +23,6 @@ export const FormContainer = styled.form`
   margin: 0 auto;
   padding: 40px;
   background-color: #fff;
-  border: 1px solid ${({ theme }) => theme.color.lightGrey};
   border-radius: 8px;
 `;
 

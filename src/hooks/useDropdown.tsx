@@ -10,7 +10,7 @@ const useDropdown = (options: string[]) => {
 
   const handleSelect = (option: string) => {
     setSelectedItem(option);
-    setIsOpen(false);
+    setIsOpen((prev) => !prev);
   };
 
   return { isOpen, selectedItem, handleSelect, handleToggle };

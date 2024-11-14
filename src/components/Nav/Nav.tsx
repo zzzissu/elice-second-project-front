@@ -12,7 +12,9 @@ const Nav = () => {
           오래오래
         </S.Logo>
       </Link>
-      <S.SignInBtn>회원가입</S.SignInBtn>
+      <Link to={ROUTE_LINK.LOGIN.path}>
+        <S.SignInBtn>로그인</S.SignInBtn>
+      </Link>
     </S.Nav>
   );
 };

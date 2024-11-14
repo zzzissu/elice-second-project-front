@@ -4,3 +4,13 @@ export interface ItemProps {
   price: number;
   imgUrl: string;
 }
+
+export interface CarouselItemProps {
+  carouselData: CarouselItem[];
+}
+
+export interface CarouselItem {
+  id: number;
+  imgUrl: string;
+  text: string;
+}
