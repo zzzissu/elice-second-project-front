@@ -3,6 +3,7 @@ export interface ItemProps {
   name: string;
   price: number;
   imgUrl: string;
+  description: string;
 }
 
 export interface CarouselItemProps {

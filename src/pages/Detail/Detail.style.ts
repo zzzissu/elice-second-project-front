@@ -104,4 +104,43 @@ export const S = {
 
     width: 100%;
   `,
+  NavBar: styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    margin-top: 46px;
+    width: 100%;
+    height: 48px;
+    border-top: 1px solid ${(props) => props.theme.color.lightGrey};
+    border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
+  `,
+  NavCell: styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `,
+  NavText: styled.span`
+    color: ${(props) => props.theme.color.deepGrey};
+
+    &:hover {
+      cursor: pointer;
+    }
+  `,
+
+  LowerWrap: styled.div``,
+  Description: styled.div`
+    padding: 20px;
+  `,
+  SellerBox: styled.div`
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    width: 100%;
+    padding: 20px;
+    margin-top: 20px;
+
+    border-radius: 10px;
+    border: 1px solid ${(props) => props.theme.color.lightGrey};
+  `,
 };

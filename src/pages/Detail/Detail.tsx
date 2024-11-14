@@ -1,9 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Button from "../../components/Button/Button";
-import { S } from "./Detail.style";
-import { ItemProps } from "../../types/types";
+
 import Nav from "../../components/Nav/Nav";
+import Button from "../../components/Button/Button";
+
+import useFormatPrice from "../../hooks/useFormatPrice";
+
+import { ItemProps } from "../../types/types";
+
+import { S } from "./Detail.style";
 
 const Detail = () => {
   const [item, setItem] = useState<ItemProps | null>(null);
@@ -25,18 +30,19 @@ const Detail = () => {
 
   const purchase = () => {};
 
+  if (!item) return null;
   return (
     <S.DetailWrap>
       <Nav />
       <S.Detail>
         <S.UpperWrap>
-          <S.ProductImg imgUrl={item?.imgUrl} />
+          <S.ProductImg imgUrl={item.imgUrl} />
           <S.ProductInfo>
             <div>
               <S.EditBtn />
-              <S.ProductName>{item?.name}</S.ProductName>
+              <S.ProductName>{item.name}</S.ProductName>
               <S.ProductPrice>
-                <S.Bold>{item?.price}</S.Bold> 원
+                <S.Bold>{useFormatPrice(item.price)}</S.Bold> 원
               </S.ProductPrice>
               <S.InfoBox>
                 <S.SellerIcon />
@@ -62,6 +68,23 @@ const Detail = () => {
             </S.BtnWrap>
           </S.ProductInfo>
         </S.UpperWrap>
+
+        <S.NavBar>
+          <S.NavCell>
+            <S.NavText>상품 정보</S.NavText>
+          </S.NavCell>
+          <S.NavCell>
+            <S.NavText>판매자 정보</S.NavText>
+          </S.NavCell>
+        </S.NavBar>
+
+        <S.LowerWrap>
+          <S.Description>{item.description}</S.Description>
+          <S.SellerBox>
+            <S.SellerIcon />
+            <S.greyText>랄랄라</S.greyText>
+          </S.SellerBox>
+        </S.LowerWrap>
       </S.Detail>
     </S.DetailWrap>
   );
