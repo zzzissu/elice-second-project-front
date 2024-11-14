@@ -10,6 +10,8 @@ import { ItemProps } from "../../types/types";
 
 import { S } from "./Detail.style";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import { Link } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink";
 
 const Detail = () => {
   const [item, setItem] = useState<ItemProps | null>(null);
@@ -43,7 +45,9 @@ const Detail = () => {
             <S.ProductImg imgUrl={item.imgUrl} />
             <S.ProductInfo>
               <div>
-                <S.EditBtn />
+                <Link to={ROUTE_LINK.ADD_PRODUCT.path}>
+                  <S.EditBtn />
+                </Link>
                 <S.ProductName>{item.name}</S.ProductName>
                 <S.ProductPrice>
                   <S.Bold>{useFormatPrice(item.price)}</S.Bold> 원
