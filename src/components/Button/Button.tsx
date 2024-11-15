@@ -6,6 +6,7 @@ interface ButtonProps {
   width?: string;
   height?: string;
   bgcolor?: string;
+  fontSize?: string;
 }
 
 const Button = ({
@@ -13,6 +14,7 @@ const Button = ({
   handleClick,
   width,
   height,
+  fontSize,
   bgcolor,
 }: ButtonProps) => {
   return (
@@ -20,6 +22,7 @@ const Button = ({
       onClick={handleClick}
       width={width}
       height={height}
+      fontSize={fontSize}
       bgcolor={bgcolor}
     >
       {btnText}

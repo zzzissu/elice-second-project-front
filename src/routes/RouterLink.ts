@@ -4,6 +4,7 @@ const ROUTE_LINK = {
   SIGNUP: { path: "/signup", link: "/signup" },
   DETAIL: { path: "/detail", link: "/detail" },
   ADD_PRODUCT: { path: "/add", link: "/add" },
+  MYPAGE: { path: "/mypage", link: "/mypage" },
 };
 
 export default ROUTE_LINK;

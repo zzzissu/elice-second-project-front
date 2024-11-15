@@ -5,18 +5,13 @@ import LoginPage from "../pages/LoginPage/LoginPage.tsx";
 import SignupPage from "../pages/SignupPage/SignupPage.tsx";
 import Detail from "../pages/Detail/Detail.tsx";
 import AddOrEditProduct from "../pages/AddOrEditProduct/AddOrEditProduct.tsx";
+import MyPage from "../pages/MyPage/MyPage.tsx";
 
 function AppRouter() {
   const router = createBrowserRouter([
     {
       path: ROUTE_LINK.LIST.path,
       element: <List />,
-      children: [
-        {
-          // path: '/',
-          // element: <List />,
-        },
-      ],
     },
     {
       path: ROUTE_LINK.LOGIN.path,
@@ -33,6 +28,10 @@ function AppRouter() {
     {
       path: ROUTE_LINK.ADD_PRODUCT.path,
       element: <AddOrEditProduct />,
+    },
+    {
+      path: ROUTE_LINK.MYPAGE.path,
+      element: <MyPage />,
     },
   ]);
 
