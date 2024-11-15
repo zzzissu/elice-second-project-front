@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import axios from "axios";
 import ROUTE_LINK from "./RouterLink.ts";
 import List from "../pages/List/List.tsx";
 import LoginPage from "../pages/LoginPage/LoginPage.tsx";
@@ -9,17 +8,21 @@ import Detail from "../pages/Detail/Detail.tsx";
 import AddOrEditProduct from "../pages/AddOrEditProduct/AddOrEditProduct.tsx";
 import CartPage from "../pages/CartPage/CartPage.tsx";
 import PaymentPage from "../pages/PaymentPage/PaymentPage.tsx";
-import { useEffect } from "react";
+import { fetchAddressInfo, fetchOrderItems } from "../utils/mockData.ts";
 
 function AppRouter() {
   const [addressInfo, setAddressInfo] = useState(null);
   const [orderItems, setOrderItems] = useState(null);
 
   useEffect(() => {
-    axios.get("/data/mockAddress.json").then((res) => setAddressInfo(res.data));
-    axios
-      .get("/data/mockItems.json")
-      .then((res) => setOrderItems(res.data));
+    const loadData = async () => {
+      const address = await fetchAddressInfo();
+      const items = await fetchOrderItems();
+      setAddressInfo(address);
+      setOrderItems(items);
+    };
+
+    loadData();
   }, []);
 
   const router = createBrowserRouter([
