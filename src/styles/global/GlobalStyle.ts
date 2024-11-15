@@ -19,6 +19,12 @@ const GlobalStyle = createGlobalStyle`
 
     }
 
+    a {
+        text-decoration: none;
+        color:#000
+        ;
+    }
+
     .container {
     max-width: 1260px;
     width: 100%;

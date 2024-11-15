@@ -38,7 +38,7 @@ export const S = {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto;
-    gap: 12px;
+    gap: 26px;
 
     margin-bottom: 100px;
   `,
