@@ -3,20 +3,31 @@ import * as S from "./CartItem.styled";
 
 interface CartItemProps {
   imageSrc: string;
-  price: string;
+  Title: string;
   description: string;
+  page: string;
 }
 
 const CartItem: React.FC<CartItemProps> = ({
   imageSrc,
-  price,
+  Title,
   description,
+  page,
 }) => (
   <S.Container>
     <S.Image src={imageSrc} alt="상품이미지" />
     <S.Info>
-      <S.Price>{price}</S.Price>
-      <S.Description>{description}</S.Description>
+      {page === "mypage" ? (
+        <>
+          <S.Title>{Title}</S.Title>
+          <S.Description>{description}</S.Description>
+        </>
+      ) : (
+        <>
+          <S.Title>{Title}</S.Title>
+          <S.Description>{description}</S.Description>
+        </>
+      )}
     </S.Info>
   </S.Container>
 );

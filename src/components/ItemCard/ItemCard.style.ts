@@ -12,7 +12,7 @@ interface ImgUrlProps {
 export const S = {
   ItemCard: styled.div`
     position: relative;
-    width: 236px;
+    width: 100%;
     height: 227px;
 
     border-radius: 5px;

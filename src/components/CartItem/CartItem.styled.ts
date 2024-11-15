@@ -18,7 +18,7 @@ export const Info = styled.div`
   gap: 6px;
 `;
 
-export const Price = styled.span`
+export const Title = styled.span`
   display: flex;
   flex-direction: column;
   font-weight: bold;

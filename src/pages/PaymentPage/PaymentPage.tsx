@@ -69,9 +69,10 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
             <S.ItemContainer>
               {orderItems.map((item) => (
                 <CartItem
+                  page="cart"
                   key={item.id}
                   imageSrc={item.imageSrc}
-                  price={`${item.price.toLocaleString()}원`}
+                  Title={`${item.price.toLocaleString()}원`}
                   description={item.description}
                 />
               ))}
