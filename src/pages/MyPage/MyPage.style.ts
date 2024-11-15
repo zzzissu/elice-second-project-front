@@ -131,5 +131,81 @@ export const S = {
       cursor: pointer;
     }
   `,
-  CartGrid: styled.div``,
+  PurchaseList: styled.div`
+    height: 447px;
+    overflow: hidden;
+  `,
+  CartGrid: styled.div`
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+
+    grid-row-gap: 16px;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
+
+    padding-left: 20px;
+    margin-top: 20px;
+    padding-bottom: 20px;
+  `,
+  DateTitle: styled.div`
+    font-weight: 600;
+    padding: 10px 22px 0px;
+  `,
+  Shop: styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+
+    text-align: 16px;
+    text-decoration: none;
+  `,
+  ShopIconCircle: styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    background-color: ${(props) => props.theme.color.lightGrey};
+  `,
+  ShopIcon: styled.div`
+    width: 26px;
+    height: 23px;
+
+    background-image: url("/icons/shop.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+  `,
+  MoreBtn: styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: ${(props) => props.theme.color.deepGrey};
+
+    width: 100%;
+    height: 20px;
+
+    margin-top: 20px;
+    margin-bottom: 100px;
+  `,
+  EmptyCart: styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 300px;
+
+    border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
+    margin-bottom: 100px;
+  `,
 };

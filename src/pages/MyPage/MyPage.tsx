@@ -2,15 +2,27 @@ import Nav from "../../components/Nav/Nav";
 import { S } from "./MyPage.style";
 import { getItems } from "../../utils/getItems";
 import { useEffect, useState } from "react";
-import { ItemProps } from "../../types/types";
+import { CartItems, ItemProps } from "../../types/types";
 import ItemCard from "../../components/ItemCard/ItemCard";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import Button from "../../components/Button/Button";
+import CartItem from "../../components/CartItem/CartItem";
+import { getCartItems } from "../../utils/getCartItems";
 
 const MyPage = () => {
+  const navigate = useNavigate();
   const [sellingItems, setSellingItems] = useState<ItemProps[]>([]);
+  const [cartItems, setCartItems] = useState<CartItems[]>([]);
+  const [filteredCartItems, setFilteredCartItems] = useState<
+    {
+      date: string;
+      items: CartItems[];
+    }[]
+  >([]);
+
   const [pageNum, setPageNum] = useState<number[]>([]);
+  let dates: string[] = [];
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -21,6 +33,10 @@ const MyPage = () => {
     startIndex + itemsPerPage,
   );
 
+  const editProfile = () => {
+    navigate("/");
+  };
+
   const paginationNum = () => {
     const num = Math.ceil(sellingItems.length / itemsPerPage);
     let nums = [];
@@ -30,25 +46,6 @@ const MyPage = () => {
 
     setPageNum(nums);
   };
-
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const data = await getItems();
-        setSellingItems(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchItems();
-  }, []);
-
-  useEffect(() => {
-    paginationNum();
-  }, [sellingItems]);
-
-  const editProfile = () => {};
 
   const goToPrevPage = () => {
     if (currentPage !== 1) {
@@ -61,7 +58,50 @@ const MyPage = () => {
     } else return;
   };
 
-  if (!paginatedItems || !sellingItems || !pageNum) return null;
+  const showMore = () => {};
+
+  const fetchItems = async () => {
+    try {
+      const data = await getItems();
+      setSellingItems(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchCartItems = async () => {
+    try {
+      const data = await getCartItems();
+      setCartItems(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchItems();
+    fetchCartItems();
+  }, []);
+
+  useEffect(() => {
+    paginationNum();
+  }, [sellingItems]);
+
+  useEffect(() => {
+    const uniqueDates = [
+      ...new Set(cartItems.map((item) => item.purchaseDate)),
+    ];
+    dates = uniqueDates;
+
+    const groupedCartItems = dates.map((date) => ({
+      date,
+      items: cartItems.filter((cartItem) => cartItem.purchaseDate === date),
+    }));
+
+    setFilteredCartItems(groupedCartItems);
+  }, [cartItems]);
+
+  if (!paginatedItems || !sellingItems || !pageNum || !cartItems) return null;
   return (
     <S.MyPageWrap>
       <Nav />
@@ -114,9 +154,42 @@ const MyPage = () => {
               </S.ArrowIconBox>
             </S.PaginationBox>
           </S.SellingBox>
-          <S.CartGrid>
+          <S.PurchaseList>
             <S.TitleBox>구매 내역</S.TitleBox>
-          </S.CartGrid>
+            {filteredCartItems.length > 0 ? (
+              filteredCartItems.map(({ date, items }) => (
+                <div key={date}>
+                  <S.DateTitle>{date}</S.DateTitle> {/* 날짜 제목 표시 */}
+                  {items.map((cartItem) => (
+                    <S.CartGrid>
+                      <Link to="/detail">
+                        <CartItem
+                          page="mypage"
+                          imageSrc={cartItem.imageSrc}
+                          Title={cartItem.itemName}
+                          description={`${cartItem.price.toLocaleString()} 원`}
+                        />
+                      </Link>
+
+                      <S.Shop>
+                        <S.ShopIconCircle>
+                          <S.ShopIcon />
+                        </S.ShopIconCircle>
+                        {cartItem.shopName}
+                      </S.Shop>
+                    </S.CartGrid>
+                  ))}
+                </div>
+              ))
+            ) : (
+              <S.EmptyCart>구매 내역이 없습니다.</S.EmptyCart>
+            )}
+          </S.PurchaseList>
+          {cartItems.length > 0 ? (
+            <S.MoreBtn onClick={showMore}>더보기</S.MoreBtn>
+          ) : (
+            ""
+          )}
         </S.MyPageContent>
       </S.MyPage>
     </S.MyPageWrap>

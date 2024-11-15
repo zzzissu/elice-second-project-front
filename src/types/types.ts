@@ -17,3 +17,13 @@ export interface CarouselItem {
   imgUrl: string;
   text: string;
 }
+
+export interface CartItems {
+  id: number;
+  itemName: string;
+  imageSrc: string;
+  price: number;
+  description: string;
+  shopName: string;
+  purchaseDate: string;
+}
