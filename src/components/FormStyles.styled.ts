@@ -24,6 +24,10 @@ export const Input = styled.input`
   border-radius: 5px;
   outline: none;
   margin-bottom: 10px;
+
+  &:focus {
+    border: 1px solid ${({ theme }) => theme.color.orange};
+  }
 `;
 
 export const Label = styled.label`

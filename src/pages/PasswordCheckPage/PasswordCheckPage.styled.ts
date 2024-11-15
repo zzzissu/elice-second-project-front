@@ -13,10 +13,10 @@ export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  max-width: 500px;
+  width: 400px;
   margin: 0 auto;
   padding: 40px;
   background-color: #fff;
   border-radius: 8px;
+
 `;
