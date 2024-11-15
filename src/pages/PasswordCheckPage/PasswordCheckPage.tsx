@@ -1,12 +1,8 @@
 import { useForm } from "react-hook-form";
 import * as S from "./PasswordCheckPage.styled";
-import {
-  Input,
-  Label,
-  SubmitButton,
-  Title,
-} from "../../components/FormStyles.styled";
 import Nav from "../../components/Nav/Nav";
+import FormContainer from "../../components/FormContainer/FormContainer";
+import InputField from "../../components/InputField/InputField";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
@@ -16,7 +12,7 @@ interface FormValues {
 
 export default function PasswordCheckPage() {
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm<FormValues>();
+  const methods = useForm<FormValues>();
 
   const onSubmit = (data: FormValues) => {
     console.log(data);
@@ -26,22 +22,20 @@ export default function PasswordCheckPage() {
     <>
       <Nav />
       <S.Container>
-        <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
-          <Title>회원가입</Title>
+        <FormContainer onSubmit={onSubmit} methods={methods}>
+          <S.Title>비밀번호 입력</S.Title>
 
-          <Label>비밀번호</Label>
-          <Input
-            type="password"
-            {...register("password", { required: true })}
-          ></Input>
+          <S.InputContainer>
+            <InputField name="password" label="비밀번호" type="password" />
+          </S.InputContainer>
 
-          <SubmitButton
+          <S.SubmitButton
             type="button"
             onClick={() => navigate(ROUTE_LINK.INFO_EDIT.path)}
           >
             내 정보 조회하기
-          </SubmitButton>
-        </S.FormContainer>
+          </S.SubmitButton>
+        </FormContainer>
       </S.Container>
     </>
   );
