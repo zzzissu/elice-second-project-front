@@ -1,13 +1,8 @@
 import { useForm } from "react-hook-form";
 import * as S from "./UserDataEditPage.styled";
-import {
-  Input,
-  Label,
-  ErrorMessage,
-  SubmitButton,
-  Title,
-} from "../../components/FormStyles.styled";
 import Nav from "../../components/Nav/Nav";
+import FormContainer from "../../components/FormContainer/FormContainer";
+import InputField from "../../components/InputField/InputField";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
@@ -20,13 +15,9 @@ interface FormValues {
 }
 
 export default function UserDataEditPage() {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    clearErrors,
-    formState: { errors },
-  } = useForm<FormValues>();
+  const methods = useForm<FormValues>();
+
+  const { setValue, clearErrors } = methods;
 
   const onSubmit = (data: FormValues) => {
     console.log(data);
@@ -49,70 +40,50 @@ export default function UserDataEditPage() {
     <>
       <Nav />
       <S.Container>
-        <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
-          <Title>회원정보 수정</Title>
+        <FormContainer onSubmit={onSubmit} methods={methods}>
+          <S.Title>회원정보 수정</S.Title>
 
-          <Label>전화번호</Label>
-          <S.InputContainer>
-            <Input
-              type="text"
+          <S.InputContainer style={{ gap: "10px" }}>
+            <InputField
+              name="phoneFirst"
+              label="전화번호"
               placeholder="앞자리"
-              {...register("phoneFirst", { required: true })}
-              style={{ width: "30%" }}
-            ></Input>
-            <Input
-              type="text"
-              placeholder="나머지 번호"
-              {...register("phoneSecond", { required: true })}
-              style={{ width: "65%", marginLeft: "5%" }}
             />
-          </S.InputContainer>
-          {errors.phoneFirst && (
-            <ErrorMessage>전화번호 앞자리를 입력해주세요.</ErrorMessage>
-          )}
-          {errors.phoneSecond && (
-            <ErrorMessage>전화번호를 입력해주세요.</ErrorMessage>
-          )}
-
-          <Label>주소</Label>
-          <S.InputContainer>
-            <S.CheckButton
-              type="button"
-              onClick={handleAddressSearch}
-              style={{ marginLeft: 0 }}
-            >
-              주소 찾기
-            </S.CheckButton>
-            <Input
-              type="text"
-              placeholder="우편번호"
-              {...register("postalCode", { required: true })}
-              style={{ flex: 1, marginLeft: "8px" }}
-            />
+            <InputField name="phoneSecond" placeholder="나머지 번호" />
           </S.InputContainer>
 
-          <Input
-            type="text"
-            placeholder="기본 주소"
-            {...register("address", { required: true })}
-            style={{ width: "100%" }}
-            readOnly
-          />
+          <div>
+            <S.InputContainer style={{ marginBottom: "10px" }}>
+              <InputField
+                name="postalCode"
+                label="우편번호"
+                placeholder="우편번호를 입력하세요"
+                readOnly
+              />
+              <S.CheckButton type="button" onClick={handleAddressSearch}>
+                주소 찾기
+              </S.CheckButton>
+            </S.InputContainer>
+            <S.InputContainer style={{ flexDirection: "column", gap: "10px" }}>
+              <InputField
+                name="address"
+                placeholder="주소를 입력하세요"
+                readOnly
+              />
+              <InputField
+                name="detailAddress"
+                placeholder="상세 주소를 입력하세요"
+              />
+            </S.InputContainer>
+          </div>
 
-          <Input
-            type="text"
-            placeholder="상세주소를 적어주세요."
-            {...register("detailAddress")}
-            style={{ width: "100%" }}
-          />
-
-          <SubmitButton
+          <S.SubmitButton
             type="submit"
             onClick={() => navigate(ROUTE_LINK.MYPAGE.path)}
           >
             수정하기
-          </SubmitButton>
-        </S.FormContainer>
+          </S.SubmitButton>
+        </FormContainer>
       </S.Container>
     </>
   );
