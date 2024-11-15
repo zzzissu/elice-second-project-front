@@ -1,13 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as S from "./LoginPage.styled";
-import {
-  Container,
-  Input,
-  SubmitButton,
-} from "../../components/FormStyles.styled";
 import ROUTE_LINK from "../../routes/RouterLink";
 import Nav from "../../components/Nav/Nav";
+import FormContainer from "../../components/FormContainer/FormContainer";
+import InputField from "../../components/InputField/InputField";
 
 interface FormValues {
   username: string;
@@ -15,7 +12,7 @@ interface FormValues {
 }
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm<FormValues>();
+  const methods = useForm<FormValues>();
   const navigate = useNavigate();
 
   const onSubmit = (data: FormValues) => {
@@ -25,30 +22,36 @@ export default function LoginPage() {
   return (
     <>
       <Nav />
-      <Container>
-        <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
+      <S.Container>
+        <FormContainer onSubmit={onSubmit} methods={methods}>
           <S.Logo>
             <S.LogoImage src="/logo.png" alt="오래오래 로고" />
             오래오래
           </S.Logo>
-          <Input
-            type="text"
-            placeholder="아이디"
-            {...register("username", { required: true })}
-          />
-          <Input
-            type="password"
-            placeholder="비밀번호"
-            {...register("password", { required: true })}
-          />
-          <SubmitButton type="submit">로그인</SubmitButton>
+          <S.InputContainer>
+            <InputField
+              name="email"
+              label="이메일"
+              placeholder="아이디를 입력하세요."
+            />
+          </S.InputContainer>
+
+          <S.InputContainer>
+            <InputField
+              name="password"
+              label="비밀번호"
+              type="password"
+              placeholder="비밀번호를 입력하세요."
+            />
+          </S.InputContainer>
+          <S.SubmitButton type="submit">로그인</S.SubmitButton>
           <S.Footer>
             <S.FooterLink onClick={() => navigate(ROUTE_LINK.SIGNUP.path)}>
               회원가입
             </S.FooterLink>
           </S.Footer>
-        </S.FormContainer>
-      </Container>
+        </FormContainer>
+      </S.Container>
     </>
   );
 }
