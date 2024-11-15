@@ -4,7 +4,7 @@ import { getItems } from "../../utils/getItems";
 import { useEffect, useState } from "react";
 import { CartItems, ItemProps } from "../../types/types";
 import ItemCard from "../../components/ItemCard/ItemCard";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Outlet } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import Button from "../../components/Button/Button";
 import CartItem from "../../components/CartItem/CartItem";
@@ -34,7 +34,7 @@ const MyPage = () => {
   );
 
   const editProfile = () => {
-    navigate("/");
+    navigate(ROUTE_LINK.PASSWORD_CHECK.path);
   };
 
   const paginationNum = () => {
