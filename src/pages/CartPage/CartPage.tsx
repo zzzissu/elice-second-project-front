@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import ShopTitle from "../../components/ShopTitle/ShopTitle";
 import CartItem from "../../components/CartItem/CartItem";
@@ -9,57 +9,35 @@ import Nav from "../../components/Nav/Nav";
 import EmptyMessage from "../../components/EmptyMessage/EmptyMessage";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import { fetchCartData } from "../../utils/fetchCartData";
 
-interface CartItemData {
+interface CartItem {
   id: number;
+  itemName: string;
   imageSrc: string;
-  price: string;
+  price: number;
   description: string;
-  checked: boolean;
-}
-
-interface ShopData {
   shopName: string;
-  items: CartItemData[];
+  checked?: boolean;
 }
 
-const sampleData: ShopData[] = [
-  {
-    shopName: "subbro",
-    items: [
-      {
-        id: 1,
-        imageSrc: "/images/camera1.jpg",
-        price: "115,000원",
-        description: "상품 정보가 여기에 뜨면 될 것 같습니다.",
-        checked: false,
-      },
-      {
-        id: 2,
-        imageSrc: "/images/lp.jpg",
-        price: "115,000원",
-        description: "상품 정보가 여기에 뜨면 될 것 같습니다.",
-        checked: false,
-      },
-    ],
-  },
-  {
-    shopName: "elice",
-    items: [
-      {
-        id: 3,
-        imageSrc: "/images/speaker1.jpg",
-        price: "150,000원",
-        description: "상품 정보가 여기에 뜨면 될 것 같습니다.",
-        checked: false,
-      },
-    ],
-  },
-];
+interface Shop {
+  shopName: string;
+  items: CartItem[];
+}
 
 const CartPage: React.FC = () => {
   const navigate = useNavigate();
-  const [cartData, setCartData] = useState(sampleData);
+  const [cartData, setCartData] = useState<Shop[]>([]);
+
+  useEffect(() => {
+    const loadCartData = async () => {
+      const data = await fetchCartData();
+      setCartData(data);
+    };
+
+    loadCartData();
+  }, []);
 
   const handleItemCheck = (shopIndex: number, itemId: number) => {
     const updatedCart = cartData.map((shop, sIndex) =>
@@ -152,7 +130,7 @@ const CartPage: React.FC = () => {
                   {shop.items.map((item) => (
                     <S.ItemRow key={item.id}>
                       <Checkbox
-                        checked={item.checked}
+                        checked={item.checked || false}
                         onChange={() => handleItemCheck(shopIndex, item.id)}
                       />
                       <CartItem
@@ -182,11 +160,7 @@ const CartPage: React.FC = () => {
                       총 상품 금액:{" "}
                       {shop.items
                         .reduce(
-                          (sum, item) =>
-                            sum +
-                            (item.checked
-                              ? parseInt(item.price.replace(/,/g, ""))
-                              : 0),
+                          (sum, item) => sum + (item.checked ? item.price : 0),
                           0,
                         )
                         .toLocaleString()}
@@ -194,7 +168,7 @@ const CartPage: React.FC = () => {
                     </S.TotalAmount>
                     <Button
                       btnText="구매하기"
-                      handleClick={() => console.log("구매하기 클릭")}
+                      handleClick={() => navigate(ROUTE_LINK.PAYMENT.path)}
                       width="100%"
                       height="48px"
                       bgcolor="orange70"
