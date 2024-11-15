@@ -6,6 +6,7 @@ const ROUTE_LINK = {
   DETAIL: { path: "/detail", link: "/detail" },
   ADD_PRODUCT: { path: "/add", link: "/add" },
   MYPAGE: { path: "/mypage", link: "/mypage" },
+  PAYMENT: { path: "/payment", link: "/payment" },
 };
 
 export default ROUTE_LINK;
