@@ -39,6 +39,15 @@ const CartPage: React.FC = () => {
     loadCartData();
   }, []);
 
+  const calculateTotalAmount = (items: CartItem[]) => {
+    return items.reduce((sum, item) => sum + item.price, 0);
+  };
+
+  const handleDeleteShop = (shopIndex: number) => {
+    const updatedCart = cartData.filter((_, sIndex) => sIndex !== shopIndex);
+    setCartData(updatedCart);
+  };
+
   const handleItemCheck = (shopIndex: number, itemId: number) => {
     const updatedCart = cartData.map((shop, sIndex) =>
       sIndex === shopIndex
@@ -78,6 +87,20 @@ const CartPage: React.FC = () => {
           ? {
               ...shop,
               items: shop.items.filter((item) => !item.checked),
+            }
+          : shop,
+      )
+      .filter((shop) => shop.items.length > 0);
+    setCartData(updatedCart);
+  };
+
+  const handleRemoveItem = (shopIndex: number, itemId: number) => {
+    const updatedCart = cartData
+      .map((shop, sIndex) =>
+        sIndex === shopIndex
+          ? {
+              ...shop,
+              items: shop.items.filter((item) => item.id !== itemId),
             }
           : shop,
       )
@@ -140,7 +163,7 @@ const CartPage: React.FC = () => {
                         description={item.description}
                       />
                       <S.RemoveButton
-                        onClick={() => console.log("Remove item")}
+                        onClick={() => handleRemoveItem(shopIndex, item.id)}
                       >
                         <IoCloseOutline />
                       </S.RemoveButton>
@@ -151,20 +174,16 @@ const CartPage: React.FC = () => {
                 <S.PurchaseContainer>
                   <S.WrapBox style={{ justifyContent: "space-between" }}>
                     <ShopTitle shopName={shop.shopName} />
-                    <S.DeleteShopText onClick={() => console.log("상점 삭제")}>
+                    <S.DeleteShopText
+                      onClick={() => handleDeleteShop(shopIndex)}
+                    >
                       상점삭제
                     </S.DeleteShopText>
                   </S.WrapBox>
                   <div>
                     <S.TotalAmount>
                       총 상품 금액:{" "}
-                      {shop.items
-                        .reduce(
-                          (sum, item) => sum + (item.checked ? item.price : 0),
-                          0,
-                        )
-                        .toLocaleString()}
-                      원
+                      {calculateTotalAmount(shop.items).toLocaleString()}원
                     </S.TotalAmount>
                     <Button
                       btnText="구매하기"
