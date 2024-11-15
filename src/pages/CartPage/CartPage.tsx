@@ -156,8 +156,9 @@ const CartPage: React.FC = () => {
                         onChange={() => handleItemCheck(shopIndex, item.id)}
                       />
                       <CartItem
+                        page="cart"
                         imageSrc={item.imageSrc}
-                        price={item.price}
+                        Title={item.price}
                         description={item.description}
                       />
                       <S.RemoveButton
