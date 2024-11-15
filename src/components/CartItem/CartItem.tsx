@@ -3,7 +3,7 @@ import * as S from "./CartItem.styled";
 
 interface CartItemProps {
   imageSrc: string;
-  Title: string;
+  Title: string | number;
   description: string;
   page: string;
 }
