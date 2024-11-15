@@ -5,7 +5,15 @@ const ROUTE_LINK = {
   CART: { path: "/cart", link: "/cart" },
   DETAIL: { path: "/detail", link: "/detail" },
   ADD_PRODUCT: { path: "/add", link: "/add" },
-  MYPAGE: { path: "/mypage", link: "/mypage" },
+  MYPAGE: {
+    path: "/mypage",
+    link: "/mypage",
+  },
+  PASSWORD_CHECK: {
+    path: "/mypage/password-check",
+    link: "/mypage/password-check",
+  },
+  INFO_EDIT: { path: "/mypage/info-edit", link: "/mypage/info-edit" },
   PAYMENT: { path: "/payment", link: "/payment" },
 };
 

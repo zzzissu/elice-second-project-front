@@ -10,6 +10,8 @@ import MyPage from "../pages/MyPage/MyPage.tsx";
 import CartPage from "../pages/CartPage/CartPage.tsx";
 import PaymentPage from "../pages/PaymentPage/PaymentPage.tsx";
 import { fetchAddressInfo, fetchOrderItems } from "../utils/mockData.ts";
+import PasswordCheckPage from "../pages/PasswordCheckPage/PasswordCheckPage.tsx";
+import UserDataEditPage from "../pages/UserDataEditPage/UserDataEditPage.tsx";
 
 function AppRouter() {
   const [addressInfo, setAddressInfo] = useState(null);
@@ -50,6 +52,14 @@ function AppRouter() {
     {
       path: ROUTE_LINK.MYPAGE.path,
       element: <MyPage />,
+    },
+    {
+      path: ROUTE_LINK.PASSWORD_CHECK.path,
+      element: <PasswordCheckPage />,
+    },
+    {
+      path: ROUTE_LINK.INFO_EDIT.path,
+      element: <UserDataEditPage />,
     },
     {
       path: ROUTE_LINK.CART.path,
