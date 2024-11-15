@@ -5,6 +5,7 @@ const ROUTE_LINK = {
   CART: { path: "/cart", link: "/cart" },
   DETAIL: { path: "/detail", link: "/detail" },
   ADD_PRODUCT: { path: "/add", link: "/add" },
+  PAYMENT: { path: "/payment", link: "/payment" },
 };
 
 export default ROUTE_LINK;
