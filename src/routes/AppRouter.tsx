@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ROUTE_LINK from "./RouterLink.ts";
 import List from "../pages/List/List.tsx";
@@ -7,8 +8,24 @@ import Detail from "../pages/Detail/Detail.tsx";
 import AddOrEditProduct from "../pages/AddOrEditProduct/AddOrEditProduct.tsx";
 import MyPage from "../pages/MyPage/MyPage.tsx";
 import CartPage from "../pages/CartPage/CartPage.tsx";
+import PaymentPage from "../pages/PaymentPage/PaymentPage.tsx";
+import { fetchAddressInfo, fetchOrderItems } from "../utils/mockData.ts";
 
 function AppRouter() {
+  const [addressInfo, setAddressInfo] = useState(null);
+  const [orderItems, setOrderItems] = useState(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const address = await fetchAddressInfo();
+      const items = await fetchOrderItems();
+      setAddressInfo(address);
+      setOrderItems(items);
+    };
+
+    loadData();
+  }, []);
+
   const router = createBrowserRouter([
     {
       path: ROUTE_LINK.LIST.path,
@@ -37,6 +54,15 @@ function AppRouter() {
     {
       path: ROUTE_LINK.CART.path,
       element: <CartPage />,
+    },
+    {
+      path: ROUTE_LINK.PAYMENT.path,
+      element:
+        addressInfo && orderItems ? (
+          <PaymentPage addressInfo={addressInfo} orderItems={orderItems} />
+        ) : (
+          <div>Loading...</div>
+        ),
     },
   ]);
 
