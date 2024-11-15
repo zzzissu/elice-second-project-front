@@ -6,6 +6,7 @@ import SignupPage from "../pages/SignupPage/SignupPage.tsx";
 import Detail from "../pages/Detail/Detail.tsx";
 import AddOrEditProduct from "../pages/AddOrEditProduct/AddOrEditProduct.tsx";
 import MyPage from "../pages/MyPage/MyPage.tsx";
+import CartPage from "../pages/CartPage/CartPage.tsx";
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -32,6 +33,10 @@ function AppRouter() {
     {
       path: ROUTE_LINK.MYPAGE.path,
       element: <MyPage />,
+    },
+    {
+      path: ROUTE_LINK.CART.path,
+      element: <CartPage />,
     },
   ]);
 
