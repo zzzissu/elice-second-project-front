@@ -25,7 +25,6 @@ const MyPage = () => {
   >([]);
 
   const [pageNum, setPageNum] = useState<number[]>([]);
-  let dates: string[] = [];
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -85,6 +84,8 @@ const MyPage = () => {
   }, [sellingItems]);
 
   useEffect(() => {
+    let dates: string[] = [];
+
     const uniqueDates = [
       ...new Set(cartItems.map((item) => item.purchaseDate)),
     ];
@@ -126,7 +127,7 @@ const MyPage = () => {
                 const row = Math.floor(idx / column) + 1;
 
                 return (
-                  <Link to={ROUTE_LINK.DETAIL.link} key={sellingItem.id}>
+                  <Link to={ROUTE_LINK.DETAIL.path} key={sellingItem._id}>
                     <ItemCard {...sellingItem} idx={idx} row={row} />
                   </Link>
                 );
@@ -163,7 +164,7 @@ const MyPage = () => {
                         <CartItem
                           page="mypage"
                           imageSrc={cartItem.imageSrc}
-                          Title={cartItem.itemName}
+                          title={cartItem.itemName}
                           description={`${cartItem.price.toLocaleString()} 원`}
                         />
                       </Link>

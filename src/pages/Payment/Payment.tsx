@@ -72,7 +72,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
                   page="cart"
                   key={item.id}
                   imageSrc={item.imageSrc}
-                  Title={`${item.price.toLocaleString()}원`}
+                  title={`${item.price.toLocaleString()}원`}
                   description={item.description}
                 />
               ))}
@@ -108,7 +108,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
             </div>
             <Button
               btnText="결제하기"
-              handleClick={() => console.log("결제하기")}
+              onClick={() => console.log("결제하기")}
               bgcolor="orange70"
               width="100%"
             />

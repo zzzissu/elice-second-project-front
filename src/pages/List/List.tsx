@@ -17,9 +17,9 @@ import { CarouselItem } from "../../types/types.ts";
 
 import { S } from "./List.style";
 
-const List = () => {
-  const options = ["최신순", "오래된순"];
+const options = ["최신순", "오래된순"];
 
+const List = () => {
   const [items, setItems] = useState<ItemProps[]>([]);
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
 
@@ -58,7 +58,7 @@ const List = () => {
               const row = Math.floor(idx / column) + 1;
 
               return (
-                <Link to={ROUTE_LINK.DETAIL.link}>
+                <Link to={ROUTE_LINK.DETAIL.path}>
                   <ItemCard {...item} key={item._id} idx={idx} row={row} />
                 </Link>
               );

@@ -159,7 +159,7 @@ const CartPage: React.FC = () => {
                       <CartItem
                         page="cart"
                         imageSrc={item.imageSrc}
-                        Title={item.price}
+                        title={item.price}
                         description={item.itemName}
                       />
                       <S.RemoveButton

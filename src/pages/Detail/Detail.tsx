@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Nav from "../../components/Nav/Nav";
 import Button from "../../components/Button/Button";
 
-import useFormatPrice from "../../hooks/useFormatPrice";
+import formatPrice from "../../utils/formatPrice";
 
 import { ItemProps } from "../../types/types";
 
@@ -50,7 +50,7 @@ const Detail = () => {
                 </Link>
                 <S.ProductName>{item.name}</S.ProductName>
                 <S.ProductPrice>
-                  <S.Bold>{useFormatPrice(item.price)}</S.Bold> 원
+                  <S.Bold>{formatPrice(item.price)}</S.Bold> 원
                 </S.ProductPrice>
                 <S.InfoBox>
                   <S.SellerIcon />

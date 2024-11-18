@@ -117,6 +117,7 @@ export const S = {
 
     width: 678px;
     height: 370px;
+    padding: 10px;
 
     resize: none;
 

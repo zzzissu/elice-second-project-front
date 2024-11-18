@@ -15,6 +15,7 @@ const theme: DefaultTheme = {
     deepGrey: "#919191",
     black: "#000000",
     background: "#f5f5f5",
+    white: "#fff",
   },
   font: {
     LogoFont: "yg-jalnan",
