@@ -160,7 +160,7 @@ const CartPage: React.FC = () => {
                         page="cart"
                         imageSrc={item.imageSrc}
                         Title={item.price}
-                        description={item.description}
+                        description={item.itemName}
                       />
                       <S.RemoveButton
                         onClick={() => handleRemoveItem(shopIndex, item.id)}

@@ -7,6 +7,11 @@ export const Container = styled.div`
   justify-content: center;
   min-height: 100vh;
   height: 100%;
+  overflow-y: auto;
+
+  @media (max-width: 1320px) {
+    margin: 20px 0 50px;
+  }
 `;
 
 export const Title = styled.h1`
@@ -26,6 +31,59 @@ export const InputContainer = styled.div`
   div {
     width: 100%;
     margin-bottom: 0;
+  }
+`;
+
+export const ProfilePicture = styled.div`
+  width: 100%;
+  height: 100%;
+  text-align: center;
+`;
+
+export const ProfileImage = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  object-fit: cover;
+`;
+
+export const FileInputLabel = styled.label`
+  display: inline-block;
+  width: 50%;
+  padding: 9px 12px 10px;
+  background-color: ${({ theme }) => theme.color.orange70};
+  color: white;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  font-size: ${({ theme }) => theme.font.small};
+  transition: all 0.2s;
+  &:hover {
+    background-color: ${({ theme }) => theme.color.orange};
+  }
+`;
+
+export const FileInput = styled.input`
+  display: none;
+`;
+
+export const FileButton = styled.button`
+  margin-left: 8px;
+  padding: 11px 12px;
+  font-size: 14px;
+  color: #fff;
+  background-color: ${({ theme }) => theme.color.grey};
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 80px;
+  width: 50%;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.color.blue};
   }
 `;
 

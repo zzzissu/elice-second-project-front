@@ -5,6 +5,7 @@ import FormContainer from "../../components/FormContainer/FormContainer";
 import InputField from "../../components/InputField/InputField";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import { Label } from "../../components/InputField/InputFiled.styled";
 
 interface FormValues {
   phoneFirst: string;
@@ -36,12 +37,45 @@ export default function UserDataEditPage() {
     clearErrors(["postalCode", "address"]);
   };
 
+  const handleProfilePictureChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      console.log("Profile picture selected:", file);
+      // 실제 업로드 로직 추가 가능
+    }
+  };
+
+  const handleProfilePictureDelete = () => {
+    console.log("Profile picture deleted");
+    // 프로필 사진 삭제 로직 추가 가능
+  };
+
   return (
     <>
       <Nav />
       <S.Container>
         <FormContainer onSubmit={onSubmit} methods={methods}>
           <S.Title>회원정보 수정</S.Title>
+
+          <Label>프로필 사진</Label>
+          <S.ProfilePicture>
+            <S.ProfileImage src="/icons/profile.svg" alt="Profile" />
+          </S.ProfilePicture>
+          <S.InputContainer>
+            <S.FileInputLabel>
+              사진 변경
+              <S.FileInput
+                type="file"
+                accept="image/*"
+                onChange={handleProfilePictureChange}
+              />
+            </S.FileInputLabel>
+            <S.FileButton type="button" onClick={handleProfilePictureDelete}>
+              삭제
+            </S.FileButton>
+          </S.InputContainer>
 
           <S.InputContainer style={{ gap: "10px" }}>
             <InputField
