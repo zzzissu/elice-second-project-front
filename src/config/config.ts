@@ -1,6 +1,7 @@
 import ROUTE_LINK from "../routes/RouterLink";
-export const BASE_URL = `http://localhost:3000/api`;
+
+export const BASE_URL = "http://localhost:5137";
 
 export const APIS = {
-  login: `${BASE_URL}${ROUTE_LINK.LIST.link}`,
+  list: `${BASE_URL}${ROUTE_LINK.LIST.link}`,
 };
