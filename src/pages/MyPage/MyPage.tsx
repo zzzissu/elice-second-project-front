@@ -1,14 +1,16 @@
-import Nav from "../../components/Nav/Nav";
-import { S } from "./MyPage.style";
-import { getItems } from "../../utils/getItems";
-import { useEffect, useState } from "react";
-import { CartItems, ItemProps } from "../../types/types";
-import ItemCard from "../../components/ItemCard/ItemCard";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import { useEffect, useState } from "react";
+
+import Nav from "../../components/Nav/Nav";
 import Button from "../../components/Button/Button";
+import ItemCard from "../../components/ItemCard/ItemCard";
 import CartItem from "../../components/CartItem/CartItem";
-import { getCartItems } from "../../utils/getCartItems";
+
+import { CartItems, ItemProps } from "../../types/types";
+
+import { S } from "./MyPage.style";
+import { getAxios } from "../../utils/axios";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -61,21 +63,11 @@ const MyPage = () => {
   const showMore = () => {};
 
   const fetchItems = async () => {
-    try {
-      const data = await getItems();
-      setSellingItems(data);
-    } catch (err) {
-      console.error(err);
-    }
+    getAxios("/data/items.json").then((res) => setSellingItems(res.data));
   };
 
   const fetchCartItems = async () => {
-    try {
-      const data = await getCartItems();
-      setCartItems(data);
-    } catch (err) {
-      console.error(err);
-    }
+    getAxios("/data/cartItem.json").then((res) => setCartItems(res.data));
   };
 
   useEffect(() => {
@@ -124,13 +116,8 @@ const MyPage = () => {
                 const row = Math.floor(idx / column) + 1;
 
                 return (
-                  <Link to={ROUTE_LINK.DETAIL.link}>
-                    <ItemCard
-                      {...sellingItem}
-                      key={sellingItem.id}
-                      idx={idx}
-                      row={row}
-                    />
+                  <Link to={ROUTE_LINK.DETAIL.link} key={sellingItem.id}>
+                    <ItemCard {...sellingItem} idx={idx} row={row} />
                   </Link>
                 );
               })}

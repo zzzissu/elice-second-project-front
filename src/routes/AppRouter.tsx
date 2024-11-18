@@ -2,16 +2,16 @@ import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ROUTE_LINK from "./RouterLink.ts";
 import List from "../pages/List/List.tsx";
-import LoginPage from "../pages/LoginPage/LoginPage.tsx";
-import SignupPage from "../pages/SignupPage/SignupPage.tsx";
+import LoginPage from "../pages/Login/Login.tsx";
+import SignupPage from "../pages/Signup/Signup.tsx";
 import Detail from "../pages/Detail/Detail.tsx";
 import AddOrEditProduct from "../pages/AddOrEditProduct/AddOrEditProduct.tsx";
 import MyPage from "../pages/MyPage/MyPage.tsx";
-import CartPage from "../pages/CartPage/CartPage.tsx";
-import PaymentPage from "../pages/PaymentPage/PaymentPage.tsx";
+import CartPage from "../pages/Cart/Cart.tsx";
+import PaymentPage from "../pages/Payment/Payment.tsx";
 import { fetchAddressInfo, fetchOrderItems } from "../utils/mockData.ts";
-import PasswordCheckPage from "../pages/PasswordCheckPage/PasswordCheckPage.tsx";
-import UserDataEditPage from "../pages/UserDataEditPage/UserDataEditPage.tsx";
+import PasswordCheckPage from "../pages/PasswordCheck/PasswordCheck.tsx";
+import UserDataEditPage from "../pages/UserDataEdit/UserDataEdit.tsx";
 
 function AppRouter() {
   const [addressInfo, setAddressInfo] = useState(null);

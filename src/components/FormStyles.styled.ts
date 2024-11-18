@@ -7,6 +7,7 @@ export const Container = styled.div`
   justify-content: center;
   min-height: 100vh;
   height: 100%;
+  width: 400px;
 `;
 
 export const Title = styled.h1`
@@ -14,36 +15,6 @@ export const Title = styled.h1`
   color: ${({ theme }) => theme.color.black};
   margin-top: 0;
   margin-bottom: 20px;
-`;
-
-export const Input = styled.input`
-  flex: 1;
-  width: 100%;
-  padding: 12px;
-  border: 1px solid ${({ theme }) => theme.color.lightGrey};
-  border-radius: 5px;
-  outline: none;
-  margin-bottom: 10px;
-
-  &:focus {
-    border: 1px solid ${({ theme }) => theme.color.orange};
-  }
-`;
-
-export const Label = styled.label`
-  width: 100%;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: ${({ theme }) => theme.color.black};
-  margin-top: 8px;
-`;
-
-export const ErrorMessage = styled.span`
-  width: 100%;
-  font-size: ${({ theme }) => theme.font.small};
-  color: ${({ theme }) => theme.color.blue};
-  margin-top: -8px;
-  margin-bottom: 16px;
 `;
 
 export const SubmitButton = styled.button`
