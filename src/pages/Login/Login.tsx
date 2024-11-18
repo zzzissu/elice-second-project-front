@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import * as S from "./LoginPage.styled";
+import * as S from "./Login.styled";
 import ROUTE_LINK from "../../routes/RouterLink";
 import Nav from "../../components/Nav/Nav";
 import FormContainer from "../../components/FormContainer/FormContainer";

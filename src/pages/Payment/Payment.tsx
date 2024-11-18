@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import * as S from "./PaymentPage.styled";
+import * as S from "./Payment.styled";
 import CartItem from "../../components/CartItem/CartItem";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import Button from "../../components/Button/Button";
