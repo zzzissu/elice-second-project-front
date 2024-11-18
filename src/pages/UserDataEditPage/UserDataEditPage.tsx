@@ -10,6 +10,7 @@ import {
 import Nav from "../../components/Nav/Nav";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import Button from "../../components/Button/Button";
 
 interface FormValues {
   phoneFirst: string;
@@ -45,12 +46,49 @@ export default function UserDataEditPage() {
     clearErrors(["postalCode", "address"]);
   };
 
+  const handleProfilePictureChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      console.log("Profile picture selected:", file);
+      // 실제 업로드 로직 추가 가능
+    }
+  };
+
+  const handleProfilePictureDelete = () => {
+    console.log("Profile picture deleted");
+    // 프로필 사진 삭제 로직 추가 가능
+  };
+
   return (
     <>
       <Nav />
       <S.Container>
         <S.FormContainer onSubmit={handleSubmit(onSubmit)}>
           <Title>회원정보 수정</Title>
+
+          <Label>프로필 사진</Label>
+          <S.ProfilePicture>
+            <S.ProfileImage />
+          </S.ProfilePicture>
+          <S.InputContainer>
+            <S.FileInputLabel>
+              사진 변경
+              <S.FileInput
+                type="file"
+                accept="image/*"
+                onChange={handleProfilePictureChange}
+              />
+            </S.FileInputLabel>
+            <Button
+              btnText="삭제"
+              handleClick={handleProfilePictureDelete}
+              bgcolor="#5DADE2"
+              width="80px"
+              height="36px"
+            />
+          </S.InputContainer>
 
           <Label>전화번호</Label>
           <S.InputContainer>
