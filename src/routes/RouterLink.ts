@@ -4,7 +4,8 @@ const ROUTE_LINK = {
   SIGNUP: { path: "/signup", link: "/signup" },
   CART: { path: "/cart", link: "/cart" },
   DETAIL: { path: "/detail", link: "/detail" },
-  ADD_PRODUCT: { path: "/add", link: "/add" },
+  ADD_PRODUCT: { path: "/addproduct", link: "/addproduct" },
+  EDIT_PRODUCT: { path: "/editproduct", link: "/editproduct" },
   MYPAGE: {
     path: "/mypage",
     link: "/mypage",

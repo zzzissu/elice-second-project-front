@@ -1,5 +1,5 @@
-import { Link, useNavigate, Outlet } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Nav from "../../components/Nav/Nav";
@@ -7,10 +7,11 @@ import Button from "../../components/Button/Button";
 import ItemCard from "../../components/ItemCard/ItemCard";
 import CartItem from "../../components/CartItem/CartItem";
 
+import { getAxios } from "../../utils/axios";
+
 import { CartItems, ItemProps } from "../../types/types";
 
 import { S } from "./MyPage.style";
-import { getAxios } from "../../utils/axios";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -37,6 +38,10 @@ const MyPage = () => {
 
   const editProfile = () => {
     navigate(ROUTE_LINK.PASSWORD_CHECK.path);
+  };
+
+  const addproduct = () => {
+    navigate(ROUTE_LINK.ADD_PRODUCT.path);
   };
 
   const paginationNum = () => {
@@ -104,7 +109,12 @@ const MyPage = () => {
           <Button
             btnText="정보 수정하기"
             bgcolor="orange70"
-            handleClick={editProfile}
+            onClick={editProfile}
+          />
+          <Button
+            btnText="상품 등록하기"
+            bgcolor="orange70"
+            onClick={addproduct}
           />
         </S.SideProfile>
         <S.MyPageContent>
