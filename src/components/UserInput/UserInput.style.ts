@@ -4,6 +4,10 @@ interface FocusProps {
   isFocused: boolean;
 }
 
+interface InputProps {
+  width?: string;
+}
+
 export const S = {
   InputWrap: styled.div<FocusProps>`
     display: flex;
@@ -22,9 +26,23 @@ export const S = {
           return props.theme.color.orange;
         } else return props.theme.color.lightGrey;
       }};
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox  */
+    /* input[type="number"] {
+      -moz-appearance: textfield;
+    } */
   `,
-  InputBox: styled.input`
+  InputBox: styled.input<InputProps>`
     outline: none;
     border: none;
+
+    width: ${(props) => (props.width ? props.width : "")};
   `,
 };

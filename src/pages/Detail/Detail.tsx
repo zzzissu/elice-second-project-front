@@ -42,10 +42,10 @@ const Detail = () => {
 
         <S.StickyWrap>
           <S.UpperWrap>
-            <S.ProductImg imgUrl={item.imgUrl} />
+            <S.ProductImg imgUrl={item.image} />
             <S.ProductInfo>
               <div>
-                <Link to={ROUTE_LINK.ADD_PRODUCT.path}>
+                <Link to={ROUTE_LINK.EDIT_PRODUCT.path}>
                   <S.EditBtn />
                 </Link>
                 <S.ProductName>{item.name}</S.ProductName>
@@ -66,12 +66,12 @@ const Detail = () => {
                 <Button
                   btnText="장바구니 담기"
                   bgcolor="blue70"
-                  handleClick={addToCart}
+                  onClick={addToCart}
                 />
                 <Button
                   btnText="바로구매 하기"
                   bgcolor="orange70"
-                  handleClick={purchase}
+                  onClick={purchase}
                 />
               </S.BtnWrap>
             </S.ProductInfo>

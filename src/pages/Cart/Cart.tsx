@@ -187,7 +187,7 @@ const CartPage: React.FC = () => {
                     </S.TotalAmount>
                     <Button
                       btnText="구매하기"
-                      handleClick={() => navigate(ROUTE_LINK.PAYMENT.path)}
+                      onClick={() => navigate(ROUTE_LINK.PAYMENT.path)}
                       width="100%"
                       height="48px"
                       bgcolor="orange70"
