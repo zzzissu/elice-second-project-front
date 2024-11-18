@@ -22,7 +22,6 @@ export const S = {
   ListContent: styled.div`
     padding-top: 40px;
 
-    overflow-y: auto;
     height: calc(100vh - 60px);
   `,
   DropdownWrap: styled.div`

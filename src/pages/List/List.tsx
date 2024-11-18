@@ -9,8 +9,7 @@ import Dropdown from "../../components/Dropdown/Dropdown.tsx";
 import Sidebar from "../../components/Sidebar/Sidebar.tsx";
 import Carousel from "./Carousel/Carousel.tsx";
 
-import { getItems } from "../../utils/getItems.ts";
-import { getCarousel } from "../../utils/getCarousel.ts";
+import { getAxios } from "../../utils/axios.ts";
 
 import { ItemProps } from "../../types/types.ts";
 import { CarouselItem } from "../../types/types.ts";
@@ -24,29 +23,11 @@ const List = () => {
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
 
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const data = await getItems();
-        setItems(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchItems();
-  }, []);
-
-  useEffect(() => {
-    const fetchCarousel = async () => {
-      try {
-        const data = await getCarousel();
-        setCarouselData(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchCarousel();
+    getAxios("/data/items.json").then((res) => {
+      console.log(res);
+      setItems(res.data);
+    });
+    getAxios("/data/carousel.json").then((res) => setCarouselData(res.data));
   }, []);
 
   return (
