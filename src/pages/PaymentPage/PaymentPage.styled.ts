@@ -5,6 +5,7 @@ export const Container = styled.div`
   padding: 40px;
   gap: 20px;
   margin-top: 60px;
+  max-width: 1260px;
 `;
 
 export const Wrap = styled.div`
