@@ -60,6 +60,7 @@ export const S = {
     display: grid;
     grid-template-columns: 1fr 4fr;
     margin-top: 40px;
+    margin-bottom: 40px;
 
     border-top: 1px solid ${(props) => props.theme.color.lightGrey};
 
