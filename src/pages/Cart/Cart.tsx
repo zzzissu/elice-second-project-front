@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Checkbox from "../../components/Checkbox/Checkbox";
-import ShopTitle from "../../components/ShopTitle/ShopTitle";
-import CartItem from "../../components/CartItem/CartItem";
-import Button from "../../components/Button/Button";
 import * as S from "./Cart.styled";
 import { IoCloseOutline } from "react-icons/io5";
-import Nav from "../../components/Nav/Nav";
-import EmptyMessage from "../../components/EmptyMessage/EmptyMessage";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { fetchCartData } from "../../utils/fetchCartData";
+
+import {
+  Checkbox,
+  ShopTitle,
+  CartItem,
+  Button,
+  Nav,
+  EmptyMessage,
+} from "components";
 
 interface CartItem {
   id: number;

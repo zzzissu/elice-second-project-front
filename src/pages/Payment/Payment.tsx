@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import * as S from "./Payment.styled";
-import CartItem from "../../components/CartItem/CartItem";
-import Checkbox from "../../components/Checkbox/Checkbox";
-import Button from "../../components/Button/Button";
-import Nav from "../../components/Nav/Nav";
 import PaymentMethodButtons from "./PaymentMethodButtons/PaymentMethodButtons";
+import { CartItem, Checkbox, Button, Nav } from "components";
 
 interface AddressInfo {
   name: string;

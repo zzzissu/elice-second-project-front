@@ -1,16 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
-import Nav from "../../components/Nav/Nav";
-import UserInput from "../../components/UserInput/UserInput";
+import { Button, UserInput, Nav } from "components";
 
 import useIsFocused from "../../hooks/useIsFocused";
 import useInputValue from "../../hooks/UseUserInput";
+import { postAxios } from "../../utils/axios";
 
 import { S } from "./AddOrEditProduct.style";
-import { useLocation } from "react-router-dom";
-import Button from "../../components/Button/Button";
-import { postAxios } from "../../utils/axios";
 
 interface CategoryProps {
   id: number;

@@ -1,17 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink";
 
-import Nav from "../../components/Nav/Nav";
-import Button from "../../components/Button/Button";
+import { Nav, Button, Sidebar } from "components";
 
 import formatPrice from "../../utils/formatPrice";
 
 import { ItemProps } from "../../types/types";
 
 import { S } from "./Detail.style";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import { Link } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink";
 
 const Detail = () => {
   const [item, setItem] = useState<ItemProps | null>(null);

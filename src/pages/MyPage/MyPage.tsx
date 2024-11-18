@@ -1,11 +1,8 @@
-import ROUTE_LINK from "../../routes/RouterLink";
-import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink";
 
-import Nav from "../../components/Nav/Nav";
-import Button from "../../components/Button/Button";
-import ItemCard from "../../components/ItemCard/ItemCard";
-import CartItem from "../../components/CartItem/CartItem";
+import { Nav, Button, ItemCard, CartItem } from "components";
 
 import { getAxios } from "../../utils/axios";
 

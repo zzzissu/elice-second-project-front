@@ -1,13 +1,9 @@
-import ROUTE_LINK from "../../routes/RouterLink.ts";
 import axios from "axios";
-
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink.ts";
 
-import Nav from "../../components/Nav/Nav.tsx";
-import ItemCard from "../../components/ItemCard/ItemCard.tsx";
-import Dropdown from "../../components/Dropdown/Dropdown.tsx";
-import Sidebar from "../../components/Sidebar/Sidebar.tsx";
+import { Nav, ItemCard, Dropdown, Sidebar } from "components";
 import Carousel from "./Carousel/Carousel.tsx";
 
 import { getAxios } from "../../utils/axios.ts";
