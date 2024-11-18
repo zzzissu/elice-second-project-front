@@ -1,4 +1,5 @@
 import ROUTE_LINK from "../../routes/RouterLink.ts";
+import axios from "axios";
 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -22,12 +23,22 @@ const List = () => {
   const [items, setItems] = useState<ItemProps[]>([]);
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
 
+  const getCarousel = async () => {
+    try {
+      const response = await axios.get("/data/carousel.json");
+      setCarouselData(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    getAxios("/data/items.json").then((res) => {
-      console.log(res);
+    getAxios("/products").then((res) => {
       setItems(res.data);
     });
-    getAxios("/data/carousel.json").then((res) => setCarouselData(res.data));
+
+    // getAxios("/data/carousel.json").then((res) => setCarouselData(res.data));
+    getCarousel();
   }, []);
 
   return (
@@ -48,7 +59,7 @@ const List = () => {
 
               return (
                 <Link to={ROUTE_LINK.DETAIL.link}>
-                  <ItemCard {...item} key={item.id} idx={idx} row={row} />
+                  <ItemCard {...item} key={item._id} idx={idx} row={row} />
                 </Link>
               );
             })}
