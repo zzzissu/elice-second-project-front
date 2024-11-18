@@ -1,11 +1,19 @@
 export interface ItemProps {
-  id: number;
   idx: number;
   row: number;
+
+  _id: string;
   name: string;
+  image: string;
   price: number;
-  imgUrl: string;
   description: string;
+  categoryName: string;
+  soldOut: boolean;
+  sellerId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null;
+  __v: 0;
 }
 
 export interface CarouselItemProps {
