@@ -100,12 +100,14 @@ export const S = {
       ${(props) => {
         if (props.isSelected) {
           return props.theme.color.orange;
-        } else return props.theme.color.lightGrey;
+        }
+        return props.theme.color.lightGrey;
       }};
     color: ${(props) => {
       if (props.isSelected) {
         return props.theme.color.orange;
-      } else return props.theme.color.deepGrey;
+      }
+      return props.theme.color.deepGrey;
     }};
     font-size: ${(props) => props.theme.font.small};
   `,
@@ -126,7 +128,8 @@ export const S = {
       ${(props) => {
         if (props.isFocused) {
           return props.theme.color.orange;
-        } else return props.theme.color.lightGrey;
+        }
+        return props.theme.color.lightGrey;
       }};
   `,
 };
