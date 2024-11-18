@@ -1,4 +1,5 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import { useNavigate } from "react-router-dom";
 
 export interface ConsoleError {
   status: number;
@@ -21,8 +22,10 @@ export const successInterceptor = (response: AxiosResponse) => {
 
 export const errorInterceptor = async (error: AxiosError) => {
   if (error.response?.status === 401) {
+    const navigate = useNavigate();
+
     console.warn("❗️Unauthorized error: Redirecting to login");
-    window.location.href = "/login";
+    navigate("/login");
   } else {
     if (error.response) {
       console.error({
