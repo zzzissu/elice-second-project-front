@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import * as S from "./UserDataEditPage.styled";
+import * as S from "./UserDataEdit.styled";
 import Nav from "../../components/Nav/Nav";
 import FormContainer from "../../components/FormContainer/FormContainer";
 import InputField from "../../components/InputField/InputField";
