@@ -3,7 +3,7 @@ import Checkbox from "../../components/Checkbox/Checkbox";
 import ShopTitle from "../../components/ShopTitle/ShopTitle";
 import CartItem from "../../components/CartItem/CartItem";
 import Button from "../../components/Button/Button";
-import * as S from "./CartPage.styled";
+import * as S from "./Cart.styled";
 import { IoCloseOutline } from "react-icons/io5";
 import Nav from "../../components/Nav/Nav";
 import EmptyMessage from "../../components/EmptyMessage/EmptyMessage";
