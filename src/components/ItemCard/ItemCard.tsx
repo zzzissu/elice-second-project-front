@@ -1,6 +1,23 @@
-import { ItemProps } from "../../types/types";
 import formatPrice from "../../utils/formatPrice";
 import { S } from "./ItemCard.style";
+
+export interface ItemProps {
+  idx: number;
+  row: number;
+
+  _id: string;
+  name: string;
+  image: string;
+  price: number;
+  description: string;
+  categoryName: string;
+  soldOut: boolean;
+  sellerId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null;
+  __v: 0;
+}
 
 const ItemCard = ({ idx, row, name, image, price }: ItemProps) => {
   return (
