@@ -1,8 +1,9 @@
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import * as S from "./PasswordCheck.styled";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { Nav, FormContainer, InputField } from "components";
+import useAuthStore from "store/useAuthStore";
 
 interface FormValues {
   password: string;
@@ -12,8 +13,20 @@ export default function PasswordCheckPage() {
   const navigate = useNavigate();
   const methods = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
+  const checkPassword = useAuthStore((state) => state.checkPassword);
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    try {
+      const isValid = await checkPassword(data.password);
+      if (isValid) {
+        navigate(ROUTE_LINK.INFO_EDIT.path);
+      } else {
+        alert("비밀번호가 일치하지 않습니다.");
+      }
+    } catch (error) {
+      console.error("비밀번호 확인 실패:", error);
+      alert("오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -27,12 +40,7 @@ export default function PasswordCheckPage() {
             <InputField name="password" label="비밀번호" type="password" />
           </S.InputContainer>
 
-          <S.SubmitButton
-            type="button"
-            onClick={() => navigate(ROUTE_LINK.INFO_EDIT.path)}
-          >
-            내 정보 조회하기
-          </S.SubmitButton>
+          <S.SubmitButton type="submit">내 정보 조회하기</S.SubmitButton>
         </FormContainer>
       </S.Container>
     </>

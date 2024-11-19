@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as S from "./UserDataEdit.styled";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { Label } from "../../components/InputField/InputFiled.styled";
 import { Nav, FormContainer, InputField } from "components";
+import useAuthStore from "store/useAuthStore";
 
 interface FormValues {
   phoneFirst: string;
@@ -14,12 +16,33 @@ interface FormValues {
 }
 
 export default function UserDataEditPage() {
-  const methods = useForm<FormValues>();
+  const { user, updateUserProfile } = useAuthStore();
+  const methods = useForm<FormValues>({
+    defaultValues: {
+      phone: user?.phone || "",
+      address: user?.address || "",
+      detailAddress: user?.detailAddress || "",
+    },
+  });
 
-  const { setValue, clearErrors } = methods;
+  const { setValue, clearErrors, register, handleSubmit } = methods;
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+
+  const onSubmit = async (data: UserForm) => {
+    try {
+      await updateUserProfile(data, profileImage || undefined);
+      alert("회원 정보가 수정되었습니다.");
+    } catch (error) {
+      console.error("회원 정보 수정 실패:", error);
+      alert("오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileImage(e.target.files[0]);
+    }
   };
 
   const navigate = useNavigate();
