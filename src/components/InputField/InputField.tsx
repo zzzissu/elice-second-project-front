@@ -6,7 +6,7 @@ interface InputFieldProps {
   name: string;
   label?: string;
   placeholder?: string;
-  type?: string;
+  type?: "text" | "number" | "password" | "email";
   rules?: RegisterOptions;
   error?: string;
   readOnly?: boolean;
