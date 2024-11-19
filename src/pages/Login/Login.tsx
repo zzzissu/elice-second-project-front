@@ -11,7 +11,12 @@ interface FormValues {
   password: string;
 }
 
-export default function LoginPage() {
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
+const LoginPage = () => {
   const methods = useForm<FormValues>();
   const navigate = useNavigate();
 
@@ -54,4 +59,6 @@ export default function LoginPage() {
       </S.Container>
     </>
   );
-}
+};
+
+export default LoginPage;
