@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-type InputFields = {
+type InputProps = {
   [key: string]: string;
 };
 
-const useInputValue = (initial: InputFields = {}) => {
-  const [inputValue, setInputValue] = useState<InputFields>(initial);
+const useInputValue = (initial: InputProps = {}) => {
+  const [inputValue, setInputValue] = useState<InputProps>(initial);
 
   const handleInputChange = (name: string, value: string) => {
     setInputValue((prev) => ({

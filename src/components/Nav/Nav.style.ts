@@ -19,7 +19,7 @@ export const S = {
 
     width: 1260px;
     height: 60px;
-    background-color: #fff;
+    background-color: ${(props) => props.theme.color.white};
   `,
   Logo: styled.div`
     display: flex;
@@ -46,7 +46,7 @@ export const S = {
   SignInBtn: styled.button`
     padding: 0px;
 
-    background-color: #fff;
+    background-color: ${(props) => props.theme.color.white};
     color: ${(props) => props.theme.color.grey};
 
     border: none;

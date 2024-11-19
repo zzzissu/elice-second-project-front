@@ -13,7 +13,7 @@ export const Logo = styled.div`
   justify-content: center;
   background-color: ${({ theme }) => theme.color.grey};
   border-radius: 50%;
-  color: #fff;
+  color: ${(props) => props.theme.color.white};
   margin-right: 8px;
 
   svg {

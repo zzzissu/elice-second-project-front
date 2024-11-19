@@ -44,7 +44,7 @@ export const S = {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    color: #fff;
+    color: ${(props) => props.theme.color.white};
     font-size: 20px;
     font-weight: 700;
   `,

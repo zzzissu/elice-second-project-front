@@ -24,7 +24,7 @@ export const ShopContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.color.lightGrey};
   padding: 20px;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.color.white};
 `;
 
 export const ShopHeader = styled.div`
