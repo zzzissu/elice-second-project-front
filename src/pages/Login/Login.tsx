@@ -2,26 +2,33 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as S from "./Login.styled";
 import ROUTE_LINK from "../../routes/RouterLink";
-
 import { Nav, FormContainer, InputField } from "components";
+import useAuthStore from "../../store/useAuthStore";
+import { AxiosError } from "axios";
 
 interface FormValues {
   username: string;
   password: string;
-}
-
-interface LoginForm {
   email: string;
-  password: string;
 }
 
 const LoginPage = () => {
   const methods = useForm<FormValues>();
   const navigate = useNavigate();
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
-    // 로그인 로직 구현 예정
+  const login = useAuthStore((state) => state.login);
+
+  const onSubmit = async (data: FormValues) => {
+    try {
+      await login(data.email, data.password);
+      alert("로그인 성공!");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.error("Axios error:", error.response?.data || error.message);
+      } else {
+        console.error("Unknown error:", error);
+      }
+    }
   };
   return (
     <>

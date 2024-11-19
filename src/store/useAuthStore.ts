@@ -22,7 +22,7 @@ const useAuthStore = create<UserState>()(
 
       login: async (email, password) => {
         try {
-          const response = await postAxios("/api/auth/signin", {
+          const response = await postAxios("/auth/signin", {
             email,
             password,
           });
@@ -45,7 +45,7 @@ const useAuthStore = create<UserState>()(
 
       register: async (userData) => {
         try {
-          await postAxios("/api/auth/register", userData);
+          await postAxios("/auth/register", userData);
           console.log("Registration successful");
         } catch (error) {
           console.error("Registration failed:", error);

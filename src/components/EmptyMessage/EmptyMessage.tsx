@@ -30,7 +30,7 @@ const EmptyMessage: React.FC<EmptyMessageProps> = ({
             <Button
               key={index}
               btnText={button.btnText}
-              handleClick={button.handleClick}
+              onClick={button.onClick}
               bgcolor={button.bgcolor}
             />
           ))}
