@@ -24,7 +24,8 @@ export const S = {
       ${(props) => {
         if (props.isFocused) {
           return props.theme.color.orange;
-        } else return props.theme.color.lightGrey;
+        }
+        return props.theme.color.lightGrey;
       }};
 
     /* Chrome, Safari, Edge, Opera */

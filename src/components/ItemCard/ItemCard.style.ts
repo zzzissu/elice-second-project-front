@@ -41,15 +41,19 @@ export const S = {
     width: 100%;
 
     background-color: ${(props) => {
-      if (props.row % 2 !== 0 && (props.idx + 1) % 2 === 0) {
-        return props.theme.color.orange30;
-      }
-      if (props.row % 2 !== 0 && (props.idx + 1) % 2 !== 0) {
+      const isOddRow = props.row % 2 !== 0;
+      const isOddIdx = (props.idx + 1) % 2 !== 0;
+
+      if (isOddRow && isOddIdx) {
         return props.theme.color.blue30;
       }
-      if (props.row % 2 === 0 && (props.idx + 1) % 2 !== 0) {
+      if (isOddRow) {
         return props.theme.color.orange30;
-      } else return props.theme.color.blue30;
+      }
+      if (isOddIdx) {
+        return props.theme.color.orange30;
+      }
+      return props.theme.color.blue30;
     }};
     color: #fff;
   `,

@@ -1,10 +1,8 @@
 import { useForm } from "react-hook-form";
 import * as S from "./PasswordCheck.styled";
-import Nav from "../../components/Nav/Nav";
-import FormContainer from "../../components/FormContainer/FormContainer";
-import InputField from "../../components/InputField/InputField";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import { Nav, FormContainer, InputField } from "components";
 
 interface FormValues {
   password: string;
