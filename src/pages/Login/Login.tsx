@@ -2,9 +2,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as S from "./Login.styled";
 import ROUTE_LINK from "../../routes/RouterLink";
-import Nav from "../../components/Nav/Nav";
-import FormContainer from "../../components/FormContainer/FormContainer";
-import InputField from "../../components/InputField/InputField";
+
+import { Nav, FormContainer, InputField } from "components";
 
 interface FormValues {
   username: string;

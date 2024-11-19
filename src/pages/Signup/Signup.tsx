@@ -1,8 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as S from "./Signup.styled";
-import Nav from "../../components/Nav/Nav";
-import FormContainer from "../../components/FormContainer/FormContainer";
-import InputField from "../../components/InputField/InputField";
+import { Nav, FormContainer, InputField } from "components";
 
 interface FormValues {
   email: string;

@@ -1,16 +1,14 @@
-import { Link, useNavigate, Outlet } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink";
 
-import Nav from "../../components/Nav/Nav";
-import Button from "../../components/Button/Button";
-import ItemCard from "../../components/ItemCard/ItemCard";
-import CartItem from "../../components/CartItem/CartItem";
+import { Nav, Button, ItemCard, CartItem } from "components";
+
+import { getAxios } from "../../utils/axios";
 
 import { CartItems, ItemProps } from "../../types/types";
 
 import { S } from "./MyPage.style";
-import { getAxios } from "../../utils/axios";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -24,7 +22,6 @@ const MyPage = () => {
   >([]);
 
   const [pageNum, setPageNum] = useState<number[]>([]);
-  let dates: string[] = [];
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -37,6 +34,10 @@ const MyPage = () => {
 
   const editProfile = () => {
     navigate(ROUTE_LINK.PASSWORD_CHECK.path);
+  };
+
+  const addproduct = () => {
+    navigate(ROUTE_LINK.ADD_PRODUCT.path);
   };
 
   const paginationNum = () => {
@@ -80,6 +81,8 @@ const MyPage = () => {
   }, [sellingItems]);
 
   useEffect(() => {
+    let dates: string[] = [];
+
     const uniqueDates = [
       ...new Set(cartItems.map((item) => item.purchaseDate)),
     ];
@@ -104,7 +107,12 @@ const MyPage = () => {
           <Button
             btnText="정보 수정하기"
             bgcolor="orange70"
-            handleClick={editProfile}
+            onClick={editProfile}
+          />
+          <Button
+            btnText="상품 등록하기"
+            bgcolor="orange70"
+            onClick={addproduct}
           />
         </S.SideProfile>
         <S.MyPageContent>
@@ -116,7 +124,7 @@ const MyPage = () => {
                 const row = Math.floor(idx / column) + 1;
 
                 return (
-                  <Link to={ROUTE_LINK.DETAIL.link} key={sellingItem.id}>
+                  <Link to={ROUTE_LINK.DETAIL.path} key={sellingItem._id}>
                     <ItemCard {...sellingItem} idx={idx} row={row} />
                   </Link>
                 );
@@ -153,7 +161,7 @@ const MyPage = () => {
                         <CartItem
                           page="mypage"
                           imageSrc={cartItem.imageSrc}
-                          Title={cartItem.itemName}
+                          title={cartItem.itemName}
                           description={`${cartItem.price.toLocaleString()} 원`}
                         />
                       </Link>
