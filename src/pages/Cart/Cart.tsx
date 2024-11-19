@@ -109,7 +109,7 @@ const CartPage: React.FC = () => {
   };
 
   const isCartEmpty =
-    cartData.length === 0 || cartData.every((shop) => shop.items.length === 0);
+    cartData.length === 0 || !cartData.some((shop) => shop.items.length > 0);
 
   if (isCartEmpty)
     return (
@@ -118,9 +118,9 @@ const CartPage: React.FC = () => {
         message="장바구니가 비었습니다."
         buttons={[
           {
-            label: "상품 담으러 가기",
-            onClick: () => navigate(ROUTE_LINK.LIST.path),
-            color: "blue70",
+            btnText: "상품 담으러 가기",
+            handleClick: () => navigate(ROUTE_LINK.LIST.path),
+            bgcolor: "blue70",
           },
         ]}
       />

@@ -1,6 +1,6 @@
 import { S } from "./Button.style";
 
-interface ButtonProps {
+export interface ButtonProps {
   btnText: string;
   handleClick: () => void;
   width?: string;
