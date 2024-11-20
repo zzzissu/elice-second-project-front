@@ -1,4 +1,5 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import useModalStore from "../stores/modal/index";
 
 export interface ConsoleError {
   status: number;
@@ -22,6 +23,8 @@ export const successInterceptor = (response: AxiosResponse) => {
 export const errorInterceptor = async (error: AxiosError) => {
   if (error.response?.status === 401) {
     console.warn("❗️Unauthorized error: Redirecting to login");
+    const { openModal } = useModalStore.getState();
+    openModal("login");
   } else {
     if (error.response) {
       console.error({

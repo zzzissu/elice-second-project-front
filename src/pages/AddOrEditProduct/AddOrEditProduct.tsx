@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button, UserInput, Nav, ConfirmModal } from "components";
 
@@ -9,7 +9,8 @@ import useInputValue from "../../hooks/UseUserInput";
 import { postAxios } from "../../utils/axios";
 
 import { S } from "./AddOrEditProduct.style";
-import useModalState from "../../hooks/useModalState";
+// import useModalState from "../../hooks/useModalState";
+import useModalStore from "../../stores/modal/index";
 
 interface CategoryProps {
   id: number;
@@ -19,17 +20,16 @@ interface CategoryProps {
 
 const AddOrEditProduct = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [categories, setCategories] = useState<[]>([]);
 
   const [isSelected, setIsSelected] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const [type, setType] = useState("");
-
   const [inputValue, handleInputChange] = useInputValue();
   const { isFocused, handleFocus, handleBlur } = useIsFocused();
-  const { isOpen, openModal, closeModal } = useModalState();
+  const { modalType, openModal, closeModal } = useModalStore();
 
   const getCategory = async () => {
     try {
@@ -49,12 +49,7 @@ const AddOrEditProduct = () => {
     setSelectedCategory(value);
   };
 
-  const handleModal = () => {
-    closeModal();
-  };
-
   const postProducts = () => {
-    setType("valid");
     if (
       location.pathname === "/addproduct" &&
       inputValue.productName &&
@@ -70,23 +65,34 @@ const AddOrEditProduct = () => {
           : "",
         categoryName: selectedCategory,
       });
-    } else openModal("valid");
+    }
+    if (
+      location.pathname === "/addproduct" &&
+      (!inputValue.productName || !inputValue.productPrice || !selectedCategory)
+    ) {
+      openModal("valid");
+    }
+  };
+
+  const redirectToLogin = () => {
+    navigate("/login");
+    closeModal();
   };
 
   if (!categories) return null;
   return (
     <S.AddOrEditProduct>
-      {isOpen && type === "valid" ? (
+      {modalType === "valid" ? (
         <ConfirmModal
           type="valid"
           modalText="필수 입력 사항을 모두 입력해주세요"
-          onClick={handleModal}
+          onClick={closeModal}
         />
-      ) : isOpen && type === "login" ? (
+      ) : modalType === "login" ? (
         <ConfirmModal
           type="login"
           modalText="로그인 후 다시 시도해주세요"
-          onClick={handleModal}
+          onClick={redirectToLogin}
         />
       ) : (
         ""
