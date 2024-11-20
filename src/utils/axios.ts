@@ -31,8 +31,12 @@ export const postAxios = async <T>(url: string, option: T) => {
   return res;
 };
 
-export const putAxios = async <T>(url: string, option: T) => {
-  const res = await api.put(url, option);
+export const putAxios = async <T>(
+  url: string,
+  option: T,
+  config?: AxiosRequestConfig,
+) => {
+  const res = await api.put(url, option, config);
   return res;
 };
 
