@@ -44,7 +44,9 @@ const Detail = () => {
   };
 
   const purchase = () => {
-    navigate("/payment");
+    const newItem = { id: productId, checked: false, shop: item?.sellerId };
+
+    navigate("/payment", { state: newItem });
   };
 
   if (!item) return null;
