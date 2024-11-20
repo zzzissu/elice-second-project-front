@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as S from "./Payment.styled";
 import PaymentMethodButtons from "./PaymentMethodButtons/PaymentMethodButtons";
 import { CartItem, Checkbox, Button, Nav } from "components";
+import { useLocation } from "react-router-dom";
 
 interface AddressInfo {
   name: string;
@@ -25,6 +26,9 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
   addressInfo,
   orderItems,
 }) => {
+  const location = useLocation();
+  const singleProduct = location.state;
+
   const [isChecked, setIsChecked] = useState(false);
   const totalAmount = orderItems.reduce((total, item) => total + item.price, 0);
 
