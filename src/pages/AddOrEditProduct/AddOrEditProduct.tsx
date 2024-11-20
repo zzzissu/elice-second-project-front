@@ -2,13 +2,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import { Button, UserInput, Nav } from "components";
+import { Button, UserInput, Nav, ConfirmModal } from "components";
 
 import useIsFocused from "../../hooks/useIsFocused";
 import useInputValue from "../../hooks/UseUserInput";
 import { postAxios } from "../../utils/axios";
 
 import { S } from "./AddOrEditProduct.style";
+import useModalState from "../../hooks/useModalState";
 
 interface CategoryProps {
   id: number;
@@ -24,8 +25,11 @@ const AddOrEditProduct = () => {
   const [isSelected, setIsSelected] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
 
+  const [type, setType] = useState("");
+
   const [inputValue, handleInputChange] = useInputValue();
   const { isFocused, handleFocus, handleBlur } = useIsFocused();
+  const { isOpen, openModal, closeModal } = useModalState();
 
   const getCategory = async () => {
     try {
@@ -45,7 +49,12 @@ const AddOrEditProduct = () => {
     setSelectedCategory(value);
   };
 
+  const handleModal = () => {
+    closeModal();
+  };
+
   const postProducts = () => {
+    setType("valid");
     if (
       location.pathname === "/addproduct" &&
       inputValue.productName &&
@@ -61,12 +70,27 @@ const AddOrEditProduct = () => {
           : "",
         categoryName: selectedCategory,
       });
-    } else alert("필수 기입 사항을 모두 입력해주세요");
+    } else openModal("valid");
   };
 
   if (!categories) return null;
   return (
     <S.AddOrEditProduct>
+      {isOpen && type === "valid" ? (
+        <ConfirmModal
+          type="valid"
+          modalText="필수 입력 사항을 모두 입력해주세요"
+          onClick={handleModal}
+        />
+      ) : isOpen && type === "login" ? (
+        <ConfirmModal
+          type="login"
+          modalText="로그인 후 다시 시도해주세요"
+          onClick={handleModal}
+        />
+      ) : (
+        ""
+      )}
       <Nav />
       <S.TitleBox>상품 정보</S.TitleBox>
       <S.UploadImgBox>

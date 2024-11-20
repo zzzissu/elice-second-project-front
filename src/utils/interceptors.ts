@@ -22,7 +22,6 @@ export const successInterceptor = (response: AxiosResponse) => {
 export const errorInterceptor = async (error: AxiosError) => {
   if (error.response?.status === 401) {
     console.warn("❗️Unauthorized error: Redirecting to login");
-    window.location.href = "/login";
   } else {
     if (error.response) {
       console.error({

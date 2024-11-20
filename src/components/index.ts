@@ -10,3 +10,4 @@ export { default as Nav } from "./Nav/Nav";
 export { default as ShopTitle } from "./ShopTitle/ShopTitle";
 export { default as Sidebar } from "./Sidebar/Sidebar";
 export { default as UserInput } from "./UserInput/UserInput";
+export { default as ConfirmModal } from "./ConfirmModal/ConfirmModal";
