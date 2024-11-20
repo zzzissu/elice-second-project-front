@@ -11,6 +11,12 @@ import { ItemProps } from "components/ItemCard/ItemCard";
 
 import { S } from "./Detail.style";
 
+interface CartItemsProps {
+  id: string;
+  checked: boolean;
+  shop: string;
+}
+
 const Detail = () => {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
@@ -27,9 +33,14 @@ const Detail = () => {
 
     const newItem = { id: productId, checked: false, shop: item?.sellerId };
 
-    cartItems.push(newItem);
+    const check = cartItems.find(
+      (item: CartItemsProps) => item.id === productId,
+    );
 
-    localStorage.setItem("products", JSON.stringify(cartItems));
+    if (!check) {
+      cartItems.push(newItem);
+      localStorage.setItem("products", JSON.stringify(cartItems));
+    } else return;
   };
 
   const purchase = () => {
