@@ -68,8 +68,10 @@ export const S = {
   `,
   GridTitle: styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
   `,
@@ -80,6 +82,13 @@ export const S = {
     align-items: center;
 
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
+  `,
+  Essential: styled.div`
+    color: ${(props) => props.theme.color.orange};
+    font-size: ${(props) => props.theme.font.small};
+    width: 100%;
+
+    text-align: center;
   `,
   CategoryWrap: styled.div`
     display: flex;
