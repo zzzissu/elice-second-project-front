@@ -122,7 +122,7 @@ const CartPage: React.FC = () => {
         buttons={[
           {
             btnText: "상품 담으러 가기",
-            handleClick: () => navigate(ROUTE_LINK.LIST.path),
+            onClick: () => navigate(ROUTE_LINK.LIST.path),
             bgcolor: "blue70",
           },
         ]}
