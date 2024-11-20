@@ -50,6 +50,10 @@ function AppRouter() {
       element: <AddOrEditProduct />,
     },
     {
+      path: ROUTE_LINK.EDIT_PRODUCT.path,
+      element: <AddOrEditProduct />,
+    },
+    {
       path: ROUTE_LINK.MYPAGE.path,
       element: <MyPage />,
     },

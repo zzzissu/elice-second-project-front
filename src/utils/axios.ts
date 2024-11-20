@@ -22,21 +22,25 @@ api.interceptors.request.use(requestInterceptor);
 api.interceptors.response.use(successInterceptor, errorInterceptor);
 
 export const getAxios = async (url: string) => {
-  const res = await axios.get(url);
+  const res = await api.get(url);
   return res;
 };
 
 export const postAxios = async <T>(url: string, option: T) => {
-  const res = await axios.post(url, option);
+  const res = await api.post(url, option);
   return res;
 };
 
-export const putAxios = async <T>(url: string, option: T) => {
-  const res = await axios.put(url, option);
+export const putAxios = async <T>(
+  url: string,
+  option: T,
+  config?: AxiosRequestConfig,
+) => {
+  const res = await api.put(url, option, config);
   return res;
 };
 
 export const deleteAxios = async (url: string) => {
-  const res = await axios.delete(url);
+  const res = await api.delete(url);
   return res;
 };

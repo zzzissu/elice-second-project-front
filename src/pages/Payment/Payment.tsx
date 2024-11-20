@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import * as S from "./Payment.styled";
-import CartItem from "../../components/CartItem/CartItem";
-import Checkbox from "../../components/Checkbox/Checkbox";
-import Button from "../../components/Button/Button";
-import Nav from "../../components/Nav/Nav";
 import PaymentMethodButtons from "./PaymentMethodButtons/PaymentMethodButtons";
+import { CartItem, Checkbox, Button, Nav } from "components";
+import { useLocation } from "react-router-dom";
 
 interface AddressInfo {
   name: string;
@@ -28,6 +26,9 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
   addressInfo,
   orderItems,
 }) => {
+  const location = useLocation();
+  const singleProduct = location.state;
+
   const [isChecked, setIsChecked] = useState(false);
   const totalAmount = orderItems.reduce((total, item) => total + item.price, 0);
 
@@ -72,7 +73,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
                   page="cart"
                   key={item.id}
                   imageSrc={item.imageSrc}
-                  Title={`${item.price.toLocaleString()}원`}
+                  title={`${item.price.toLocaleString()}원`}
                   description={item.description}
                 />
               ))}
@@ -108,7 +109,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
             </div>
             <Button
               btnText="결제하기"
-              handleClick={() => console.log("결제하기")}
+              onClick={() => console.log("결제하기")}
               bgcolor="orange70"
               width="100%"
             />

@@ -1,17 +1,13 @@
 import React from "react";
 import * as S from "./EmptyMessage.styled";
 import { FiShoppingCart, FiCreditCard } from "react-icons/fi";
-import Button from "../Button/Button";
+import Button, { ButtonProps } from "../Button/Button";
 import Nav from "../Nav/Nav";
 
 interface EmptyMessageProps {
   iconType: "cart" | "card";
   message: string;
-  buttons: {
-    label: string;
-    onClick: () => void;
-    color?: string;
-  }[];
+  buttons: ButtonProps[];
 }
 
 const EmptyMessage: React.FC<EmptyMessageProps> = ({
@@ -33,9 +29,9 @@ const EmptyMessage: React.FC<EmptyMessageProps> = ({
           {buttons.map((button, index) => (
             <Button
               key={index}
-              btnText={button.label}
-              handleClick={button.onClick}
-              bgcolor={button.color}
+              btnText={button.btnText}
+              onClick={button.onClick}
+              bgcolor={button.bgcolor}
             />
           ))}
         </S.ButtonContainer>

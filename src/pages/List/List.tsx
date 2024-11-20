@@ -1,33 +1,41 @@
-import ROUTE_LINK from "../../routes/RouterLink.ts";
-
-import { Link } from "react-router-dom";
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 
-import Nav from "../../components/Nav/Nav.tsx";
-import ItemCard from "../../components/ItemCard/ItemCard.tsx";
-import Dropdown from "../../components/Dropdown/Dropdown.tsx";
-import Sidebar from "../../components/Sidebar/Sidebar.tsx";
+import { Nav, ItemCard, Dropdown, Sidebar } from "components";
 import Carousel from "./Carousel/Carousel.tsx";
 
 import { getAxios } from "../../utils/axios.ts";
 
-import { ItemProps } from "../../types/types.ts";
+import { ItemProps } from "components/ItemCard/ItemCard.tsx";
 import { CarouselItem } from "../../types/types.ts";
 
 import { S } from "./List.style";
 
-const List = () => {
-  const options = ["최신순", "오래된순"];
+const options = ["최신순", "오래된순"];
 
+const List = () => {
   const [items, setItems] = useState<ItemProps[]>([]);
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const getCarousel = async () => {
+    try {
+      const response = await axios.get("/data/carousel.json");
+      setCarouselData(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    getAxios("/data/items.json").then((res) => {
-      console.log(res);
+    getAxios("/products").then((res) => {
       setItems(res.data);
     });
-    getAxios("/data/carousel.json").then((res) => setCarouselData(res.data));
+
+    // getAxios("/data/carousel.json").then((res) => setCarouselData(res.data));
+    getCarousel();
   }, []);
 
   return (
@@ -47,8 +55,8 @@ const List = () => {
               const row = Math.floor(idx / column) + 1;
 
               return (
-                <Link to={ROUTE_LINK.DETAIL.link}>
-                  <ItemCard {...item} key={item.id} idx={idx} row={row} />
+                <Link to={`/products/${item._id}`} key={item._id}>
+                  <ItemCard {...item} key={item._id} idx={idx} row={row} />
                 </Link>
               );
             })}

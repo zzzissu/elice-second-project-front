@@ -1,5 +1,5 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { useNavigate } from "react-router-dom";
+import useModalStore from "../stores/modal/index";
 
 export interface ConsoleError {
   status: number;
@@ -22,10 +22,9 @@ export const successInterceptor = (response: AxiosResponse) => {
 
 export const errorInterceptor = async (error: AxiosError) => {
   if (error.response?.status === 401) {
-    const navigate = useNavigate();
-
     console.warn("❗️Unauthorized error: Redirecting to login");
-    navigate("/login");
+    const { openModal } = useModalStore.getState();
+    openModal("login");
   } else {
     if (error.response) {
       console.error({

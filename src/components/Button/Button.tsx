@@ -1,17 +1,17 @@
 import { S } from "./Button.style";
 
-interface ButtonProps {
+export interface ButtonProps {
   btnText: string;
-  handleClick: () => void;
   width?: string;
   height?: string;
   bgcolor?: string;
   fontSize?: string;
+  onClick: () => void;
 }
 
 const Button = ({
   btnText,
-  handleClick,
+  onClick,
   width,
   height,
   fontSize,
@@ -19,7 +19,7 @@ const Button = ({
 }: ButtonProps) => {
   return (
     <S.Button
-      onClick={handleClick}
+      onClick={onClick}
       width={width}
       height={height}
       fontSize={fontSize}

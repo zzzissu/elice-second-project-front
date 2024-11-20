@@ -1,60 +1,99 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-
-import Nav from "../../components/Nav/Nav";
-import Button from "../../components/Button/Button";
-
-import useFormatPrice from "../../hooks/useFormatPrice";
-
-import { ItemProps } from "../../types/types";
-
-import { S } from "./Detail.style";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
+import { Nav, Button, Sidebar, ConfirmModal } from "components";
+
+import { getAxios } from "../../utils/axios";
+import formatPrice from "../../utils/formatPrice";
+
+import { ItemProps } from "components/ItemCard/ItemCard";
+
+import { S } from "./Detail.style";
+import useModalStore from "../../stores/modal/index";
+
+interface CartItemsProps {
+  id: string;
+  checked: boolean;
+  shop: string;
+}
+
 const Detail = () => {
+  const navigate = useNavigate();
+  const { productId } = useParams<{ productId: string }>();
   const [item, setItem] = useState<ItemProps | null>(null);
 
-  const getItem = async () => {
-    try {
-      const res = await axios.get("/data/items.json");
-      setItem(res.data[0]);
-    } catch (err) {
-      console.error("Error fetching item: ", err);
-    }
-  };
+  const { modalType, openModal, closeModal } = useModalStore();
 
   useEffect(() => {
-    getItem();
+    getAxios(`/products/${productId}`).then((res) => setItem(res.data));
+    closeModal();
   }, []);
 
-  const addToCart = () => {};
+  const addToCart = () => {
+    const cartItems = localStorage.getItem("products")
+      ? JSON.parse(localStorage.getItem("products")!)
+      : [];
 
-  const purchase = () => {};
+    const newItem = { id: productId, checked: false, shop: item?.sellerId };
+
+    const check = cartItems.find(
+      (item: CartItemsProps) => item.id === productId,
+    );
+
+    if (!check) {
+      cartItems.push(newItem);
+      localStorage.setItem("products", JSON.stringify(cartItems));
+      openModal("addCartItem");
+    } else openModal("existCartItem");
+  };
+
+  const handleModalBtnClick = () => {
+    closeModal();
+    navigate("/cart");
+  };
+
+  const purchase = () => {
+    const newItem = { id: productId, checked: false, shop: item?.sellerId };
+
+    navigate("/payment", { state: newItem });
+  };
 
   if (!item) return null;
   return (
     <S.DetailWrap>
+      {modalType === "addCartItem" && (
+        <ConfirmModal
+          width="140px"
+          modalText="장바구니로 이동하시겠습니까?"
+          onClick={handleModalBtnClick}
+        />
+      )}
+      {modalType === "existCartItem" && (
+        <ConfirmModal
+          modalText="이미 장바구니에 담겨있습니다."
+          onClick={closeModal}
+        />
+      )}
       <Nav />
       <S.Detail>
         <Sidebar />
 
         <S.StickyWrap>
           <S.UpperWrap>
-            <S.ProductImg imgUrl={item.imgUrl} />
+            <S.ProductImg imgUrl={item.image} />
             <S.ProductInfo>
               <div>
-                <Link to={ROUTE_LINK.ADD_PRODUCT.path}>
+                <Link to={ROUTE_LINK.EDIT_PRODUCT.path}>
                   <S.EditBtn />
                 </Link>
                 <S.ProductName>{item.name}</S.ProductName>
                 <S.ProductPrice>
-                  <S.Bold>{useFormatPrice(item.price)}</S.Bold> 원
+                  <S.Bold>{formatPrice(item.price)}</S.Bold> 원
                 </S.ProductPrice>
                 <S.InfoBox>
                   <S.SellerIcon />
-                  <S.greyText>랄랄라</S.greyText>
+                  <S.greyText>{item.sellerId}</S.greyText>
                 </S.InfoBox>
                 <S.InfoBox>
                   <S.DeliveryIcon />
@@ -66,12 +105,12 @@ const Detail = () => {
                 <Button
                   btnText="장바구니 담기"
                   bgcolor="blue70"
-                  handleClick={addToCart}
+                  onClick={addToCart}
                 />
                 <Button
                   btnText="바로구매 하기"
                   bgcolor="orange70"
-                  handleClick={purchase}
+                  onClick={purchase}
                 />
               </S.BtnWrap>
             </S.ProductInfo>
@@ -90,7 +129,7 @@ const Detail = () => {
             <S.Description>{item.description}</S.Description>
             <S.SellerBox>
               <S.SellerIcon />
-              <S.greyText>랄랄라</S.greyText>
+              <S.greyText>{item.sellerId}</S.greyText>
             </S.SellerBox>
           </S.LowerWrap>
         </S.StickyWrap>

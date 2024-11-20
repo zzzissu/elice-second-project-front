@@ -16,7 +16,7 @@ export const S = {
     font-size: 14px;
 
     border: 2px solid ${(props) => props.theme.color.orange};
-    background-color: #fff;
+    background-color: ${(props) => props.theme.color.white};
     border-radius: 5px;
 
     &:hover {
@@ -36,7 +36,7 @@ export const S = {
     border: 1px solid ${(props) => props.theme.color.orange};
     border-radius: 5px;
 
-    background-color: #fff;
+    background-color: ${(props) => props.theme.color.white};
 
     width: inherit;
     padding: 6px;

@@ -60,6 +60,7 @@ export const S = {
     display: grid;
     grid-template-columns: 1fr 4fr;
     margin-top: 40px;
+    margin-bottom: 40px;
 
     border-top: 1px solid ${(props) => props.theme.color.lightGrey};
 
@@ -67,8 +68,10 @@ export const S = {
   `,
   GridTitle: styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
   `,
@@ -79,6 +82,13 @@ export const S = {
     align-items: center;
 
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
+  `,
+  Essential: styled.div`
+    color: ${(props) => props.theme.color.orange};
+    font-size: ${(props) => props.theme.font.small};
+    width: 100%;
+
+    text-align: center;
   `,
   CategoryWrap: styled.div`
     display: flex;
@@ -99,12 +109,14 @@ export const S = {
       ${(props) => {
         if (props.isSelected) {
           return props.theme.color.orange;
-        } else return props.theme.color.lightGrey;
+        }
+        return props.theme.color.lightGrey;
       }};
     color: ${(props) => {
       if (props.isSelected) {
         return props.theme.color.orange;
-      } else return props.theme.color.deepGrey;
+      }
+      return props.theme.color.deepGrey;
     }};
     font-size: ${(props) => props.theme.font.small};
   `,
@@ -116,6 +128,7 @@ export const S = {
 
     width: 678px;
     height: 370px;
+    padding: 10px;
 
     resize: none;
 
@@ -124,7 +137,8 @@ export const S = {
       ${(props) => {
         if (props.isFocused) {
           return props.theme.color.orange;
-        } else return props.theme.color.lightGrey;
+        }
+        return props.theme.color.lightGrey;
       }};
   `,
 };

@@ -20,7 +20,7 @@ export const Title = styled.h1`
 export const SubmitButton = styled.button`
   width: 100%;
   padding: 12px;
-  color: #fff;
+  color: ${(props) => props.theme.color.white};
   background-color: ${({ theme }) => theme.color.orange70};
   border: none;
   border-radius: 5px;

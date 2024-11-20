@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Checkbox from "../../components/Checkbox/Checkbox";
-import ShopTitle from "../../components/ShopTitle/ShopTitle";
-import CartItem from "../../components/CartItem/CartItem";
-import Button from "../../components/Button/Button";
 import * as S from "./Cart.styled";
 import { IoCloseOutline } from "react-icons/io5";
-import Nav from "../../components/Nav/Nav";
-import EmptyMessage from "../../components/EmptyMessage/EmptyMessage";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { fetchCartData } from "../../utils/fetchCartData";
+
+import {
+  Checkbox,
+  ShopTitle,
+  CartItem,
+  Button,
+  Nav,
+  EmptyMessage,
+} from "components";
 
 interface CartItem {
   id: number;
@@ -109,7 +112,7 @@ const CartPage: React.FC = () => {
   };
 
   const isCartEmpty =
-    cartData.length === 0 || cartData.every((shop) => shop.items.length === 0);
+    cartData.length === 0 || !cartData.some((shop) => shop.items.length > 0);
 
   if (isCartEmpty)
     return (
@@ -118,9 +121,9 @@ const CartPage: React.FC = () => {
         message="장바구니가 비었습니다."
         buttons={[
           {
-            label: "상품 담으러 가기",
+            btnText: "상품 담으러 가기",
             onClick: () => navigate(ROUTE_LINK.LIST.path),
-            color: "blue70",
+            bgcolor: "blue70",
           },
         ]}
       />
@@ -159,7 +162,7 @@ const CartPage: React.FC = () => {
                       <CartItem
                         page="cart"
                         imageSrc={item.imageSrc}
-                        Title={item.price}
+                        title={item.price}
                         description={item.itemName}
                       />
                       <S.RemoveButton
@@ -187,7 +190,7 @@ const CartPage: React.FC = () => {
                     </S.TotalAmount>
                     <Button
                       btnText="구매하기"
-                      handleClick={() => navigate(ROUTE_LINK.PAYMENT.path)}
+                      onClick={() => navigate(ROUTE_LINK.PAYMENT.path)}
                       width="100%"
                       height="48px"
                       bgcolor="orange70"

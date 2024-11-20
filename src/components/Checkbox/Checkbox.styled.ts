@@ -22,7 +22,7 @@ export const Checkbox = styled.div<CheckBoxProps>`
   justify-content: center;
   border: 1px solid ${({ theme }) => theme.color.deepGrey};
   border-radius: 4px;
-  color: #fff;
+  color: ${(props) => props.theme.color.white};
   transition: all 0.2s;
   cursor: pointer;
 

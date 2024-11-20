@@ -13,8 +13,11 @@ export const S = {
     height: ${(props) => (props.height ? `${props.height}` : "52px")};
 
     background-color: ${(props) =>
-      props.bgcolor ? props.theme.color[props.bgcolor] : "#fff"};
-    color: ${(props) => (props.bgcolor ? "#fff" : props.theme.color.orange)};
+      props.bgcolor
+        ? props.theme.color[props.bgcolor]
+        : props.theme.color.white};
+    color: ${(props) =>
+      props.bgcolor ? props.theme.color.white : props.theme.color.orange};
 
     font-size: ${(props) => (props.fontSize ? props.fontSize : "16px")};
 
