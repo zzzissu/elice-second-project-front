@@ -1,4 +1,4 @@
-import useModalState from "../../hooks/useModalState";
+import useModalStore from "../../stores/modal/index";
 import { S } from "./ConfirmModal.style";
 import { Button } from "components";
 
@@ -9,13 +9,14 @@ interface ConfirmModalProps {
 }
 
 const ConfirmModal = ({ modalText, onClick }: ConfirmModalProps) => {
-  const { closeModal } = useModalState();
+  const { modalType, closeModal } = useModalStore();
 
   return (
     <S.ModalWrap>
       <S.ModalBox>
-        <S.ModalCloseButton onClick={closeModal}>&times;</S.ModalCloseButton>
-
+        <S.ModalCloseButton onClick={closeModal} modalType={modalType}>
+          &times;
+        </S.ModalCloseButton>
         <S.ModalText>{modalText}</S.ModalText>
 
         <Button btnText="확인" bgcolor="orange70" onClick={onClick} />

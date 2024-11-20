@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+interface ModalTypeProps {
+  modalType: string | null;
+}
+
 export const S = {
   ModalWrap: styled.div`
     z-index: 15;
@@ -31,7 +35,9 @@ export const S = {
     padding: 15px 15px;
     padding-bottom: 42px;
   `,
-  ModalCloseButton: styled.button`
+  ModalCloseButton: styled.button<ModalTypeProps>`
+    visibility: ${(props) => (props.modalType === "login" ? "hidden" : "")};
+
     align-self: flex-end;
     background: none;
     border: none;
