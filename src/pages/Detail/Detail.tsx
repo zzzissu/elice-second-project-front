@@ -1,35 +1,51 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
 import { Nav, Button, Sidebar } from "components";
 
+import { getAxios } from "../../utils/axios";
 import formatPrice from "../../utils/formatPrice";
 
 import { ItemProps } from "components/ItemCard/ItemCard";
 
 import { S } from "./Detail.style";
 
+interface CartItemsProps {
+  id: string;
+  checked: boolean;
+  shop: string;
+}
+
 const Detail = () => {
+  const navigate = useNavigate();
+  const { productId } = useParams<{ productId: string }>();
   const [item, setItem] = useState<ItemProps | null>(null);
 
-  const getItem = async () => {
-    try {
-      const res = await axios.get("/data/items.json");
-      setItem(res.data[0]);
-    } catch (err) {
-      console.error("Error fetching item: ", err);
-    }
-  };
-
   useEffect(() => {
-    getItem();
+    getAxios(`/products/${productId}`).then((res) => setItem(res.data));
   }, []);
 
-  const addToCart = () => {};
+  const addToCart = () => {
+    const cartItems = localStorage.getItem("products")
+      ? JSON.parse(localStorage.getItem("products")!)
+      : [];
 
-  const purchase = () => {};
+    const newItem = { id: productId, checked: false, shop: item?.sellerId };
+
+    const check = cartItems.find(
+      (item: CartItemsProps) => item.id === productId,
+    );
+
+    if (!check) {
+      cartItems.push(newItem);
+      localStorage.setItem("products", JSON.stringify(cartItems));
+    } else return;
+  };
+
+  const purchase = () => {
+    navigate("/payment");
+  };
 
   if (!item) return null;
   return (
@@ -52,7 +68,7 @@ const Detail = () => {
                 </S.ProductPrice>
                 <S.InfoBox>
                   <S.SellerIcon />
-                  <S.greyText>랄랄라</S.greyText>
+                  <S.greyText>{item.sellerId}</S.greyText>
                 </S.InfoBox>
                 <S.InfoBox>
                   <S.DeliveryIcon />
@@ -88,7 +104,7 @@ const Detail = () => {
             <S.Description>{item.description}</S.Description>
             <S.SellerBox>
               <S.SellerIcon />
-              <S.greyText>랄랄라</S.greyText>
+              <S.greyText>{item.sellerId}</S.greyText>
             </S.SellerBox>
           </S.LowerWrap>
         </S.StickyWrap>
