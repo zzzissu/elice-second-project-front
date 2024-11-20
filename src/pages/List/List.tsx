@@ -1,14 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink.ts";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { Nav, ItemCard, Dropdown, Sidebar } from "components";
 import Carousel from "./Carousel/Carousel.tsx";
 
 import { getAxios } from "../../utils/axios.ts";
 
-import { ItemProps } from "../../types/types.ts";
+import { ItemProps } from "components/ItemCard/ItemCard.tsx";
 import { CarouselItem } from "../../types/types.ts";
 
 import { S } from "./List.style";
@@ -18,6 +17,8 @@ const options = ["최신순", "오래된순"];
 const List = () => {
   const [items, setItems] = useState<ItemProps[]>([]);
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const getCarousel = async () => {
     try {
@@ -54,7 +55,7 @@ const List = () => {
               const row = Math.floor(idx / column) + 1;
 
               return (
-                <Link to={ROUTE_LINK.DETAIL.path}>
+                <Link to={`/products/${item._id}`}>
                   <ItemCard {...item} key={item._id} idx={idx} row={row} />
                 </Link>
               );

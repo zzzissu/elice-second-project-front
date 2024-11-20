@@ -7,7 +7,7 @@ import { Nav, Button, Sidebar } from "components";
 
 import formatPrice from "../../utils/formatPrice";
 
-import { ItemProps } from "../../types/types";
+import { ItemProps } from "components/ItemCard/ItemCard";
 
 import { S } from "./Detail.style";
 

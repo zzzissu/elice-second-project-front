@@ -3,7 +3,7 @@ const ROUTE_LINK = {
   LOGIN: { path: "/login" },
   SIGNUP: { path: "/signup" },
   CART: { path: "/cart" },
-  DETAIL: { path: "/detail" },
+  DETAIL: { path: "/products/:_id" },
   ADD_PRODUCT: { path: "/addproduct" },
   EDIT_PRODUCT: { path: "/editproduct" },
   MYPAGE: { path: "/mypage" },
