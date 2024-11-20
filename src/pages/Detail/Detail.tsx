@@ -19,7 +19,17 @@ const Detail = () => {
     getAxios(`/products/${productId}`).then((res) => setItem(res.data));
   }, []);
 
-  const addToCart = () => {};
+  const addToCart = () => {
+    const cartItems = localStorage.getItem("products")
+      ? JSON.parse(localStorage.getItem("products")!)
+      : [];
+
+    const newItem = { id: productId, checked: false, shop: item?.sellerId };
+
+    cartItems.push(newItem);
+
+    localStorage.setItem("products", JSON.stringify(cartItems));
+  };
 
   const purchase = () => {};
 
@@ -44,7 +54,7 @@ const Detail = () => {
                 </S.ProductPrice>
                 <S.InfoBox>
                   <S.SellerIcon />
-                  <S.greyText>랄랄라</S.greyText>
+                  <S.greyText>{item.sellerId}</S.greyText>
                 </S.InfoBox>
                 <S.InfoBox>
                   <S.DeliveryIcon />
@@ -80,7 +90,7 @@ const Detail = () => {
             <S.Description>{item.description}</S.Description>
             <S.SellerBox>
               <S.SellerIcon />
-              <S.greyText>랄랄라</S.greyText>
+              <S.greyText>{item.sellerId}</S.greyText>
             </S.SellerBox>
           </S.LowerWrap>
         </S.StickyWrap>
