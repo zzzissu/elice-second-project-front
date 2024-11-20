@@ -46,9 +46,30 @@ const CartPage: React.FC = () => {
     return items.reduce((sum, item) => sum + item.price, 0);
   };
 
+  const getSelectedItems = () => {
+    return cartData.flatMap((shop) =>
+      shop.items.filter((item) => item.checked),
+    );
+  };
+
+  const calculateSelectedItemsCount = () => {
+    return getSelectedItems().length;
+  };
+
+  const handlePurchase = () => {
+    const selectedItems = getSelectedItems();
+    if (selectedItems.length === 0) {
+      alert("구매할 상품을 선택해주세요!");
+      return;
+    }
+
+    navigate(ROUTE_LINK.PAYMENT.path, { state: { selectedItems } });
+  };
+
   const handleDeleteShop = (shopIndex: number) => {
     const updatedCart = cartData.filter((_, sIndex) => sIndex !== shopIndex);
     setCartData(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
   const handleItemCheck = (shopIndex: number, itemId: number) => {
@@ -129,6 +150,8 @@ const CartPage: React.FC = () => {
       />
     );
 
+  const totalSelectedItems = calculateSelectedItemsCount();
+
   return (
     <>
       <S.CartWrap>
@@ -189,8 +212,8 @@ const CartPage: React.FC = () => {
                       {calculateTotalAmount(shop.items).toLocaleString()}원
                     </S.TotalAmount>
                     <Button
-                      btnText="구매하기"
-                      onClick={() => navigate(ROUTE_LINK.PAYMENT.path)}
+                      btnText={`${totalSelectedItems}개 상품 구매하기`}
+                      onClick={handlePurchase}
                       width="100%"
                       height="48px"
                       bgcolor="orange70"
