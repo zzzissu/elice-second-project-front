@@ -56,7 +56,9 @@ const AddOrEditProduct = () => {
         name: inputValue.productName,
         image: "",
         price: inputValue.productPrice,
-
+        description: inputValue.productDescription
+          ? inputValue.productDescription
+          : "",
         categoryName: selectedCategory,
       });
     } else alert("필수 기입 사항을 모두 입력해주세요");
