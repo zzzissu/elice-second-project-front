@@ -1,20 +1,7 @@
 import { useEffect } from "react";
 import { UseFormSetValue, UseFormClearErrors } from "react-hook-form";
-// import { FormValues } from "../UserDataEdit";
+import { FormValues } from "../UserDataEdit";
 import { CheckButton } from "../UserDataEdit.styled";
-
-interface FormValues {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  name: string;
-  nickname: string;
-  phoneFirst: string;
-  phoneSecond: string;
-  postalCode: string;
-  address: string;
-  detailAddress: string;
-}
 
 interface AddressSearchProps {
   setValue: UseFormSetValue<FormValues>;
