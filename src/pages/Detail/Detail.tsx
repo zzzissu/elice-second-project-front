@@ -1,10 +1,10 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
 import { Nav, Button, Sidebar } from "components";
 
+import { getAxios } from "../../utils/axios";
 import formatPrice from "../../utils/formatPrice";
 
 import { ItemProps } from "components/ItemCard/ItemCard";
@@ -12,19 +12,13 @@ import { ItemProps } from "components/ItemCard/ItemCard";
 import { S } from "./Detail.style";
 
 const Detail = () => {
+  const { productId } = useParams<{ productId: string }>();
   const [item, setItem] = useState<ItemProps | null>(null);
 
-  const getItem = async () => {
-    try {
-      const res = await axios.get("/data/items.json");
-      setItem(res.data[0]);
-    } catch (err) {
-      console.error("Error fetching item: ", err);
-    }
-  };
+  console.log("params: ", productId);
 
   useEffect(() => {
-    getItem();
+    getAxios(`/products/${productId}`).then((res) => setItem(res.data));
   }, []);
 
   const addToCart = () => {};
