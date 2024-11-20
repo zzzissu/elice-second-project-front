@@ -1,14 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { Button, UserInput, Nav } from "components";
+import { Button, UserInput, Nav, ConfirmModal } from "components";
 
 import useIsFocused from "../../hooks/useIsFocused";
 import useInputValue from "../../hooks/UseUserInput";
 import { postAxios } from "../../utils/axios";
 
 import { S } from "./AddOrEditProduct.style";
+// import useModalState from "../../hooks/useModalState";
+import useModalStore from "../../stores/modal/index";
 
 interface CategoryProps {
   id: number;
@@ -18,6 +20,7 @@ interface CategoryProps {
 
 const AddOrEditProduct = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [categories, setCategories] = useState<[]>([]);
 
@@ -26,6 +29,7 @@ const AddOrEditProduct = () => {
 
   const [inputValue, handleInputChange] = useInputValue();
   const { isFocused, handleFocus, handleBlur } = useIsFocused();
+  const { modalType, openModal, closeModal } = useModalStore();
 
   const getCategory = async () => {
     try {
@@ -46,7 +50,13 @@ const AddOrEditProduct = () => {
   };
 
   const postProducts = () => {
-    if (location.pathname === "/addproduct") {
+    if (
+      location.pathname === "/addproduct" &&
+      inputValue.productName &&
+      inputValue.productPrice &&
+      inputValue.productDescription &&
+      selectedCategory
+    ) {
       postAxios("/products", {
         name: inputValue.productName,
         image: "",
@@ -55,19 +65,51 @@ const AddOrEditProduct = () => {
         categoryName: selectedCategory,
       });
     }
+    if (
+      location.pathname === "/addproduct" &&
+      (!inputValue.productName ||
+        !inputValue.productPrice ||
+        !inputValue.productDescription ||
+        !selectedCategory)
+    ) {
+      openModal("valid");
+    }
+  };
+
+  const redirectToLogin = () => {
+    navigate("/login");
+    closeModal();
   };
 
   if (!categories) return null;
   return (
     <S.AddOrEditProduct>
+      {modalType === "valid" ? (
+        <ConfirmModal
+          type="valid"
+          modalText="필수 입력 사항을 모두 입력해주세요"
+          onClick={closeModal}
+        />
+      ) : modalType === "login" ? (
+        <ConfirmModal
+          type="login"
+          modalText="로그인 후 다시 시도해주세요"
+          onClick={redirectToLogin}
+        />
+      ) : (
+        ""
+      )}
       <Nav />
       <S.TitleBox>상품 정보</S.TitleBox>
       <S.UploadImgBox>
         <S.UploadIcon />
         <S.UploadText>이미지 등록</S.UploadText>
+        <S.Essential>필수 등록</S.Essential>
       </S.UploadImgBox>
       <S.InfoTable>
-        <S.GridTitle>카테고리</S.GridTitle>
+        <S.GridTitle>
+          카테고리<S.Essential>필수 입력</S.Essential>
+        </S.GridTitle>
         <S.GridContent>
           <S.CategoryWrap>
             {categories.map((category: CategoryProps) => {
@@ -91,7 +133,9 @@ const AddOrEditProduct = () => {
           </S.CategoryWrap>
         </S.GridContent>
 
-        <S.GridTitle>상품명</S.GridTitle>
+        <S.GridTitle>
+          상품명<S.Essential>필수 입력</S.Essential>
+        </S.GridTitle>
         <S.GridContent>
           <UserInput
             name="productName"
@@ -103,7 +147,9 @@ const AddOrEditProduct = () => {
           />
         </S.GridContent>
 
-        <S.GridTitle>상품 가격</S.GridTitle>
+        <S.GridTitle>
+          상품 가격<S.Essential>필수 입력</S.Essential>
+        </S.GridTitle>
         <S.GridContent>
           <UserInput
             name="productPrice"
@@ -115,7 +161,9 @@ const AddOrEditProduct = () => {
           />
         </S.GridContent>
 
-        <S.GridTitle>상세 설명</S.GridTitle>
+        <S.GridTitle>
+          상세 설명<S.Essential>필수 입력</S.Essential>
+        </S.GridTitle>
 
         <S.GridContent>
           <S.ProductDescription
