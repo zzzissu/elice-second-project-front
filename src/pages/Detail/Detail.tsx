@@ -15,8 +15,6 @@ const Detail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [item, setItem] = useState<ItemProps | null>(null);
 
-  console.log("params: ", productId);
-
   useEffect(() => {
     getAxios(`/products/${productId}`).then((res) => setItem(res.data));
   }, []);

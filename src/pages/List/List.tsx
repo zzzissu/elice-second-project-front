@@ -55,7 +55,7 @@ const List = () => {
               const row = Math.floor(idx / column) + 1;
 
               return (
-                <Link to={`/products/${item._id}`}>
+                <Link to={`/products/${item._id}`} key={item._id}>
                   <ItemCard {...item} key={item._id} idx={idx} row={row} />
                 </Link>
               );
