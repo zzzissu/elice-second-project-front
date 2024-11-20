@@ -3,8 +3,9 @@ import { persist } from "zustand/middleware";
 import { postAxios, putAxios } from "../utils/axios";
 
 interface UserProfile {
-  email: string;
-  name: string;
+  email?: string;
+  name?: string;
+  postalCode?: string;
   phone?: string;
   address?: string;
   detailAddress?: string;
@@ -19,6 +20,11 @@ interface UserState {
     email: string;
     password: string;
     name: string;
+    nickname: string;
+    phone: string;
+    postalCode: string;
+    basicAdd: string;
+    detailAdd: string;
   }) => Promise<void>;
   checkPassword: (password: string) => Promise<boolean>;
   updateUserProfile: (data: UserProfile, profileImage?: File) => Promise<void>;
@@ -32,7 +38,10 @@ const useAuthStore = create<UserState>()(
 
       login: async (email, password) => {
         try {
-          const response = await postAxios("/users/signin", { email, password });
+          const response = await postAxios("/auth/signin", {
+            email,
+            password,
+          });
           const { user, token } = response.data;
 
           if (!token) {
@@ -68,7 +77,7 @@ const useAuthStore = create<UserState>()(
 
       register: async (userData) => {
         try {
-          await postAxios("/users/signup", userData);
+          await postAxios("/auth/signup", userData);
           console.log("Registration successful");
         } catch (error) {
           console.error("Registration failed:", error);
@@ -78,7 +87,9 @@ const useAuthStore = create<UserState>()(
 
       checkPassword: async (password) => {
         try {
-          const response = await postAxios("/users/password-check", { password });
+          const response = await postAxios("/users/password", {
+            password,
+          });
           return response.data.success;
         } catch (error) {
           console.error("Password check failed:", error);
@@ -89,7 +100,6 @@ const useAuthStore = create<UserState>()(
       updateUserProfile: async (data, profileImage) => {
         try {
           const formData = new FormData();
-          formData.append("name", data.name);
           formData.append("phone", data.phone || "");
           formData.append("address", data.address || "");
           formData.append("detailAddress", data.detailAddress || "");
@@ -98,7 +108,7 @@ const useAuthStore = create<UserState>()(
             formData.append("image", profileImage);
           }
 
-          const response = await putAxios("/user/update-info", formData, {
+          const response = await putAxios("/users/my", formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
 

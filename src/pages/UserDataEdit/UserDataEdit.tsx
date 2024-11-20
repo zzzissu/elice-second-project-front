@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as S from "./UserDataEdit.styled";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { Label } from "../../components/InputField/InputFiled.styled";
 import { Nav, FormContainer, InputField } from "components";
-import useAuthStore from "store/useAuthStore";
+import useAuthStore from "../../store/useAuthStore";
+import AddressSearch from "./AddressSearch/AddressSearch";
 
-interface FormValues {
+export interface FormValues {
   phoneFirst: string;
   phoneSecond: string;
   postalCode: string;
@@ -17,21 +18,35 @@ interface FormValues {
 
 export default function UserDataEditPage() {
   const { user, updateUserProfile } = useAuthStore();
-  const methods = useForm<FormValues>({
-    defaultValues: {
-      phone: user?.phone || "",
-      address: user?.address || "",
-      detailAddress: user?.detailAddress || "",
-    },
-  });
+  const methods = useForm<FormValues>();
 
-  const { setValue, clearErrors, register, handleSubmit } = methods;
+  const { setValue, clearErrors } = methods;
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
 
-  const onSubmit = async (data: UserForm) => {
+  useEffect(() => {
+    if (user) {
+      const phoneFirst = user.phone?.slice(0, 3) || "";
+      const phoneSecond = user.phone?.slice(3) || "";
+
+      setValue("phoneFirst", phoneFirst);
+      setValue("phoneSecond", phoneSecond);
+      setValue("address", user.address || "");
+      setValue("detailAddress", user.detailAddress || "");
+    }
+  }, [user, setValue]);
+
+  const onSubmit = async (data: FormValues) => {
+    const formattedPhone = `${data.phoneFirst}${data.phoneSecond}`;
+    const payload = {
+      phone: formattedPhone,
+      postalCode: data.postalCode,
+      address: data.address,
+      detailAddress: data.detailAddress,
+    };
+
     try {
-      await updateUserProfile(data, profileImage || undefined);
+      await updateUserProfile(payload, profileImage || undefined);
       alert("회원 정보가 수정되었습니다.");
     } catch (error) {
       console.error("회원 정보 수정 실패:", error);
@@ -39,38 +54,19 @@ export default function UserDataEditPage() {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setProfileImage(e.target.files[0]);
-    }
-  };
-
   const navigate = useNavigate();
-
-  const handleAddressSearch = () => {
-    // 주소 찾기 로직 추가 (예: 우편번호 API 연동)
-    const examplePostalCode = "12345";
-    const exampleAddress = "서울특별시 중구 세종대로 110";
-
-    // API를 통해 받은 우편번호와 주소를 입력 필드에 설정
-    setValue("postalCode", examplePostalCode);
-    setValue("address", exampleAddress);
-    clearErrors(["postalCode", "address"]);
-  };
 
   const handleProfilePictureChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      console.log("Profile picture selected:", file);
-      // 실제 업로드 로직 추가 가능
+      setProfileImage(event.target.files[0]);
     }
   };
 
   const handleProfilePictureDelete = () => {
-    console.log("Profile picture deleted");
-    // 프로필 사진 삭제 로직 추가 가능
+    setProfileImage(null);
+    alert("프로필 사진이 초기화되었습니다.");
   };
 
   return (
@@ -82,7 +78,14 @@ export default function UserDataEditPage() {
 
           <Label>프로필 사진</Label>
           <S.ProfilePicture>
-            <S.ProfileImage src="/icons/profile.svg" alt="Profile" />
+            <S.ProfileImage
+              src={
+                profileImage
+                  ? URL.createObjectURL(profileImage)
+                  : "/icons/profile.svg"
+              }
+              alt="Profile"
+            />
           </S.ProfilePicture>
           <S.InputContainer>
             <S.FileInputLabel>
@@ -115,9 +118,7 @@ export default function UserDataEditPage() {
                 placeholder="우편번호를 입력하세요"
                 readOnly
               />
-              <S.CheckButton type="button" onClick={handleAddressSearch}>
-                주소 찾기
-              </S.CheckButton>
+              <AddressSearch setValue={setValue} clearErrors={clearErrors} />
             </S.InputContainer>
             <S.InputContainer style={{ flexDirection: "column", gap: "10px" }}>
               <InputField

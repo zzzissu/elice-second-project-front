@@ -3,12 +3,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import * as S from "./Signup.styled";
 import { Nav, FormContainer, InputField } from "components";
 import useAuthStore from "../../store/useAuthStore";
-import { AxiosError } from "axios";
 import AddressSearch from "./AddressSearch/AddressSearch";
 import {
   checkEmailAvailability,
   checkNicknameAvailability,
 } from "../../utils/userValidation";
+import { useNavigate } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink";
 
 export interface FormValues {
   email: string;
@@ -27,6 +28,8 @@ export default function SignupPage() {
   const methods = useForm<FormValues>();
   const registerUser = useAuthStore((state) => state.register);
 
+  const navigate = useNavigate();
+
   const {
     watch,
     setValue,
@@ -38,14 +41,24 @@ export default function SignupPage() {
   const [nicknameValid, setNicknameValid] = useState<boolean | null>(null);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const formattedPhone = `${data.phoneFirst}${data.phoneSecond}`;
+    const payload = {
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      nickname: data.nickname,
+      phone: formattedPhone,
+      postalCode: data.postalCode,
+      basicAdd: data.address,
+      detailAdd: data.detailAddress,
+    };
+
     try {
-      await registerUser(data);
+      await registerUser(payload);
+      alert("회원가입이 완료되었습니다.");
+      navigate(ROUTE_LINK.LOGIN.path);
     } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        console.error("Axios error:", error.response?.data || error.message);
-      } else {
-        console.error("Unknown error:", error);
-      }
+      console.error("회원가입 실패:", error);
     }
   };
 

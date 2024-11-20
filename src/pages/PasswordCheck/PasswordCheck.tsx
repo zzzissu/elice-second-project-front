@@ -3,7 +3,7 @@ import * as S from "./PasswordCheck.styled";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { Nav, FormContainer, InputField } from "components";
-import useAuthStore from "store/useAuthStore";
+import useAuthStore from "../../store/useAuthStore";
 
 interface FormValues {
   password: string;

@@ -22,6 +22,7 @@ const LoginPage = () => {
     try {
       await login(data.email, data.password);
       alert("로그인 성공!");
+      navigate(ROUTE_LINK.LIST.path);
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         console.error("Axios error:", error.response?.data || error.message);
