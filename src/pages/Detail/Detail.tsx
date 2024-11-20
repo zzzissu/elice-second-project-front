@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
-import { Nav, Button, Sidebar } from "components";
+import { Nav, Button, Sidebar, ConfirmModal } from "components";
 
 import { getAxios } from "../../utils/axios";
 import formatPrice from "../../utils/formatPrice";
@@ -10,6 +10,7 @@ import formatPrice from "../../utils/formatPrice";
 import { ItemProps } from "components/ItemCard/ItemCard";
 
 import { S } from "./Detail.style";
+import useModalStore from "../../stores/modal/index";
 
 interface CartItemsProps {
   id: string;
@@ -22,8 +23,11 @@ const Detail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [item, setItem] = useState<ItemProps | null>(null);
 
+  const { modalType, openModal, closeModal } = useModalStore();
+
   useEffect(() => {
     getAxios(`/products/${productId}`).then((res) => setItem(res.data));
+    closeModal();
   }, []);
 
   const addToCart = () => {
@@ -40,7 +44,13 @@ const Detail = () => {
     if (!check) {
       cartItems.push(newItem);
       localStorage.setItem("products", JSON.stringify(cartItems));
-    } else return;
+      openModal("addCartItem");
+    } else openModal("existCartItem");
+  };
+
+  const handleModalBtnClick = () => {
+    closeModal();
+    navigate("/cart");
   };
 
   const purchase = () => {
@@ -52,6 +62,19 @@ const Detail = () => {
   if (!item) return null;
   return (
     <S.DetailWrap>
+      {modalType === "addCartItem" && (
+        <ConfirmModal
+          width="140px"
+          modalText="장바구니로 이동하시겠습니까?"
+          onClick={handleModalBtnClick}
+        />
+      )}
+      {modalType === "existCartItem" && (
+        <ConfirmModal
+          modalText="이미 장바구니에 담겨있습니다."
+          onClick={closeModal}
+        />
+      )}
       <Nav />
       <S.Detail>
         <Sidebar />

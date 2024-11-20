@@ -45,4 +45,12 @@ export const S = {
     font-size: 26px;
   `,
   ModalText: styled.span``,
+  BtnBox: styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    width: 80%;
+  `,
 };
