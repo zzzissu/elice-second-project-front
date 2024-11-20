@@ -54,21 +54,23 @@ const AddOrEditProduct = () => {
       location.pathname === "/addproduct" &&
       inputValue.productName &&
       inputValue.productPrice &&
+      inputValue.productDescription &&
       selectedCategory
     ) {
       postAxios("/products", {
         name: inputValue.productName,
         image: "",
         price: inputValue.productPrice,
-        description: inputValue.productDescription
-          ? inputValue.productDescription
-          : "",
+        description: inputValue.productDescription,
         categoryName: selectedCategory,
       });
     }
     if (
       location.pathname === "/addproduct" &&
-      (!inputValue.productName || !inputValue.productPrice || !selectedCategory)
+      (!inputValue.productName ||
+        !inputValue.productPrice ||
+        !inputValue.productDescription ||
+        !selectedCategory)
     ) {
       openModal("valid");
     }
@@ -159,7 +161,9 @@ const AddOrEditProduct = () => {
           />
         </S.GridContent>
 
-        <S.GridTitle>상세 설명</S.GridTitle>
+        <S.GridTitle>
+          상세 설명<S.Essential>필수 입력</S.Essential>
+        </S.GridTitle>
 
         <S.GridContent>
           <S.ProductDescription
