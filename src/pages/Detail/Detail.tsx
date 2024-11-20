@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
 import { Nav, Button, Sidebar } from "components";
@@ -12,6 +12,7 @@ import { ItemProps } from "components/ItemCard/ItemCard";
 import { S } from "./Detail.style";
 
 const Detail = () => {
+  const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
   const [item, setItem] = useState<ItemProps | null>(null);
 
@@ -31,7 +32,9 @@ const Detail = () => {
     localStorage.setItem("products", JSON.stringify(cartItems));
   };
 
-  const purchase = () => {};
+  const purchase = () => {
+    navigate("/payment");
+  };
 
   if (!item) return null;
   return (
