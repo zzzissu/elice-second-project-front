@@ -46,15 +46,20 @@ const AddOrEditProduct = () => {
   };
 
   const postProducts = () => {
-    if (location.pathname === "/addproduct") {
+    if (
+      location.pathname === "/addproduct" &&
+      inputValue.productName &&
+      inputValue.productPrice &&
+      selectedCategory
+    ) {
       postAxios("/products", {
         name: inputValue.productName,
         image: "",
         price: inputValue.productPrice,
-        description: inputValue.productDescription,
+
         categoryName: selectedCategory,
       });
-    }
+    } else alert("필수 기입 사항을 모두 입력해주세요");
   };
 
   if (!categories) return null;
@@ -65,9 +70,12 @@ const AddOrEditProduct = () => {
       <S.UploadImgBox>
         <S.UploadIcon />
         <S.UploadText>이미지 등록</S.UploadText>
+        <S.Essential>필수 등록</S.Essential>
       </S.UploadImgBox>
       <S.InfoTable>
-        <S.GridTitle>카테고리</S.GridTitle>
+        <S.GridTitle>
+          카테고리<S.Essential>필수 입력</S.Essential>
+        </S.GridTitle>
         <S.GridContent>
           <S.CategoryWrap>
             {categories.map((category: CategoryProps) => {
@@ -91,7 +99,9 @@ const AddOrEditProduct = () => {
           </S.CategoryWrap>
         </S.GridContent>
 
-        <S.GridTitle>상품명</S.GridTitle>
+        <S.GridTitle>
+          상품명<S.Essential>필수 입력</S.Essential>
+        </S.GridTitle>
         <S.GridContent>
           <UserInput
             name="productName"
@@ -103,7 +113,9 @@ const AddOrEditProduct = () => {
           />
         </S.GridContent>
 
-        <S.GridTitle>상품 가격</S.GridTitle>
+        <S.GridTitle>
+          상품 가격<S.Essential>필수 입력</S.Essential>
+        </S.GridTitle>
         <S.GridContent>
           <UserInput
             name="productPrice"
