@@ -5,10 +5,10 @@ import { postAxios, putAxios } from "../utils/axios";
 interface UserProfile {
   email?: string;
   name?: string;
-  postalCode?: string;
   phone?: string;
-  address?: string;
-  detailAddress?: string;
+  postalCode?: string;
+  basicAdd?: string;
+  detailAdd?: string;
 }
 
 interface UserState {
@@ -56,8 +56,9 @@ const useAuthStore = create<UserState>()(
               email: user.email,
               name: user.name,
               phone: user.phone,
-              address: user.address,
-              detailAddress: user.detailAddress,
+              postalCode: user.postalCode || "",
+              basicAdd: user.basicAdd || "",
+              detailAdd: user.detailAdd || "",
             },
           });
 
@@ -90,7 +91,7 @@ const useAuthStore = create<UserState>()(
           const response = await postAxios("/users/password", {
             password,
           });
-          return response.data.success;
+          return response.data.valid;
         } catch (error) {
           console.error("Password check failed:", error);
           throw error;
@@ -101,8 +102,9 @@ const useAuthStore = create<UserState>()(
         try {
           const formData = new FormData();
           formData.append("phone", data.phone || "");
-          formData.append("address", data.address || "");
-          formData.append("detailAddress", data.detailAddress || "");
+          formData.append("postalCode", data.postalCode || "");
+          formData.append("address", data.basicAdd || "");
+          formData.append("detailAddress", data.detailAdd || "");
 
           if (profileImage) {
             formData.append("image", profileImage);

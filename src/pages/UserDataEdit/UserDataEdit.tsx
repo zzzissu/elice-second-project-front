@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as S from "./UserDataEdit.styled";
-import { useNavigate } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink";
+// import { useNavigate } from "react-router-dom";
+// import ROUTE_LINK from "../../routes/RouterLink";
 import { Label } from "../../components/InputField/InputFiled.styled";
 import { Nav, FormContainer, InputField } from "components";
 import useAuthStore from "../../store/useAuthStore";
@@ -14,6 +14,7 @@ export interface FormValues {
   postalCode: string;
   address: string;
   detailAddress: string;
+  profileImage?: File;
 }
 
 export default function UserDataEditPage() {
@@ -31,8 +32,9 @@ export default function UserDataEditPage() {
 
       setValue("phoneFirst", phoneFirst);
       setValue("phoneSecond", phoneSecond);
-      setValue("address", user.address || "");
-      setValue("detailAddress", user.detailAddress || "");
+      setValue("postalCode", user.postalCode || "");
+      setValue("address", user.basicAdd || "");
+      setValue("detailAddress", user.detailAdd || "");
     }
   }, [user, setValue]);
 
@@ -41,12 +43,14 @@ export default function UserDataEditPage() {
     const payload = {
       phone: formattedPhone,
       postalCode: data.postalCode,
-      address: data.address,
-      detailAddress: data.detailAddress,
+      basicAdd: data.address,
+      detailAdd: data.detailAddress,
+      image: profileImage || undefined,
     };
 
     try {
       await updateUserProfile(payload, profileImage || undefined);
+      // navigate(ROUTE_LINK.MYPAGE.path);
       alert("회원 정보가 수정되었습니다.");
     } catch (error) {
       console.error("회원 정보 수정 실패:", error);
@@ -54,7 +58,7 @@ export default function UserDataEditPage() {
     }
   };
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleProfilePictureChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -133,12 +137,7 @@ export default function UserDataEditPage() {
             </S.InputContainer>
           </div>
 
-          <S.SubmitButton
-            type="submit"
-            onClick={() => navigate(ROUTE_LINK.MYPAGE.path)}
-          >
-            수정하기
-          </S.SubmitButton>
+          <S.SubmitButton type="submit">수정하기</S.SubmitButton>
         </FormContainer>
       </S.Container>
     </>
