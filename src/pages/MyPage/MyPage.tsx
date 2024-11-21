@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
-import { Nav, Button, ItemCard, CartItem } from "components";
+import { Nav, Button, ItemCard, CartItem, ConfirmModal } from "components";
 
 import { deleteAxios, getAxios } from "../../utils/axios";
 
@@ -10,6 +10,7 @@ import { CartItems } from "../../types/types";
 import { ItemProps } from "../../components/ItemCard/ItemCard";
 
 import { S } from "./MyPage.style";
+import useModalStore from "../../stores/modal";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const MyPage = () => {
       items: CartItems[];
     }[]
   >([]);
+  const { modalType, openModal, closeModal } = useModalStore();
 
   let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
   let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;
@@ -72,11 +74,14 @@ const MyPage = () => {
     } else return;
   };
 
-  useEffect(() => {
+  const getSellingItems = () => {
     getAxios(sellingurl).then((res) => {
       setSellingItems(res.data.myProducts);
       setTotalPage(res.data.totalPages);
     });
+  };
+  useEffect(() => {
+    getSellingItems();
   }, [currentPage]);
 
   useEffect(() => {
@@ -90,10 +95,12 @@ const MyPage = () => {
     e.stopPropagation();
     e.preventDefault();
     deleteAxios(`/products/${id}`);
-    getAxios(sellingurl).then((res) => {
-      setSellingItems(res.data.myProducts);
-      setTotalPage(res.data.totalPages);
-    });
+    openModal("deleteProduct");
+  };
+
+  const handleDeleteModalClick = () => {
+    getSellingItems();
+    closeModal();
   };
 
   useEffect(() => {
@@ -117,6 +124,12 @@ const MyPage = () => {
   if (!sellingItems || !sellingItems || !purchasedItems) return null;
   return (
     <S.MyPageWrap>
+      {modalType === "deleteProduct" && (
+        <ConfirmModal
+          modalText="상품이 삭제되었습니다"
+          onClick={handleDeleteModalClick}
+        />
+      )}
       <Nav />
       <S.MyPage>
         <S.SideProfile>
