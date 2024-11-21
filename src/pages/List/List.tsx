@@ -1,11 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {
-  Link,
-  useLocation,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { Nav, ItemCard, Dropdown, Sidebar } from "components";
 import Carousel from "./Carousel/Carousel.tsx";
@@ -22,38 +17,44 @@ const options = ["최신순", "오래된순"];
 
 const List = () => {
   const [items, setItems] = useState<ItemProps[]>([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const limit = 12;
+
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { selectedItem, handleSelect } = useDropdown(options);
 
   const location = useLocation();
 
-  // 쿼리 파라미터에서 categoryName 값을 가져오기
   const params = new URLSearchParams(location.search);
   const categoryName = params.get("categoryName");
 
-  let currentPage = 1;
-  const limit = 8;
-  let url = `/products?currentPage=${currentPage}&limit=${limit}`;
-  if (categoryName) {
-    url += `&categoryName=${categoryName}`;
-  }
-  if (selectedItem) {
-    const sort = () => {
-      if (selectedItem === "오래된순") {
-        return "oldest";
-      } else return "latest";
-    };
-    url += `&sort=${sort()}`;
-  }
+  const getProducts = async () => {
+    // selectedItem 값에 따른 정렬 방식 추가
+    const sort = selectedItem === "오래된순" ? "oldest" : "latest";
+    let url = `/products?currentPage=${currentPage}&limit=${limit}&sort=${sort}`;
+    if (categoryName) {
+      url += `&categoryName=${categoryName}`;
+    }
 
-  useEffect(() => {
-    getAxios(url).then((res) => {
-      setItems(res.data.products);
+    await getAxios(url).then((res) => {
+      setItems(
+        (prevItems) =>
+          currentPage === 1
+            ? res.data.products // 페이지가 1이면 새 데이터를 덮어씌움
+            : [...prevItems, ...res.data.products], // 페이지가 증가하면 기존 데이터에 추가
+      );
+      setTotalPage(res.data.totalPages); // 총 페이지 수 업데이트
     });
+  };
 
-    getCarousel();
-  }, [categoryName, selectedItem]);
+  const handleClickMoreBtn = () => {
+    if (currentPage < totalPage) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
 
   const getCarousel = async () => {
     try {
@@ -63,6 +64,13 @@ const List = () => {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    getProducts();
+  }, [currentPage, categoryName, selectedItem]);
+  useEffect(() => {
+    getCarousel();
+  }, []);
 
   return (
     <S.ListWrap>
@@ -93,6 +101,11 @@ const List = () => {
                 </Link>
               );
             })}
+            {currentPage < totalPage && (
+              <S.MoreBtnWrap>
+                <S.MoreBtn onClick={handleClickMoreBtn}>더보기</S.MoreBtn>
+              </S.MoreBtnWrap>
+            )}
           </S.ItemGrid>
         </S.ListContent>
       </S.List>

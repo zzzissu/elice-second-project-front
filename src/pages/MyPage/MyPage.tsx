@@ -14,9 +14,12 @@ import { S } from "./MyPage.style";
 const MyPage = () => {
   const navigate = useNavigate();
   const [sellingItems, setSellingItems] = useState<ItemProps[]>([]);
+
   const [pageNum, setPageNum] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const limit = 6;
+
   const [purchasedItems, setPurchasedItems] = useState<CartItems[]>([]);
   const [filteredCartItems, setFilteredCartItems] = useState<
     {
@@ -25,7 +28,6 @@ const MyPage = () => {
     }[]
   >([]);
 
-  const limit = 6;
   let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
   let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;
 
