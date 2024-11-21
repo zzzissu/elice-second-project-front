@@ -23,6 +23,7 @@ export const S = {
     padding-top: 40px;
 
     height: calc(100vh - 60px);
+    padding-bottom: 100px;
   `,
   DropdownWrap: styled.div`
     display: flex;
@@ -39,6 +40,27 @@ export const S = {
     grid-template-rows: auto;
     gap: 26px;
 
-    margin-bottom: 100px;
+    padding-bottom: 100px;
+  `,
+  MoreBtnWrap: styled.div`
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `,
+  MoreBtn: styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: ${(props) => props.theme.color.deepGrey};
+
+    height: 20px;
+
+    margin-top: 50px;
+
+    &:hover {
+      cursor: pointer;
+    }
   `,
 };
