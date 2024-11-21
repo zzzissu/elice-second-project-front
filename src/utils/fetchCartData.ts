@@ -1,7 +1,7 @@
 import { getAxios } from "../utils/axios";
 
 interface CartItem {
-  id: number;
+  _id: string;
   name: string;
   image: string;
   price: number;
@@ -20,10 +20,10 @@ export const fetchCartData = async (): Promise<
 
   const requests = localCart.map(
     async (cartItem: {
-      id: number;
+      _id: string;
       shop: { nickname: string; _id: string };
     }) => {
-      const response = await getAxios(`/products/${cartItem.id}`);
+      const response = await getAxios(`/products/${cartItem._id}`);
       const product = response.data;
 
       return {

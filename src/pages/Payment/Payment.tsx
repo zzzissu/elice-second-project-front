@@ -23,17 +23,9 @@ export interface FormValues {
   profileImage?: File;
   phone?: string;
 }
-
-// interface AddressInfo {
-//   name: string;
-//   postalCode: string;
-//   address: string;
-//   detailAddress: string;
-//   phone: string;
-// }
 interface OrderItem {
-  id: number;
-  imageSrc: string;
+  _id: string;
+  image: string;
   price: number;
   description: string;
 }
@@ -264,8 +256,8 @@ const PaymentPage: React.FC = () => {
               {orderItems.map((item) => (
                 <CartItem
                   page="cart"
-                  key={item.id}
-                  imageSrc={item.imageSrc}
+                  key={item._id}
+                  imageSrc={item.image}
                   title={`${item.price.toLocaleString()}원`}
                   description={item.description}
                 />
