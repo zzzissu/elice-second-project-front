@@ -19,20 +19,20 @@ interface CategoryProps {
 }
 
 interface ItemInfoProps {
-  _id: "673ebd825d81cc1265c1d418";
-  name: "POST_TEST1_TYPEWRITER";
-  image: "/images/ss.jpg";
-  price: 1;
-  description: "POST_TEST1_TYPEWRITER";
+  _id: string;
+  name: string;
+  image: string;
+  price: number;
+  description: string;
   sellerId: {
-    _id: "673b2ae4d092ee427a327466";
-    nickname: "준영";
+    _id: string;
+    nickname: string;
   };
-  soldOut: false;
-  categoryName: "typewriter";
+  soldOut: boolean;
+  categoryName: string;
   deletedAt: null;
-  createdAt: "2024-11-21T04:56:34.137Z";
-  updatedAt: "2024-11-21T04:56:34.137Z";
+  createdAt: string;
+  updatedAt: string;
   __v: 0;
 }
 
