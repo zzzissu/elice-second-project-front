@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Nav, Button, Sidebar, ConfirmModal } from "components";
+import { Nav, Button, ConfirmModal } from "components";
 
 import { getAxios } from "../../utils/axios";
 import formatPrice from "../../utils/formatPrice";
@@ -15,7 +14,7 @@ import useModalStore from "../../stores/modal/index";
 interface CartItemsProps {
   id: string;
   checked: boolean;
-  shop: string;
+  sellerId: { _id: string; nickname: string };
 }
 
 const Detail = () => {
@@ -53,6 +52,10 @@ const Detail = () => {
     navigate("/cart");
   };
 
+  const handleEditBtn = () => {
+    navigate("/editproduct", { state: productId });
+  };
+
   const purchase = () => {
     const newItem = { id: productId, checked: false, shop: item?.sellerId };
 
@@ -77,23 +80,22 @@ const Detail = () => {
       )}
       <Nav />
       <S.Detail>
-        <Sidebar />
+        {/* <Sidebar /> */}
 
         <S.StickyWrap>
           <S.UpperWrap>
             <S.ProductImg imgUrl={item.image} />
             <S.ProductInfo>
               <div>
-                <Link to={ROUTE_LINK.EDIT_PRODUCT.path}>
-                  <S.EditBtn />
-                </Link>
+                <S.EditBtn onClick={handleEditBtn} />
+
                 <S.ProductName>{item.name}</S.ProductName>
                 <S.ProductPrice>
                   <S.Bold>{formatPrice(item.price)}</S.Bold> 원
                 </S.ProductPrice>
                 <S.InfoBox>
                   <S.SellerIcon />
-                  <S.greyText>{item.sellerId}</S.greyText>
+                  <S.greyText>{item.sellerId.nickname}</S.greyText>
                 </S.InfoBox>
                 <S.InfoBox>
                   <S.DeliveryIcon />
@@ -129,7 +131,7 @@ const Detail = () => {
             <S.Description>{item.description}</S.Description>
             <S.SellerBox>
               <S.SellerIcon />
-              <S.greyText>{item.sellerId}</S.greyText>
+              <S.greyText>{item.sellerId.nickname}</S.greyText>
             </S.SellerBox>
           </S.LowerWrap>
         </S.StickyWrap>

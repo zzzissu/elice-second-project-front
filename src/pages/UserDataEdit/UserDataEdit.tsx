@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { Label } from "../../components/InputField/InputFiled.styled";
 import { Nav, FormContainer, InputField } from "components";
-import useAuthStore from "../../store/useAuthStore";
+import useAuthStore from "../../stores/useAuthStore";
 import AddressSearch from "./AddressSearch/AddressSearch";
 
 export interface FormValues {
@@ -14,11 +14,13 @@ export interface FormValues {
   postalCode: string;
   address: string;
   detailAddress: string;
+  profileImage?: File;
 }
 
 export default function UserDataEditPage() {
   const { user, updateUserProfile } = useAuthStore();
   const methods = useForm<FormValues>();
+  const navigate = useNavigate();
 
   const { setValue, clearErrors } = methods;
 
@@ -31,8 +33,13 @@ export default function UserDataEditPage() {
 
       setValue("phoneFirst", phoneFirst);
       setValue("phoneSecond", phoneSecond);
-      setValue("address", user.address || "");
-      setValue("detailAddress", user.detailAddress || "");
+      setValue("postalCode", user.postalCode || "");
+      setValue("address", user.basicAdd || "");
+      setValue("detailAddress", user.detailAdd || "");
+
+      if (user.profileImage) {
+        setProfileImage(user.profileImage as unknown as File);
+      }
     }
   }, [user, setValue]);
 
@@ -41,20 +48,20 @@ export default function UserDataEditPage() {
     const payload = {
       phone: formattedPhone,
       postalCode: data.postalCode,
-      address: data.address,
-      detailAddress: data.detailAddress,
+      basicAdd: data.address,
+      detailAdd: data.detailAddress,
+      image: profileImage ? profileImage.name : "",
     };
 
     try {
-      await updateUserProfile(payload, profileImage || undefined);
+      await updateUserProfile(payload);
+      navigate(ROUTE_LINK.MYPAGE.path);
       alert("회원 정보가 수정되었습니다.");
     } catch (error) {
       console.error("회원 정보 수정 실패:", error);
       alert("오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
-
-  const navigate = useNavigate();
 
   const handleProfilePictureChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -133,12 +140,7 @@ export default function UserDataEditPage() {
             </S.InputContainer>
           </div>
 
-          <S.SubmitButton
-            type="submit"
-            onClick={() => navigate(ROUTE_LINK.MYPAGE.path)}
-          >
-            수정하기
-          </S.SubmitButton>
+          <S.SubmitButton type="submit">수정하기</S.SubmitButton>
         </FormContainer>
       </S.Container>
     </>
