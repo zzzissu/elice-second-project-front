@@ -6,7 +6,7 @@ import { Button, UserInput, Nav, ConfirmModal } from "components";
 
 import useIsFocused from "../../hooks/useIsFocused";
 import useInputValue from "../../hooks/UseUserInput";
-import { postAxios } from "../../utils/axios";
+import { getAxios, postAxios, putAxios } from "../../utils/axios";
 
 import { S } from "./AddOrEditProduct.style";
 // import useModalState from "../../hooks/useModalState";
@@ -16,6 +16,24 @@ interface CategoryProps {
   id: number;
   categoryName: string;
   value: string;
+}
+
+interface ItemInfoProps {
+  _id: string;
+  name: string;
+  image: string;
+  price: number;
+  description: string;
+  sellerId: {
+    _id: string;
+    nickname: string;
+  };
+  soldOut: boolean;
+  categoryName: string;
+  deletedAt: null;
+  createdAt: string;
+  updatedAt: string;
+  __v: 0;
 }
 
 const AddOrEditProduct = () => {
@@ -31,6 +49,11 @@ const AddOrEditProduct = () => {
   const { isFocused, handleFocus, handleBlur } = useIsFocused();
   const { modalType, openModal, closeModal } = useModalStore();
 
+  const [itemInfo, setItemInfo] = useState<ItemInfoProps | undefined>(
+    undefined,
+  );
+
+  const productId = location.state;
   const getCategory = async () => {
     try {
       const res = await axios.get("/data/category.json");
@@ -48,6 +71,19 @@ const AddOrEditProduct = () => {
     const value = e.currentTarget.value;
     setSelectedCategory(value);
   };
+
+  const getOriginProductInfo = () => {
+    getAxios(`/products/${productId}`).then((res) => setItemInfo(res.data));
+  };
+
+  useEffect(() => {
+    if (itemInfo) {
+      handleInputChange("productName", itemInfo.name);
+      handleInputChange("productPrice", itemInfo.price.toString());
+      handleInputChange("productDescription", itemInfo.description);
+      setSelectedCategory(itemInfo.categoryName);
+    }
+  }, [itemInfo]);
 
   const postProducts = () => {
     if (
@@ -76,11 +112,37 @@ const AddOrEditProduct = () => {
     }
   };
 
+  const putProduct = () => {
+    if (
+      location.pathname === "/editproduct" &&
+      inputValue.productName &&
+      inputValue.productPrice &&
+      inputValue.productDescription &&
+      selectedCategory
+    ) {
+      putAxios(`/products/${location.state}`, {
+        productId: productId,
+        updateData: {
+          name: inputValue.productName,
+          image: "/images/ss.jpg",
+          price: Number(inputValue.productPrice),
+          description: inputValue.productDescription,
+          categoryName: selectedCategory,
+        },
+      });
+    }
+  };
+
   const redirectToLogin = () => {
     navigate("/login");
     closeModal();
   };
 
+  useEffect(() => {
+    getOriginProductInfo();
+  }, []);
+
+  if (location.pathname === "editproduct" && !itemInfo) return null;
   if (!categories) return null;
   return (
     <S.AddOrEditProduct>
@@ -185,7 +247,7 @@ const AddOrEditProduct = () => {
         <Button
           btnText="상품 수정하기"
           bgcolor="orange70"
-          onClick={postProducts}
+          onClick={putProduct}
         />
       )}
     </S.AddOrEditProduct>

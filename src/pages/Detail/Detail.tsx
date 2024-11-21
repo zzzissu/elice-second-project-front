@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Nav, Button, Sidebar, ConfirmModal } from "components";
+import { Nav, Button, ConfirmModal } from "components";
 
 import { getAxios } from "../../utils/axios";
 import formatPrice from "../../utils/formatPrice";
@@ -53,6 +52,10 @@ const Detail = () => {
     navigate("/cart");
   };
 
+  const handleEditBtn = () => {
+    navigate("/editproduct", { state: productId });
+  };
+
   const purchase = () => {
     const newItem = { id: productId, checked: false, shop: item?.sellerId };
 
@@ -84,9 +87,8 @@ const Detail = () => {
             <S.ProductImg imgUrl={item.image} />
             <S.ProductInfo>
               <div>
-                <Link to={ROUTE_LINK.EDIT_PRODUCT.path}>
-                  <S.EditBtn />
-                </Link>
+                <S.EditBtn onClick={handleEditBtn} />
+
                 <S.ProductName>{item.name}</S.ProductName>
                 <S.ProductPrice>
                   <S.Bold>{formatPrice(item.price)}</S.Bold> 원
