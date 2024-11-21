@@ -10,6 +10,7 @@ const ROUTE_LINK = {
   PASSWORD_CHECK: { path: "/mypage/password-check" },
   INFO_EDIT: { path: "/mypage/info-edit" },
   PAYMENT: { path: "/payment" },
+  PAYMENT_COMPLETE: { path: "/payment-complete" },
 };
 
 export default ROUTE_LINK;

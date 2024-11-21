@@ -1,15 +1,36 @@
 import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import * as S from "./Payment.styled";
 import PaymentMethodButtons from "./PaymentMethodButtons/PaymentMethodButtons";
-import { CartItem, Checkbox, Button, Nav } from "components";
+import {
+  CartItem,
+  Checkbox,
+  Button,
+  Nav,
+  InputField,
+  FormContainer,
+} from "components";
 import { useLocation, useNavigate } from "react-router-dom";
+import AddressSearch from "./AddressSearch/AddressSearch";
 
-interface AddressInfo {
+export interface FormValues {
   name: string;
+  phoneFirst: string;
+  phoneSecond: string;
+  postalCode: string;
   address: string;
-  phone: string;
+  detailAddress: string;
+  profileImage?: File;
+  phone?: string;
 }
 
+// interface AddressInfo {
+//   name: string;
+//   postalCode: string;
+//   address: string;
+//   detailAddress: string;
+//   phone: string;
+// }
 interface OrderItem {
   id: number;
   imageSrc: string;
@@ -17,49 +38,96 @@ interface OrderItem {
   description: string;
 }
 
-// interface PaymentPageProps {
-//   addressInfo: AddressInfo;
-//   orderItems: OrderItem[];
-// }
-
 const PaymentPage: React.FC = () => {
+  const methods = useForm<FormValues>();
+  const { setValue, clearErrors, handleSubmit } = methods;
   const location = useLocation();
   const navigate = useNavigate();
 
   const [isChecked, setIsChecked] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [addressInfo, setAddressInfo] = useState<AddressInfo>({
+  const [phoneFirst, setPhoneFirst] = useState("");
+  const [phoneSecond, setPhoneSecond] = useState("");
+  const [addressInfo, setAddressInfo] = useState<FormValues>({
     name: "",
+    phoneFirst: "",
+    phoneSecond: "",
+    postalCode: "",
     address: "",
-    phone: "",
+    detailAddress: "",
   });
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
   useEffect(() => {
-    // 로컬스토리지에서 사용자 정보 가져오기
-    const userInfo = JSON.parse(localStorage.getItem("auth-storage") || "{}");
-    if (userInfo.user) {
-      setAddressInfo({
-        name: userInfo.user.name || "",
-        address: userInfo.user.basicAdd || "",
-        phone: userInfo.user.phone || "",
-      });
+    const authStorage = JSON.parse(
+      localStorage.getItem("auth-storage") || "{}",
+    );
+    const userInfo = authStorage.state?.user;
+
+    if (userInfo) {
+      const userAddressInfo = {
+        name: userInfo.name || "",
+        phoneFirst: userInfo.phone?.slice(0, 3) || "",
+        phoneSecond: userInfo.phone?.slice(3) || "",
+        postalCode: userInfo.postalCode || "",
+        address: userInfo.basicAdd || "",
+        detailAddress: userInfo.detailAdd || "",
+      };
+
+      setPhoneFirst(userAddressInfo.phoneFirst);
+      setPhoneSecond(userAddressInfo.phoneSecond);
+
+      setAddressInfo(userAddressInfo);
+
+      // Populate react-hook-form's inputs
+      if (isEditing) {
+        setValue("name", userAddressInfo.name);
+        setValue("phoneFirst", userAddressInfo.phoneFirst);
+        setValue("phoneSecond", userAddressInfo.phoneSecond);
+        setValue("postalCode", userAddressInfo.postalCode);
+        setValue("address", userAddressInfo.address);
+        setValue("detailAddress", userAddressInfo.detailAddress);
+      }
     }
 
-    // 장바구니에서 선택된 상품 가져오기
+    // Load selected cart items
     if (location.state && location.state.selectedItems) {
       setOrderItems(location.state.selectedItems);
     }
-  }, [location.state]);
+  }, [location.state, setValue, isEditing]);
 
   const handleEditAddress = () => {
     setIsEditing(true);
   };
 
-  const handleSaveAddress = () => {
+  const handleSaveAddress = (data: FormValues) => {
     setIsEditing(false);
-    // 여기서 sessionStorage에 저장
-    sessionStorage.setItem("temporaryAddressInfo", JSON.stringify(addressInfo));
+
+    const combinedPhone = `${data.phoneFirst}${data.phoneSecond}`;
+
+    // Update addressInfo state and save to localStorage
+    const updatedAddressInfo = {
+      ...data,
+      phoneFirst: data.phoneFirst,
+      phoneSecond: data.phoneSecond,
+    };
+
+    setAddressInfo({ ...updatedAddressInfo, phone: combinedPhone });
+
+    const authStorage = JSON.parse(
+      localStorage.getItem("auth-storage") || "{}",
+    );
+    if (authStorage.state?.user) {
+      authStorage.state.user = {
+        ...authStorage.state.user,
+        name: data.name,
+        phone: combinedPhone,
+        postalCode: data.postalCode,
+        basicAdd: data.address,
+        detailAdd: data.detailAddress,
+      };
+      localStorage.setItem("auth-storage", JSON.stringify(authStorage));
+    }
   };
 
   const handleCheckBoxChange = () => {
@@ -93,11 +161,12 @@ const PaymentPage: React.FC = () => {
             <S.SectionTitle>주문자 정보</S.SectionTitle>
             <S.OrderInfo>
               {isEditing ? (
-                <>
+                <FormContainer onSubmit={handleSaveAddress} methods={methods}>
                   <S.InputContainer>
-                    <label>이름</label>
-                    <input
-                      type="text"
+                    <InputField
+                      name="name"
+                      label="이름"
+                      placeholder="이름을 입력하세요"
                       value={addressInfo.name}
                       onChange={(e) =>
                         setAddressInfo({ ...addressInfo, name: e.target.value })
@@ -105,9 +174,25 @@ const PaymentPage: React.FC = () => {
                     />
                   </S.InputContainer>
                   <S.InputContainer>
-                    <label>주소</label>
-                    <input
-                      type="text"
+                    <InputField
+                      name="postalCode"
+                      label="우편번호"
+                      placeholder="우편번호를 입력하세요"
+                      readOnly
+                      value={addressInfo.postalCode}
+                    />
+                    <AddressSearch
+                      setValue={setValue}
+                      clearErrors={clearErrors}
+                    />
+                  </S.InputContainer>
+                  <S.InputContainer
+                    style={{ flexDirection: "column", gap: "10px" }}
+                  >
+                    <InputField
+                      name="address"
+                      placeholder="주소를 입력하세요"
+                      readOnly
                       value={addressInfo.address}
                       onChange={(e) =>
                         setAddressInfo({
@@ -116,31 +201,49 @@ const PaymentPage: React.FC = () => {
                         })
                       }
                     />
-                  </S.InputContainer>
-                  <S.InputContainer>
-                    <label>전화번호</label>
-                    <input
-                      type="text"
-                      value={addressInfo.phone}
+                    <InputField
+                      name="detailAddress"
+                      placeholder="상세 주소를 입력하세요"
+                      value={addressInfo.detailAddress}
                       onChange={(e) =>
                         setAddressInfo({
                           ...addressInfo,
-                          phone: e.target.value,
+                          detailAddress: e.target.value,
                         })
                       }
                     />
                   </S.InputContainer>
+                  <S.InputContainer>
+                    <InputField
+                      name="phoneFirst"
+                      label="전화번호"
+                      placeholder="앞자리"
+                      value={phoneFirst}
+                      onChange={(e) => setPhoneFirst(e.target.value)}
+                    />
+                    <InputField
+                      name="phoneSecond"
+                      placeholder="나머지 번호"
+                      value={phoneSecond}
+                      onChange={(e) => setPhoneSecond(e.target.value)}
+                    />
+                  </S.InputContainer>
                   <Button
+                    width="100%"
                     btnText="저장하기"
-                    onClick={handleSaveAddress}
+                    onClick={handleSubmit(handleSaveAddress)}
                     bgcolor="blue70"
                   />
-                </>
+                </FormContainer>
               ) : (
                 <S.AddressInfo>
                   <div>
                     <strong>{addressInfo.name}</strong>
-                    <span>{addressInfo.address}</span>
+                    <div className="flexWrap">
+                      <span>({addressInfo.postalCode})</span>
+                      <span>{addressInfo.detailAddress}</span>
+                      <span>{addressInfo.address}</span>
+                    </div>
                     <span>{addressInfo.phone}</span>
                   </div>
                   <S.EditButton onClick={handleEditAddress}>변경</S.EditButton>

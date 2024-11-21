@@ -10,6 +10,8 @@ interface InputFieldProps {
   rules?: RegisterOptions;
   error?: string;
   readOnly?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
