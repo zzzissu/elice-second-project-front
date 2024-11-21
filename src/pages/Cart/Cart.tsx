@@ -15,7 +15,7 @@ import {
 } from "components";
 
 interface CartItem {
-  id: number;
+  _id: string;
   name: string;
   image: string;
   price: number;
@@ -75,13 +75,13 @@ const CartPage: React.FC = () => {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const handleItemCheck = (shopIndex: number, itemId: number) => {
+  const handleItemCheck = (shopIndex: number, itemId: string) => {
     const updatedCart = cartData.map((shop, sIndex) =>
       sIndex === shopIndex
         ? {
             ...shop,
             items: shop.items.map((item) =>
-              item.id === itemId ? { ...item, checked: !item.checked } : item,
+              item._id === itemId ? { ...item, checked: !item.checked } : item,
             ),
           }
         : shop,
@@ -121,13 +121,13 @@ const CartPage: React.FC = () => {
     setCartData(updatedCart);
   };
 
-  const handleRemoveItem = (shopIndex: number, itemId: number) => {
+  const handleRemoveItem = (shopIndex: number, itemId: string) => {
     const updatedCart = cartData
       .map((shop, sIndex) =>
         sIndex === shopIndex
           ? {
               ...shop,
-              items: shop.items.filter((item) => item.id !== itemId),
+              items: shop.items.filter((item) => item._id !== itemId),
             }
           : shop,
       )
@@ -180,19 +180,20 @@ const CartPage: React.FC = () => {
               <S.WrapBox style={{ marginTop: "12px" }}>
                 <S.ItemsContainer>
                   {shop.items.map((item) => (
-                    <S.ItemRow key={item.id}>
+                    <S.ItemRow key={item._id}>
                       <Checkbox
                         checked={item.checked || false}
-                        onChange={() => handleItemCheck(shopIndex, item.id)}
+                        onChange={() => handleItemCheck(shopIndex, item._id)}
                       />
                       <CartItem
+                        key={item._id}
                         page="cart"
                         imageSrc={item.image}
                         title={item.price}
                         description={item.name}
                       />
                       <S.RemoveButton
-                        onClick={() => handleRemoveItem(shopIndex, item.id)}
+                        onClick={() => handleRemoveItem(shopIndex, item._id)}
                       >
                         <IoCloseOutline />
                       </S.RemoveButton>
