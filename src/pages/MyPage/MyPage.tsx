@@ -33,17 +33,22 @@ const MyPage = () => {
   let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
   let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;
 
-  useEffect(() => {
+  const getSellingItems = () => {
     getAxios(sellingurl).then((res) => {
       setSellingItems(res.data.myProducts);
       setTotalPage(res.data.totalPages);
     });
-  }, []);
-  useEffect(() => {
+  };
+
+  const getPurchased = () => {
     getAxios(purchasedurl).then((res) => {
-      setPurchasedItems(res.data.myProducts);
+      setPurchasedItems(res.data.orders);
       setTotalPage(res.data.totalPages);
     });
+  };
+  useEffect(() => {
+    getSellingItems();
+    getPurchased();
   }, []);
 
   const editProfile = () => {
@@ -74,12 +79,6 @@ const MyPage = () => {
     } else return;
   };
 
-  const getSellingItems = () => {
-    getAxios(sellingurl).then((res) => {
-      setSellingItems(res.data.myProducts);
-      setTotalPage(res.data.totalPages);
-    });
-  };
   useEffect(() => {
     getSellingItems();
   }, [currentPage]);
@@ -121,7 +120,6 @@ const MyPage = () => {
     setFilteredCartItems(groupedCartItems);
   }, [purchasedItems]);
 
-  if (!sellingItems || !sellingItems || !purchasedItems) return null;
   return (
     <S.MyPageWrap>
       {modalType === "deleteProduct" && (
@@ -150,24 +148,26 @@ const MyPage = () => {
           <S.SellingBox>
             <S.TitleBox>판매중인 상품</S.TitleBox>
             <S.ItemGrid>
-              {sellingItems.map((sellingItem, idx) => {
-                const column = 3;
-                const row = Math.floor(idx / column) + 1;
+              {sellingItems.length > 0
+                ? sellingItems.map((sellingItem, idx) => {
+                    const column = 3;
+                    const row = Math.floor(idx / column) + 1;
 
-                return (
-                  <Link
-                    to={`/products/${sellingItem._id}`}
-                    key={sellingItem._id}
-                  >
-                    <ItemCard
-                      {...sellingItem}
-                      idx={idx}
-                      row={row}
-                      deleteProduct={deleteProduct}
-                    />
-                  </Link>
-                );
-              })}
+                    return (
+                      <Link
+                        to={`/products/${sellingItem._id}`}
+                        key={sellingItem._id}
+                      >
+                        <ItemCard
+                          {...sellingItem}
+                          idx={idx}
+                          row={row}
+                          deleteProduct={deleteProduct}
+                        />
+                      </Link>
+                    );
+                  })
+                : "판매 중인 상품이 없습니다."}
             </S.ItemGrid>
             <S.PaginationBox>
               <S.ArrowIconBox>
@@ -192,7 +192,7 @@ const MyPage = () => {
           </S.SellingBox>
           <S.PurchaseList>
             <S.TitleBox>구매 내역</S.TitleBox>
-            {filteredCartItems.length > 0 ? (
+            {purchasedItems.length > 0 ? (
               filteredCartItems.map(({ date, items }) => (
                 <div key={date}>
                   <S.DateTitle>{date}</S.DateTitle> {/* 날짜 제목 표시 */}
