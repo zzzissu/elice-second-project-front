@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Nav, Button, ConfirmModal } from "components";
@@ -22,7 +22,26 @@ const Detail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [item, setItem] = useState<ItemProps | null>(null);
 
+  const sellerBoxRef = useRef<HTMLDivElement | null>(null);
+  const [isSellerBoxVisible, setIsSellerBoxVisible] = useState(false);
+
   const { modalType, openModal, closeModal } = useModalStore();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsSellerBoxVisible(entry.isIntersecting);
+    });
+
+    if (sellerBoxRef.current) {
+      observer.observe(sellerBoxRef.current);
+    }
+
+    return () => {
+      if (sellerBoxRef.current) {
+        observer.unobserve(sellerBoxRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     getAxios(`/products/${productId}`).then((res) => setItem(res.data));
@@ -60,6 +79,15 @@ const Detail = () => {
     const newItem = { id: productId, checked: false, shop: item?.sellerId };
 
     navigate("/payment", { state: newItem });
+  };
+
+  const handleSellerInfoClick = () => {
+    if (sellerBoxRef.current) {
+      sellerBoxRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   };
 
   if (!item) return null;
@@ -123,7 +151,7 @@ const Detail = () => {
               <S.NavText>상품 정보</S.NavText>
             </S.NavCell>
             <S.NavCell>
-              <S.NavText>판매자 정보</S.NavText>
+              <S.NavText onClick={handleSellerInfoClick}>판매자 정보</S.NavText>
             </S.NavCell>
           </S.NavBar>
 
@@ -131,7 +159,7 @@ const Detail = () => {
             <S.Description>
               <pre>{item.description}</pre>
             </S.Description>
-            <S.SellerBox>
+            <S.SellerBox ref={sellerBoxRef}>
               <S.SellerIcon />
               <S.greyText>{item.sellerId.nickname}</S.greyText>
             </S.SellerBox>
