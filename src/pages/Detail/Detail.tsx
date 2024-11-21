@@ -128,7 +128,9 @@ const Detail = () => {
           </S.NavBar>
 
           <S.LowerWrap>
-            <S.Description>{item.description}</S.Description>
+            <S.Description>
+              <pre>{item.description}</pre>
+            </S.Description>
             <S.SellerBox>
               <S.SellerIcon />
               <S.greyText>{item.sellerId.nickname}</S.greyText>
