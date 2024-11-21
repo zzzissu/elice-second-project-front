@@ -42,6 +42,7 @@ const PaymentPage: React.FC = () => {
   const methods = useForm<FormValues>();
   const { setValue, clearErrors, handleSubmit } = methods;
   const location = useLocation();
+  // const singleProduct = location.state;
   const navigate = useNavigate();
 
   const [isChecked, setIsChecked] = useState(false);
@@ -79,7 +80,6 @@ const PaymentPage: React.FC = () => {
 
       setAddressInfo(userAddressInfo);
 
-      // Populate react-hook-form's inputs
       if (isEditing) {
         setValue("name", userAddressInfo.name);
         setValue("phoneFirst", userAddressInfo.phoneFirst);
@@ -90,7 +90,6 @@ const PaymentPage: React.FC = () => {
       }
     }
 
-    // Load selected cart items
     if (location.state && location.state.selectedItems) {
       setOrderItems(location.state.selectedItems);
     }
@@ -105,7 +104,6 @@ const PaymentPage: React.FC = () => {
 
     const combinedPhone = `${data.phoneFirst}${data.phoneSecond}`;
 
-    // Update addressInfo state and save to localStorage
     const updatedAddressInfo = {
       ...data,
       phoneFirst: data.phoneFirst,
@@ -213,7 +211,7 @@ const PaymentPage: React.FC = () => {
                       }
                     />
                   </S.InputContainer>
-                  <S.InputContainer>
+                  <S.InputContainer style={{ gap: "10px" }}>
                     <InputField
                       name="phoneFirst"
                       label="전화번호"
@@ -244,7 +242,10 @@ const PaymentPage: React.FC = () => {
                       <span>{addressInfo.detailAddress}</span>
                       <span>{addressInfo.address}</span>
                     </div>
-                    <span>{addressInfo.phone}</span>
+                    <span>
+                      {addressInfo.phoneFirst}
+                      {addressInfo.phoneSecond}
+                    </span>
                   </div>
                   <S.EditButton onClick={handleEditAddress}>변경</S.EditButton>
                 </S.AddressInfo>

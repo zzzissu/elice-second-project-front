@@ -58,6 +58,13 @@ export const OrderInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  form {
+    margin-top: 5px;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid ${({ theme }) => theme.color.lightGrey};
+  }
 `;
 
 export const AddressInfo = styled.div`

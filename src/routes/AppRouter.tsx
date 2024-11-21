@@ -9,25 +9,11 @@ import AddOrEditProduct from "../pages/AddOrEditProduct/AddOrEditProduct.tsx";
 import MyPage from "../pages/MyPage/MyPage.tsx";
 import CartPage from "../pages/Cart/Cart.tsx";
 import PaymentPage from "../pages/Payment/Payment.tsx";
-// import { fetchAddressInfo, fetchOrderItems } from "../utils/mockData.ts";
 import PasswordCheckPage from "../pages/PasswordCheck/PasswordCheck.tsx";
 import UserDataEditPage from "../pages/UserDataEdit/UserDataEdit.tsx";
 import PaymentComplete from "../pages/Payment/PaymentComplete/PaymentComplete.tsx";
 
 function AppRouter() {
-  // const [addressInfo, setAddressInfo] = useState(null);
-  // const [orderItems, setOrderItems] = useState(null);
-
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     const address = await fetchAddressInfo();
-  //     const items = await fetchOrderItems();
-  //     setAddressInfo(address);
-  //     setOrderItems(items);
-  //   };
-
-  //   loadData();
-  // }, []);
 
   const router = createBrowserRouter([
     {
