@@ -8,6 +8,18 @@ export const Container = styled.div`
   max-width: 1260px;
 `;
 
+export const InputContainer = styled.div`
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+
+  div {
+    width: 100%;
+    margin-bottom: 0;
+  }
+`;
+
 export const Wrap = styled.div`
   display: flex;
   align-items: center;

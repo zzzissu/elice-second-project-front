@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as S from "./Payment.styled";
 import PaymentMethodButtons from "./PaymentMethodButtons/PaymentMethodButtons";
 import { CartItem, Checkbox, Button, Nav } from "components";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface AddressInfo {
   name: string;
@@ -17,25 +17,70 @@ interface OrderItem {
   description: string;
 }
 
-interface PaymentPageProps {
-  addressInfo: AddressInfo;
-  orderItems: OrderItem[];
-}
+// interface PaymentPageProps {
+//   addressInfo: AddressInfo;
+//   orderItems: OrderItem[];
+// }
 
-const PaymentPage: React.FC<PaymentPageProps> = ({
-  addressInfo,
-  orderItems,
-}) => {
+const PaymentPage: React.FC = () => {
   const location = useLocation();
-  const singleProduct = location.state;
+  const navigate = useNavigate();
 
   const [isChecked, setIsChecked] = useState(false);
-  const totalAmount = orderItems.reduce((total, item) => total + item.price, 0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [addressInfo, setAddressInfo] = useState<AddressInfo>({
+    name: "",
+    address: "",
+    phone: "",
+  });
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+
+  useEffect(() => {
+    // 로컬스토리지에서 사용자 정보 가져오기
+    const userInfo = JSON.parse(localStorage.getItem("auth-storage") || "{}");
+    if (userInfo.user) {
+      setAddressInfo({
+        name: userInfo.user.name || "",
+        address: userInfo.user.basicAdd || "",
+        phone: userInfo.user.phone || "",
+      });
+    }
+
+    // 장바구니에서 선택된 상품 가져오기
+    if (location.state && location.state.selectedItems) {
+      setOrderItems(location.state.selectedItems);
+    }
+  }, [location.state]);
+
+  const handleEditAddress = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveAddress = () => {
+    setIsEditing(false);
+    // 여기서 sessionStorage에 저장
+    sessionStorage.setItem("temporaryAddressInfo", JSON.stringify(addressInfo));
+  };
 
   const handleCheckBoxChange = () => {
     setIsChecked((prev) => !prev);
     console.log("주문내역 확인 및 결제 동의 체크:", !isChecked);
   };
+
+  const handlePayment = () => {
+    if (!isChecked) {
+      alert("주문내역 확인 및 결제 동의를 체크해주세요.");
+      return;
+    }
+
+    // 결제 성공 후 이메일 가상 계좌 전달 로직 추가 가능
+    alert("결제가 완료되었습니다!");
+
+    // 결제 완료 페이지로 이동
+    navigate("/payment-complete");
+  };
+
+  const totalAmount = orderItems.reduce((total, item) => total + item.price, 0);
 
   return (
     <>
@@ -47,16 +92,60 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
           <S.Section>
             <S.SectionTitle>주문자 정보</S.SectionTitle>
             <S.OrderInfo>
-              <S.AddressInfo>
-                <div>
-                  <strong>{addressInfo.name}</strong>
-                  <span>{addressInfo.address}</span>
-                  <span>{addressInfo.phone}</span>
-                </div>
-                <S.EditButton onClick={() => console.log("주소변경하기")}>
-                  변경
-                </S.EditButton>
-              </S.AddressInfo>
+              {isEditing ? (
+                <>
+                  <S.InputContainer>
+                    <label>이름</label>
+                    <input
+                      type="text"
+                      value={addressInfo.name}
+                      onChange={(e) =>
+                        setAddressInfo({ ...addressInfo, name: e.target.value })
+                      }
+                    />
+                  </S.InputContainer>
+                  <S.InputContainer>
+                    <label>주소</label>
+                    <input
+                      type="text"
+                      value={addressInfo.address}
+                      onChange={(e) =>
+                        setAddressInfo({
+                          ...addressInfo,
+                          address: e.target.value,
+                        })
+                      }
+                    />
+                  </S.InputContainer>
+                  <S.InputContainer>
+                    <label>전화번호</label>
+                    <input
+                      type="text"
+                      value={addressInfo.phone}
+                      onChange={(e) =>
+                        setAddressInfo({
+                          ...addressInfo,
+                          phone: e.target.value,
+                        })
+                      }
+                    />
+                  </S.InputContainer>
+                  <Button
+                    btnText="저장하기"
+                    onClick={handleSaveAddress}
+                    bgcolor="blue70"
+                  />
+                </>
+              ) : (
+                <S.AddressInfo>
+                  <div>
+                    <strong>{addressInfo.name}</strong>
+                    <span>{addressInfo.address}</span>
+                    <span>{addressInfo.phone}</span>
+                  </div>
+                  <S.EditButton onClick={handleEditAddress}>변경</S.EditButton>
+                </S.AddressInfo>
+              )}
               <S.RequestContainer>
                 <label>거래 요청 사항</label>
                 <span>판매자에게 전달되는 요청사항이에요.</span>
@@ -109,7 +198,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
             </div>
             <Button
               btnText="결제하기"
-              onClick={() => console.log("결제하기")}
+              onClick={handlePayment}
               bgcolor="orange70"
               width="100%"
             />
