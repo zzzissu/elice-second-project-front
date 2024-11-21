@@ -77,7 +77,7 @@ const Detail = () => {
       )}
       <Nav />
       <S.Detail>
-        <Sidebar />
+        {/* <Sidebar /> */}
 
         <S.StickyWrap>
           <S.UpperWrap>
