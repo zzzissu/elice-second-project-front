@@ -32,7 +32,6 @@ const List = () => {
   const categoryName = params.get("categoryName");
 
   const getProducts = async () => {
-    // selectedItem 값에 따른 정렬 방식 추가
     const sort = selectedItem === "오래된순" ? "oldest" : "latest";
     let url = `/products?currentPage=${currentPage}&limit=${limit}&sort=${sort}`;
     if (categoryName) {
@@ -40,13 +39,12 @@ const List = () => {
     }
 
     await getAxios(url).then((res) => {
-      setItems(
-        (prevItems) =>
-          currentPage === 1
-            ? res.data.products // 페이지가 1이면 새 데이터를 덮어씌움
-            : [...prevItems, ...res.data.products], // 페이지가 증가하면 기존 데이터에 추가
+      setItems((prevItems) =>
+        currentPage === 1
+          ? res.data.products
+          : [...prevItems, ...res.data.products],
       );
-      setTotalPage(res.data.totalPages); // 총 페이지 수 업데이트
+      setTotalPage(res.data.totalPages);
     });
   };
 
