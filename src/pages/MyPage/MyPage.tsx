@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
-import { Nav, Button, ItemCard, CartItem } from "components";
+import { Nav, Button, ItemCard, CartItem, ConfirmModal } from "components";
 
-import { getAxios } from "../../utils/axios";
+import { deleteAxios, getAxios } from "../../utils/axios";
 
 import { CartItems } from "../../types/types";
 import { ItemProps } from "../../components/ItemCard/ItemCard";
 
 import { S } from "./MyPage.style";
+import useModalStore from "../../stores/modal";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const MyPage = () => {
       items: CartItems[];
     }[]
   >([]);
+  const { modalType, openModal, closeModal } = useModalStore();
 
   let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
   let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;
@@ -72,27 +74,34 @@ const MyPage = () => {
     } else return;
   };
 
-  useEffect(() => {
+  const getSellingItems = () => {
     getAxios(sellingurl).then((res) => {
       setSellingItems(res.data.myProducts);
       setTotalPage(res.data.totalPages);
     });
+  };
+  useEffect(() => {
+    getSellingItems();
   }, [currentPage]);
 
   useEffect(() => {
     paginationNum();
   }, [sellingItems]);
 
-  const showMore = () => {};
+  const deleteProduct = (
+    id: string,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    e.stopPropagation();
+    e.preventDefault();
+    deleteAxios(`/products/${id}`);
+    openModal("deleteProduct");
+  };
 
-  // const fetchCartItems = async () => {
-  //   getAxios("/data/cartItem.json").then((res) => setCartItems(res.data));
-  // };
-
-  useEffect(() => {
-    // fetchItems();
-    // fetchCartItems();
-  }, []);
+  const handleDeleteModalClick = () => {
+    getSellingItems();
+    closeModal();
+  };
 
   useEffect(() => {
     let dates: string[] = [];
@@ -115,6 +124,12 @@ const MyPage = () => {
   if (!sellingItems || !sellingItems || !purchasedItems) return null;
   return (
     <S.MyPageWrap>
+      {modalType === "deleteProduct" && (
+        <ConfirmModal
+          modalText="상품이 삭제되었습니다"
+          onClick={handleDeleteModalClick}
+        />
+      )}
       <Nav />
       <S.MyPage>
         <S.SideProfile>
@@ -136,7 +151,7 @@ const MyPage = () => {
             <S.TitleBox>판매중인 상품</S.TitleBox>
             <S.ItemGrid>
               {sellingItems.map((sellingItem, idx) => {
-                const column = 4;
+                const column = 3;
                 const row = Math.floor(idx / column) + 1;
 
                 return (
@@ -144,7 +159,12 @@ const MyPage = () => {
                     to={`/products/${sellingItem._id}`}
                     key={sellingItem._id}
                   >
-                    <ItemCard {...sellingItem} idx={idx} row={row} />
+                    <ItemCard
+                      {...sellingItem}
+                      idx={idx}
+                      row={row}
+                      deleteProduct={deleteProduct}
+                    />
                   </Link>
                 );
               })}
@@ -201,11 +221,6 @@ const MyPage = () => {
               <S.EmptyCart>구매 내역이 없습니다.</S.EmptyCart>
             )}
           </S.PurchaseList>
-          {purchasedItems.length > 0 ? (
-            <S.MoreBtn onClick={showMore}>더보기</S.MoreBtn>
-          ) : (
-            ""
-          )}
         </S.MyPageContent>
       </S.MyPage>
     </S.MyPageWrap>
