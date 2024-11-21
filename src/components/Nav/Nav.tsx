@@ -24,8 +24,6 @@ const Nav = () => {
     navigate("/cart");
   };
 
-  console.log(TOKEN);
-  console.log(location.pathname);
   return (
     <S.Nav>
       <Link to={ROUTE_LINK.LIST.path}>

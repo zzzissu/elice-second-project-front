@@ -15,7 +15,7 @@ import useModalStore from "../../stores/modal/index";
 interface CartItemsProps {
   id: string;
   checked: boolean;
-  shop: string;
+  sellerId: { _id: string; nickname: string };
 }
 
 const Detail = () => {
@@ -77,7 +77,7 @@ const Detail = () => {
       )}
       <Nav />
       <S.Detail>
-        <Sidebar />
+        {/* <Sidebar /> */}
 
         <S.StickyWrap>
           <S.UpperWrap>
@@ -93,7 +93,7 @@ const Detail = () => {
                 </S.ProductPrice>
                 <S.InfoBox>
                   <S.SellerIcon />
-                  <S.greyText>{item.sellerId}</S.greyText>
+                  <S.greyText>{item.sellerId.nickname}</S.greyText>
                 </S.InfoBox>
                 <S.InfoBox>
                   <S.DeliveryIcon />
@@ -129,7 +129,7 @@ const Detail = () => {
             <S.Description>{item.description}</S.Description>
             <S.SellerBox>
               <S.SellerIcon />
-              <S.greyText>{item.sellerId}</S.greyText>
+              <S.greyText>{item.sellerId.nickname}</S.greyText>
             </S.SellerBox>
           </S.LowerWrap>
         </S.StickyWrap>
