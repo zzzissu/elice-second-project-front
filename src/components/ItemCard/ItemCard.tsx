@@ -6,7 +6,7 @@ export interface ItemProps {
   idx: number;
   row: number;
 
-  _id: string;
+  id: string;
   name: string;
   image: string;
   price: number;

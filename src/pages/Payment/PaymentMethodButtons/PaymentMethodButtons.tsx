@@ -6,7 +6,12 @@ const paymentMethods = [
   { id: "bank", label: "무통장(가상계좌)" },
 ];
 
-const PaymentMethodButtons: React.FC = () => {
+interface PaymentMethodButtonsProps {
+  selectedMethod: string;
+  setPaymentMethod: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const PaymentMethodButtons: React.FC<PaymentMethodButtonsProps> = () => {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
   const handleSelectMethod = (methodId: string) => {
