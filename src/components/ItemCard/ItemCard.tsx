@@ -1,5 +1,6 @@
 import formatPrice from "../../utils/formatPrice";
 import { S } from "./ItemCard.style";
+import { deleteAxios } from "../../utils/axios";
 
 export interface ItemProps {
   idx: number;
@@ -20,12 +21,34 @@ export interface ItemProps {
   updatedAt: string;
   deletedAt: null;
   __v: 0;
+  deleteProduct: (
+    id: string,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => void;
 }
 
-const ItemCard = ({ idx, row, name, image, price }: ItemProps) => {
+const ItemCard = ({
+  _id,
+  idx,
+  row,
+  name,
+  image,
+  price,
+  deleteProduct,
+}: ItemProps) => {
   return (
     <S.ItemCard>
-      <S.ProductImg imgUrl={image} />
+      <S.ProductImg imgUrl={image}>
+        {location.pathname === "/users/my" && (
+          <S.DeleteBtn
+            onClick={(e) => {
+              deleteProduct(_id, e);
+            }}
+          >
+            &times;
+          </S.DeleteBtn>
+        )}
+      </S.ProductImg>
       <S.ProductInfo idx={idx} row={row}>
         <S.ProductName>{name}</S.ProductName>
         <S.ProductPrice>{formatPrice(price)} 원</S.ProductPrice>

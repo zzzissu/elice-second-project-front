@@ -121,7 +121,6 @@ const AddOrEditProduct = () => {
       selectedCategory
     ) {
       putAxios(`/products/${location.state}`, {
-        productId: productId,
         updateData: {
           name: inputValue.productName,
           image: "/images/ss.jpg",
