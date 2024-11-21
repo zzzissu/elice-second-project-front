@@ -10,11 +10,11 @@ import {
 import { useSearchParams } from "react-router-dom";
 
 const categories = [
-  { id: "cameras", name: "카메라", icon: <FaCamera /> },
-  { id: "mobile phones", name: "휴대폰", icon: <FaMobileAlt /> },
-  { id: "typewriters", name: "타자기", icon: <FaKeyboard /> },
-  { id: "display devices", name: "디스플레이", icon: <FaTv /> },
-  { id: "audio devices", name: "오디오 기기", icon: <FaMusic /> },
+  { id: "camera", name: "카메라", icon: <FaCamera /> },
+  { id: "phone", name: "휴대폰", icon: <FaMobileAlt /> },
+  { id: "typewriter", name: "타자기", icon: <FaKeyboard /> },
+  { id: "display", name: "디스플레이", icon: <FaTv /> },
+  { id: "audio", name: "오디오 기기", icon: <FaMusic /> },
 ];
 
 interface CategoryProps {

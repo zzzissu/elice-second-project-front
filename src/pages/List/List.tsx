@@ -32,7 +32,7 @@ const List = () => {
   const params = new URLSearchParams(location.search);
   const categoryName = params.get("categoryName");
 
-  const currentPage = 1;
+  let currentPage = 1;
   const limit = 8;
   let url = `/products?currentPage=${currentPage}&limit=${limit}`;
   if (categoryName) {

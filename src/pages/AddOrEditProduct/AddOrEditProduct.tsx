@@ -59,8 +59,8 @@ const AddOrEditProduct = () => {
     ) {
       postAxios("/products", {
         name: inputValue.productName,
-        image: "",
-        price: inputValue.productPrice,
+        image: "/images/ss.jpg",
+        price: Number(inputValue.productPrice),
         description: inputValue.productDescription,
         categoryName: selectedCategory,
       });
@@ -86,13 +86,11 @@ const AddOrEditProduct = () => {
     <S.AddOrEditProduct>
       {modalType === "valid" ? (
         <ConfirmModal
-          type="valid"
           modalText="필수 입력 사항을 모두 입력해주세요"
           onClick={closeModal}
         />
       ) : modalType === "login" ? (
         <ConfirmModal
-          type="login"
           modalText="로그인 후 다시 시도해주세요"
           onClick={redirectToLogin}
         />
