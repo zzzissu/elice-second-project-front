@@ -1,16 +1,18 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import useAuthStore from "../../stores/useAuthStore";
 
 import { S } from "./Nav.style";
 
 const Nav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuthStore();
 
   const TOKEN = localStorage.getItem("token");
 
   const SignOut = () => {
-    localStorage.removeItem("token");
+    logout();
     navigate("/");
   };
 

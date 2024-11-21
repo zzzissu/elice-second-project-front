@@ -22,6 +22,7 @@ export const S = {
     }
   `,
   ProductImg: styled.div<ImgUrlProps>`
+    position: relative;
     width: 100%;
     height: 100%;
 
@@ -62,5 +63,15 @@ export const S = {
   `,
   ProductPrice: styled.div`
     font-size: ${(props) => props.theme.font.small};
+  `,
+  DeleteBtn: styled.div`
+    position: absolute;
+    top: 6px;
+    right: 6px;
+
+    width: 20px;
+    height: 20px;
+
+    font-size: 20px;
   `,
 };

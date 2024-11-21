@@ -5,10 +5,11 @@ import { postAxios, putAxios } from "../utils/axios";
 interface UserProfile {
   email?: string;
   name?: string;
-  postalCode?: string;
   phone?: string;
-  address?: string;
-  detailAddress?: string;
+  postalCode?: string;
+  basicAdd?: string;
+  detailAdd?: string;
+  profileImage?: File;
 }
 
 interface UserState {
@@ -56,8 +57,9 @@ const useAuthStore = create<UserState>()(
               email: user.email,
               name: user.name,
               phone: user.phone,
-              address: user.address,
-              detailAddress: user.detailAddress,
+              postalCode: user.postalCode || "",
+              basicAdd: user.basicAdd || "",
+              detailAdd: user.detailAdd || "",
             },
           });
 
@@ -90,36 +92,35 @@ const useAuthStore = create<UserState>()(
           const response = await postAxios("/users/password", {
             password,
           });
-          return response.data.success;
+          return response.data.valid;
         } catch (error) {
           console.error("Password check failed:", error);
           throw error;
         }
       },
 
-      updateUserProfile: async (data, profileImage) => {
+      updateUserProfile: async (data: UserProfile) => {
         try {
-          const formData = new FormData();
-          formData.append("phone", data.phone || "");
-          formData.append("address", data.address || "");
-          formData.append("detailAddress", data.detailAddress || "");
+          const response = await putAxios("/users/my", data);
+          const updatedUser = response.data;
 
-          if (profileImage) {
-            formData.append("image", profileImage);
-          }
-
-          const response = await putAxios("/users/my", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-
-          set((state) => ({
-            user: {
+          set((state) => {
+            const newUser = {
               ...state.user,
-              ...response.data.updatedUser,
-            },
-          }));
+              ...updatedUser,
+            };
 
-          console.log("회원 정보 수정 성공:", response.data.updatedUser);
+            const authStorage = JSON.parse(
+              localStorage.getItem("auth-storage") || "{}",
+            );
+            if (authStorage.state) {
+              authStorage.state.user = newUser;
+              localStorage.setItem("auth-storage", JSON.stringify(authStorage));
+            }
+
+            return { user: newUser };
+          });
+          console.log("회원 정보 수정 성공:", updatedUser);
         } catch (error) {
           console.error("Update user profile failed:", error);
           throw error;
