@@ -12,7 +12,10 @@ export interface ItemProps {
   description: string;
   categoryName: string;
   soldOut: boolean;
-  sellerId: string;
+  sellerId: {
+    _id: string;
+    nickname: string;
+  };
   createdAt: string;
   updatedAt: string;
   deletedAt: null;

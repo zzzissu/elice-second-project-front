@@ -7,21 +7,28 @@ import {
   FaTv,
   FaMusic,
 } from "react-icons/fa";
+import { useSearchParams } from "react-router-dom";
 
 const categories = [
   { id: "camera", name: "카메라", icon: <FaCamera /> },
   { id: "phone", name: "휴대폰", icon: <FaMobileAlt /> },
-  { id: "keyboard", name: "타자기", icon: <FaKeyboard /> },
+  { id: "typewriter", name: "타자기", icon: <FaKeyboard /> },
   { id: "display", name: "디스플레이", icon: <FaTv /> },
   { id: "audio", name: "오디오 기기", icon: <FaMusic /> },
 ];
 
-const Sidebar = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+interface CategoryProps {
+  selectedCategory: string | null;
+  setSelectedCategory: (value: string) => void;
+}
+const Sidebar = ({ selectedCategory, setSelectedCategory }: CategoryProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleCategoryClick = (id: string) => {
     setSelectedCategory(id);
+    setSearchParams({ categoryName: id });
   };
+
   return (
     <S.SidebarContainer>
       {categories.map((category) => (

@@ -1,5 +1,10 @@
 import styled from "styled-components";
 
+interface PageNumProps {
+  num: number;
+  currentPage: number;
+}
+
 export const S = {
   MyPageWrap: styled.div`
     width: 1260px;
@@ -117,7 +122,7 @@ export const S = {
 
     margin-left: 3px;
   `,
-  PaginationNum: styled.div`
+  PaginationNum: styled.div<PageNumProps>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -125,7 +130,13 @@ export const S = {
     width: 36px;
     height: 36px;
 
-    color: ${(props) => props.theme.color.grey};
+    color: ${(props) => {
+      if (props.currentPage === props.num) {
+        return props.theme.color.orange; // 현재 페이지일 경우 orange 색상 반환
+      } else {
+        return props.theme.color.grey; // 그렇지 않으면 grey 색상 반환
+      }
+    }};
 
     &:hover {
       cursor: pointer;
