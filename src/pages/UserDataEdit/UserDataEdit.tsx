@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as S from "./UserDataEdit.styled";
-// import { useNavigate } from "react-router-dom";
-// import ROUTE_LINK from "../../routes/RouterLink";
+import { useNavigate } from "react-router-dom";
+import ROUTE_LINK from "../../routes/RouterLink";
 import { Label } from "../../components/InputField/InputFiled.styled";
 import { Nav, FormContainer, InputField } from "components";
 import useAuthStore from "../../store/useAuthStore";
@@ -20,6 +20,7 @@ export interface FormValues {
 export default function UserDataEditPage() {
   const { user, updateUserProfile } = useAuthStore();
   const methods = useForm<FormValues>();
+  const navigate = useNavigate();
 
   const { setValue, clearErrors } = methods;
 
@@ -35,10 +36,15 @@ export default function UserDataEditPage() {
       setValue("postalCode", user.postalCode || "");
       setValue("address", user.basicAdd || "");
       setValue("detailAddress", user.detailAdd || "");
+
+      if (user.profileImage) {
+        setProfileImage(user.profileImage as unknown as File);
+      }
     }
   }, [user, setValue]);
 
   const onSubmit = async (data: FormValues) => {
+    console.log("입력된 데이터:", data);
     const formattedPhone = `${data.phoneFirst}${data.phoneSecond}`;
     const payload = {
       phone: formattedPhone,
@@ -50,15 +56,13 @@ export default function UserDataEditPage() {
 
     try {
       await updateUserProfile(payload, profileImage || undefined);
-      // navigate(ROUTE_LINK.MYPAGE.path);
+      navigate(ROUTE_LINK.MYPAGE.path);
       alert("회원 정보가 수정되었습니다.");
     } catch (error) {
       console.error("회원 정보 수정 실패:", error);
       alert("오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
-
-  // const navigate = useNavigate();
 
   const handleProfilePictureChange = (
     event: React.ChangeEvent<HTMLInputElement>,

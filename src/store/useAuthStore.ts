@@ -9,6 +9,7 @@ interface UserProfile {
   postalCode?: string;
   basicAdd?: string;
   detailAdd?: string;
+  profileImage?: File;
 }
 
 interface UserState {
@@ -110,18 +111,30 @@ const useAuthStore = create<UserState>()(
             formData.append("image", profileImage);
           }
 
+          console.log("FormData:", Array.from(formData.entries()));
           const response = await putAxios("/users/my", formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
 
-          set((state) => ({
-            user: {
-              ...state.user,
-              ...response.data.updatedUser,
-            },
-          }));
+          const updatedUser = response.data;
 
-          console.log("회원 정보 수정 성공:", response.data.updatedUser);
+          set((state) => {
+            const newUser = {
+              ...state.user,
+              ...updatedUser,
+            };
+
+            const authStorage = JSON.parse(
+              localStorage.getItem("auth-storage") || "{}",
+            );
+            if (authStorage.state) {
+              authStorage.state.user = newUser;
+              localStorage.setItem("auth-storage", JSON.stringify(authStorage));
+            }
+
+            return { user: newUser };
+          });
+          console.log("회원 정보 수정 성공:", updatedUser);
         } catch (error) {
           console.error("Update user profile failed:", error);
           throw error;
