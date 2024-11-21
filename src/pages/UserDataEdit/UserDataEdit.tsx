@@ -44,18 +44,17 @@ export default function UserDataEditPage() {
   }, [user, setValue]);
 
   const onSubmit = async (data: FormValues) => {
-    console.log("입력된 데이터:", data);
     const formattedPhone = `${data.phoneFirst}${data.phoneSecond}`;
     const payload = {
       phone: formattedPhone,
       postalCode: data.postalCode,
       basicAdd: data.address,
       detailAdd: data.detailAddress,
-      image: profileImage || undefined,
+      image: profileImage ? profileImage.name : "",
     };
 
     try {
-      await updateUserProfile(payload, profileImage || undefined);
+      await updateUserProfile(payload);
       navigate(ROUTE_LINK.MYPAGE.path);
       alert("회원 정보가 수정되었습니다.");
     } catch (error) {

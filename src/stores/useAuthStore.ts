@@ -99,23 +99,9 @@ const useAuthStore = create<UserState>()(
         }
       },
 
-      updateUserProfile: async (data, profileImage) => {
+      updateUserProfile: async (data: UserProfile) => {
         try {
-          const formData = new FormData();
-          formData.append("phone", data.phone || "");
-          formData.append("postalCode", data.postalCode || "");
-          formData.append("address", data.basicAdd || "");
-          formData.append("detailAddress", data.detailAdd || "");
-
-          if (profileImage) {
-            formData.append("image", profileImage);
-          }
-
-          console.log("FormData:", Array.from(formData.entries()));
-          const response = await putAxios("/users/my", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-
+          const response = await putAxios("/users/my", data);
           const updatedUser = response.data;
 
           set((state) => {

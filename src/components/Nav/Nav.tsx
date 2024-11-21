@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
-import useAuthStore from "../../store/useAuthStore";
+import useAuthStore from "../../stores/useAuthStore";
 
 import { S } from "./Nav.style";
 
