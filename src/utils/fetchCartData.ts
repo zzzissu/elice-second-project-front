@@ -2,26 +2,33 @@ import { getAxios } from "../utils/axios";
 
 interface CartItem {
   id: number;
-  itemName: string;
-  imageSrc: string;
+  name: string;
+  image: string;
   price: number;
   description: string;
-  shopName: string;
+  shop: {
+    nickname: string;
+    _id: string;
+  };
+  checked: boolean;
 }
 
 export const fetchCartData = async (): Promise<
   { shopName: string; items: CartItem[] }[]
 > => {
-  const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+  const localCart = JSON.parse(localStorage.getItem("products") || "[]");
 
   const requests = localCart.map(
-    async (cartItem: { id: number; shopName: string }) => {
+    async (cartItem: {
+      id: number;
+      shop: { nickname: string; _id: string };
+    }) => {
       const response = await getAxios(`/products/${cartItem.id}`);
       const product = response.data;
 
       return {
         ...product,
-        shopName: cartItem.shopName,
+        shop: cartItem.shop,
         checked: false,
       };
     },
@@ -30,16 +37,24 @@ export const fetchCartData = async (): Promise<
   const items = await Promise.all(requests);
 
   const groupedByShop = items.reduce(
-    (acc: Record<string, CartItem[]>, item) => {
-      if (!acc[item.shopName]) acc[item.shopName] = [];
-      acc[item.shopName].push(item);
+    (acc: Record<string, { shopId: string; items: CartItem[] }>, item) => {
+      const shopKey = item.shop.nickname;
+
+      if (!acc[shopKey]) {
+        acc[shopKey] = {
+          shopId: item.shop._id,
+          items: [],
+        };
+      }
+      acc[shopKey].items.push(item);
       return acc;
     },
     {},
   );
 
-  return Object.entries(groupedByShop).map(([shopName, items]) => ({
+  return Object.entries(groupedByShop).map(([shopName, { shopId, items }]) => ({
     shopName,
+    shopId,
     items,
   }));
 };

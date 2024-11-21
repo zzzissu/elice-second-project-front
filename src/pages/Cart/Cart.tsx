@@ -16,11 +16,14 @@ import {
 
 interface CartItem {
   id: number;
-  itemName: string;
-  imageSrc: string;
+  name: string;
+  image: string;
   price: number;
   description: string;
-  shopName: string;
+  shop: {
+    nickname: string;
+    _id: string;
+  };
   checked?: boolean;
 }
 
@@ -184,9 +187,9 @@ const CartPage: React.FC = () => {
                       />
                       <CartItem
                         page="cart"
-                        imageSrc={item.imageSrc}
+                        imageSrc={item.image}
                         title={item.price}
-                        description={item.itemName}
+                        description={item.name}
                       />
                       <S.RemoveButton
                         onClick={() => handleRemoveItem(shopIndex, item.id)}
