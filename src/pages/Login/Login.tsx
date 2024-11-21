@@ -5,6 +5,7 @@ import ROUTE_LINK from "../../routes/RouterLink";
 import { Nav, FormContainer, InputField } from "components";
 import useAuthStore from "../../stores/useAuthStore";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 interface FormValues {
   username: string;
@@ -21,7 +22,7 @@ const LoginPage = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       await login(data.email, data.password);
-      alert("로그인 성공!");
+      toast.success("✨로그인 성공 !");
       navigate(ROUTE_LINK.LIST.path);
     } catch (error: unknown) {
       if (error instanceof AxiosError) {

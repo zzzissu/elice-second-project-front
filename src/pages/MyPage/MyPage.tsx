@@ -11,6 +11,7 @@ import { ItemProps } from "../../components/ItemCard/ItemCard";
 
 import { S } from "./MyPage.style";
 import useModalStore from "../../stores/modal";
+import { toast } from "react-toastify";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -87,14 +88,21 @@ const MyPage = () => {
     paginationNum();
   }, [sellingItems]);
 
-  const deleteProduct = (
+  const deleteProduct = async (
     id: string,
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     e.stopPropagation();
     e.preventDefault();
-    deleteAxios(`/products/${id}`);
-    openModal("deleteProduct");
+    try {
+      const res = await deleteAxios(`/products/${id}`);
+
+      if (res.status === 204) {
+        toast.success("✨상품이 삭제되었습니다.");
+      } else toast.warn("상품 삭제를 실패했습니다. 다시 시도해주세요.");
+    } catch (error) {
+      toast.error("상품 삭제 중 오류가 발생했습니다.");
+    }
   };
 
   const handleDeleteModalClick = () => {

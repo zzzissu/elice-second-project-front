@@ -10,6 +10,7 @@ import { ItemProps } from "components/ItemCard/ItemCard";
 
 import { S } from "./Detail.style";
 import useModalStore from "../../stores/modal/index";
+import { toast } from "react-toastify";
 
 interface CartItemsProps {
   id: string;
@@ -62,8 +63,8 @@ const Detail = () => {
     if (!check) {
       cartItems.push(newItem);
       localStorage.setItem("products", JSON.stringify(cartItems));
-      openModal("addCartItem");
-    } else openModal("existCartItem");
+      toast.success("✨장바구니에 상품이 등록되었습니다.");
+    } else toast.error("이미 장바구니에 등록된 상품입니다.");
   };
 
   const handleModalBtnClick = () => {
@@ -108,8 +109,6 @@ const Detail = () => {
       )}
       <Nav />
       <S.Detail>
-        {/* <Sidebar /> */}
-
         <S.StickyWrap>
           <S.UpperWrap>
             <S.ProductImg imgUrl={item.image} />
