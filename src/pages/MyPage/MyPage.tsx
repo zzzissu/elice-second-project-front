@@ -17,7 +17,7 @@ const MyPage = () => {
   const [pageNum, setPageNum] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [cartItems, setCartItems] = useState<CartItems[]>([]);
+  const [purchasedItems, setPurchasedItems] = useState<CartItems[]>([]);
   const [filteredCartItems, setFilteredCartItems] = useState<
     {
       date: string;
@@ -26,11 +26,18 @@ const MyPage = () => {
   >([]);
 
   const limit = 6;
-  let url = `products/my?currentPage=${currentPage}&limit=${limit}`;
+  let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
+  let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;
 
   useEffect(() => {
-    getAxios(url).then((res) => {
+    getAxios(sellingurl).then((res) => {
       setSellingItems(res.data.myProducts);
+      setTotalPage(res.data.totalPages);
+    });
+  }, []);
+  useEffect(() => {
+    getAxios(purchasedurl).then((res) => {
+      setPurchasedItems(res.data.myProducts);
       setTotalPage(res.data.totalPages);
     });
   }, []);
@@ -64,7 +71,7 @@ const MyPage = () => {
   };
 
   useEffect(() => {
-    getAxios(url).then((res) => {
+    getAxios(sellingurl).then((res) => {
       setSellingItems(res.data.myProducts);
       setTotalPage(res.data.totalPages);
     });
@@ -89,19 +96,21 @@ const MyPage = () => {
     let dates: string[] = [];
 
     const uniqueDates = [
-      ...new Set(cartItems.map((item) => item.purchaseDate)),
+      ...new Set(purchasedItems.map((item) => item.purchaseDate)),
     ];
     dates = uniqueDates;
 
     const groupedCartItems = dates.map((date) => ({
       date,
-      items: cartItems.filter((cartItem) => cartItem.purchaseDate === date),
+      items: purchasedItems.filter(
+        (cartItem) => cartItem.purchaseDate === date,
+      ),
     }));
 
     setFilteredCartItems(groupedCartItems);
-  }, [cartItems]);
+  }, [purchasedItems]);
 
-  if (!sellingItems || !sellingItems || !cartItems) return null;
+  if (!sellingItems || !sellingItems || !purchasedItems) return null;
   return (
     <S.MyPageWrap>
       <Nav />
@@ -187,7 +196,7 @@ const MyPage = () => {
               <S.EmptyCart>구매 내역이 없습니다.</S.EmptyCart>
             )}
           </S.PurchaseList>
-          {cartItems.length > 0 ? (
+          {purchasedItems.length > 0 ? (
             <S.MoreBtn onClick={showMore}>더보기</S.MoreBtn>
           ) : (
             ""
