@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import * as S from "./Login.styled";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { Nav, FormContainer, InputField } from "components";
-import useAuthStore from "../../store/useAuthStore";
+import useAuthStore from "../../stores/useAuthStore";
 import { AxiosError } from "axios";
 
 interface FormValues {

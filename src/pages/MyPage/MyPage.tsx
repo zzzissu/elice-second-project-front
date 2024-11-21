@@ -6,13 +6,17 @@ import { Nav, Button, ItemCard, CartItem } from "components";
 
 import { getAxios } from "../../utils/axios";
 
-import { CartItems, ItemProps } from "../../types/types";
+import { CartItems } from "../../types/types";
+import { ItemProps } from "../../components/ItemCard/ItemCard";
 
 import { S } from "./MyPage.style";
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [sellingItems, setSellingItems] = useState<ItemProps[]>([]);
+  const [pageNum, setPageNum] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [cartItems, setCartItems] = useState<CartItems[]>([]);
   const [filteredCartItems, setFilteredCartItems] = useState<
     {
@@ -21,16 +25,15 @@ const MyPage = () => {
     }[]
   >([]);
 
-  const [pageNum, setPageNum] = useState<number[]>([]);
+  const limit = 6;
+  let url = `products/my?currentPage=${currentPage}&limit=${limit}`;
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedItems = sellingItems.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
+  useEffect(() => {
+    getAxios(url).then((res) => {
+      setSellingItems(res.data.myProducts);
+      setTotalPage(res.data.totalPages);
+    });
+  }, []);
 
   const editProfile = () => {
     navigate(ROUTE_LINK.PASSWORD_CHECK.path);
@@ -41,9 +44,8 @@ const MyPage = () => {
   };
 
   const paginationNum = () => {
-    const num = Math.ceil(sellingItems.length / itemsPerPage);
-    let nums = [];
-    for (let i = 1; i <= num; i++) {
+    let nums: number[] = [];
+    for (let i = 1; i <= totalPage; i++) {
       nums.push(i);
     }
 
@@ -56,29 +58,32 @@ const MyPage = () => {
     } else return;
   };
   const goToNextPage = () => {
-    if (currentPage !== pageNum[-1]) {
+    if (currentPage < totalPage) {
       setCurrentPage((prev) => prev + 1);
     } else return;
   };
 
-  const showMore = () => {};
-
-  const fetchItems = async () => {
-    getAxios("/data/items.json").then((res) => setSellingItems(res.data));
-  };
-
-  const fetchCartItems = async () => {
-    getAxios("/data/cartItem.json").then((res) => setCartItems(res.data));
-  };
-
   useEffect(() => {
-    fetchItems();
-    fetchCartItems();
-  }, []);
+    getAxios(url).then((res) => {
+      setSellingItems(res.data.myProducts);
+      setTotalPage(res.data.totalPages);
+    });
+  }, [currentPage]);
 
   useEffect(() => {
     paginationNum();
   }, [sellingItems]);
+
+  const showMore = () => {};
+
+  // const fetchCartItems = async () => {
+  //   getAxios("/data/cartItem.json").then((res) => setCartItems(res.data));
+  // };
+
+  useEffect(() => {
+    // fetchItems();
+    // fetchCartItems();
+  }, []);
 
   useEffect(() => {
     let dates: string[] = [];
@@ -96,7 +101,7 @@ const MyPage = () => {
     setFilteredCartItems(groupedCartItems);
   }, [cartItems]);
 
-  if (!paginatedItems || !sellingItems || !pageNum || !cartItems) return null;
+  if (!sellingItems || !sellingItems || !cartItems) return null;
   return (
     <S.MyPageWrap>
       <Nav />
@@ -119,7 +124,7 @@ const MyPage = () => {
           <S.SellingBox>
             <S.TitleBox>판매중인 상품</S.TitleBox>
             <S.ItemGrid>
-              {paginatedItems.map((sellingItem, idx) => {
+              {sellingItems.map((sellingItem, idx) => {
                 const column = 4;
                 const row = Math.floor(idx / column) + 1;
 
@@ -138,6 +143,8 @@ const MyPage = () => {
                 return (
                   <S.PaginationNum
                     key={num}
+                    num={num}
+                    currentPage={currentPage}
                     onClick={() => setCurrentPage(num)}
                   >
                     {num}
