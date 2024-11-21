@@ -138,7 +138,10 @@ const MyPage = () => {
                 const row = Math.floor(idx / column) + 1;
 
                 return (
-                  <Link to={ROUTE_LINK.DETAIL.path} key={sellingItem._id}>
+                  <Link
+                    to={`/products/${sellingItem._id}`}
+                    key={sellingItem._id}
+                  >
                     <ItemCard {...sellingItem} idx={idx} row={row} />
                   </Link>
                 );
