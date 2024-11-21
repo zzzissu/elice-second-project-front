@@ -85,7 +85,6 @@ const AddOrEditProduct = () => {
     }
   }, [itemInfo]);
 
-  console.log(inputValue);
   const postProducts = () => {
     if (
       location.pathname === "/addproduct" &&
