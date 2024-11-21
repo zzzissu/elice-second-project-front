@@ -12,6 +12,8 @@ import {
 } from "components";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddressSearch from "./AddressSearch/AddressSearch";
+// import { postAxios } from "../../utils/axios";
+import ROUTE_LINK from "../../routes/RouterLink";
 
 export interface FormValues {
   name: string;
@@ -50,6 +52,7 @@ const PaymentPage: React.FC = () => {
     detailAddress: "",
   });
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [paymentMethod, setPaymentMethod] = useState("bank");
 
   useEffect(() => {
     const authStorage = JSON.parse(
@@ -125,17 +128,51 @@ const PaymentPage: React.FC = () => {
     console.log("주문내역 확인 및 결제 동의 체크:", !isChecked);
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (!isChecked) {
       alert("주문내역 확인 및 결제 동의를 체크해주세요.");
       return;
     }
 
-    // 결제 성공 후 이메일 가상 계좌 전달 로직 추가 가능
-    alert("결제가 완료되었습니다!");
+    if (paymentMethod === "bank") {
+      // 무통장 결제 로직
+      const paymentInfo = {
+        items: orderItems,
+        totalAmount: orderItems.reduce((total, item) => total + item.price, 0),
+      };
 
-    // 결제 완료 페이지로 이동
-    navigate("/payment-complete");
+      localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
+      alert("결제가 완료되었습니다!");
+      navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+    } else if (paymentMethod === "toss") {
+      // 토스페이먼츠 결제 로직
+      const orderInfo = {
+        name: addressInfo.name,
+        phone: `${phoneFirst}${phoneSecond}`,
+        postalCode: addressInfo.postalCode,
+        address: addressInfo.address,
+        detailAddress: addressInfo.detailAddress,
+        requestMessage: "요청사항 예시", // 거래 요청 사항
+        items: orderItems,
+        totalAmount: orderItems.reduce((total, item) => total + item.price, 0),
+      };
+
+      try {
+        // 서버 API 호출
+        // const response = await postAxios("/order", orderInfo);
+        // console.log("주문 생성 응답:", response.data);
+        console.log(orderInfo);
+
+        // 토스페이 API 호출 (가정)
+        console.log("토스페이 API 호출");
+        alert("결제가 완료되었습니다!");
+
+        navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+      } catch (error) {
+        console.error("결제 처리 중 오류 발생:", error);
+        alert("결제 처리에 실패했습니다.");
+      }
+    }
   };
 
   const totalAmount = orderItems.reduce((total, item) => total + item.price, 0);
@@ -268,7 +305,10 @@ const PaymentPage: React.FC = () => {
           <S.Section>
             <S.SectionTitle>결제수단</S.SectionTitle>
             <S.PaymentMethod>
-              <PaymentMethodButtons />
+              <PaymentMethodButtons
+                selectedMethod={paymentMethod}
+                setPaymentMethod={setPaymentMethod}
+              />
             </S.PaymentMethod>
           </S.Section>
         </S.LeftSection>

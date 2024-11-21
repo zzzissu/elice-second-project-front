@@ -20,10 +20,10 @@ export const fetchCartData = async (): Promise<
 
   const requests = localCart.map(
     async (cartItem: {
-      _id: string;
+      id: string;
       shop: { nickname: string; _id: string };
     }) => {
-      const response = await getAxios(`/products/${cartItem._id}`);
+      const response = await getAxios(`/products/${cartItem.id}`);
       const product = response.data;
 
       return {
