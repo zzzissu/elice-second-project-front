@@ -11,6 +11,7 @@ import { getAxios, postAxios, putAxios } from "../../utils/axios";
 import { S } from "./AddOrEditProduct.style";
 // import useModalState from "../../hooks/useModalState";
 import useModalStore from "../../stores/modal/index";
+import { toast } from "react-toastify";
 
 interface CategoryProps {
   id: number;
@@ -85,7 +86,7 @@ const AddOrEditProduct = () => {
     }
   }, [itemInfo]);
 
-  const postProducts = () => {
+  const postProducts = async () => {
     if (
       location.pathname === "/addproduct" &&
       inputValue.productName &&
@@ -93,27 +94,28 @@ const AddOrEditProduct = () => {
       inputValue.productDescription &&
       selectedCategory
     ) {
-      postAxios("/products", {
-        name: inputValue.productName,
-        image: "/images/ss.jpg",
-        price: Number(inputValue.productPrice),
-        description: inputValue.productDescription,
-        categoryName: selectedCategory,
-      });
-      openModal("postProduct");
-    }
-    if (
-      location.pathname === "/addproduct" &&
-      (!inputValue.productName ||
-        !inputValue.productPrice ||
-        !inputValue.productDescription ||
-        !selectedCategory)
-    ) {
-      openModal("valid");
+      try {
+        const res = await postAxios("/products", {
+          name: inputValue.productName,
+          image: "/images/ss.jpg",
+          price: Number(inputValue.productPrice),
+          description: inputValue.productDescription,
+          categoryName: selectedCategory,
+        });
+
+        if (res.status === 201) {
+          toast.success("✨ 상품등록이 완료되었습니다!");
+          navigate("/users/my");
+        } else {
+          toast.error("상품 등록에 실패했습니다. 다시 시도해주세요.");
+        }
+      } catch (error) {
+        toast.error("상품 등록 중 오류가 발생했습니다.");
+      }
     }
   };
 
-  const putProduct = () => {
+  const putProduct = async () => {
     if (
       location.pathname === "/editproduct" &&
       inputValue.productName &&
@@ -121,16 +123,26 @@ const AddOrEditProduct = () => {
       inputValue.productDescription &&
       selectedCategory
     ) {
-      putAxios(`/products/${location.state}`, {
-        updateData: {
-          name: inputValue.productName,
-          image: "/images/ss.jpg",
-          price: Number(inputValue.productPrice),
-          description: inputValue.productDescription,
-          categoryName: selectedCategory,
-        },
-      });
-      openModal("putProduct");
+      try {
+        const res = await putAxios(`/products/${location.state}`, {
+          updateData: {
+            name: inputValue.productName,
+            image: "/images/ss.jpg",
+            price: Number(inputValue.productPrice),
+            description: inputValue.productDescription,
+            categoryName: selectedCategory,
+          },
+        });
+
+        if (res.status === 204) {
+          toast.success("✨상품 정보가 수정되었습니다.");
+          navigate("/users/my");
+        } else {
+          toast.warn("상품 수정에 실패했습니다. 다시 시도해주세요");
+        }
+      } catch (error) {
+        toast.error("상품 정보 수정 중 오류가 발생했습니다.");
+      }
     }
   };
 
