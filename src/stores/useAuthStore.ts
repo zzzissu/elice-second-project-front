@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { postAxios, putAxios } from "../utils/axios";
+import { toast } from "react-toastify";
 
 interface UserProfile {
   email?: string;
@@ -74,7 +75,7 @@ const useAuthStore = create<UserState>()(
         set({ isAuthenticated: false, user: null });
         localStorage.removeItem("token");
         localStorage.removeItem("auth-storage");
-        console.log("로그아웃 성공");
+        toast.info("로그아웃 되었습니다 !");
       },
 
       register: async (userData) => {

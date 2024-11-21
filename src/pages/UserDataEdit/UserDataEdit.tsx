@@ -7,6 +7,7 @@ import { Label } from "../../components/InputField/InputFiled.styled";
 import { Nav, FormContainer, InputField } from "components";
 import useAuthStore from "../../stores/useAuthStore";
 import AddressSearch from "./AddressSearch/AddressSearch";
+import { toast } from "react-toastify";
 
 export interface FormValues {
   phoneFirst: string;
@@ -56,10 +57,10 @@ export default function UserDataEditPage() {
     try {
       await updateUserProfile(payload);
       navigate(ROUTE_LINK.MYPAGE.path);
-      alert("회원 정보가 수정되었습니다.");
+      toast.success("✨회원 정보가 수정되었습니다.");
     } catch (error) {
       console.error("회원 정보 수정 실패:", error);
-      alert("오류가 발생했습니다. 다시 시도해주세요.");
+      toast.error("오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 

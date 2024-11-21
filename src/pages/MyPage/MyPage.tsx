@@ -11,6 +11,7 @@ import { ItemProps } from "../../components/ItemCard/ItemCard";
 
 import { S } from "./MyPage.style";
 import useModalStore from "../../stores/modal";
+import { toast } from "react-toastify";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -33,17 +34,22 @@ const MyPage = () => {
   let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
   let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;
 
-  useEffect(() => {
+  const getSellingItems = () => {
     getAxios(sellingurl).then((res) => {
       setSellingItems(res.data.myProducts);
       setTotalPage(res.data.totalPages);
     });
-  }, []);
-  useEffect(() => {
+  };
+
+  const getPurchased = () => {
     getAxios(purchasedurl).then((res) => {
-      setPurchasedItems(res.data.myProducts);
+      setPurchasedItems(res.data.orders);
       setTotalPage(res.data.totalPages);
     });
+  };
+  useEffect(() => {
+    getSellingItems();
+    getPurchased();
   }, []);
 
   const editProfile = () => {
@@ -74,12 +80,6 @@ const MyPage = () => {
     } else return;
   };
 
-  const getSellingItems = () => {
-    getAxios(sellingurl).then((res) => {
-      setSellingItems(res.data.myProducts);
-      setTotalPage(res.data.totalPages);
-    });
-  };
   useEffect(() => {
     getSellingItems();
   }, [currentPage]);
@@ -88,14 +88,21 @@ const MyPage = () => {
     paginationNum();
   }, [sellingItems]);
 
-  const deleteProduct = (
+  const deleteProduct = async (
     id: string,
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     e.stopPropagation();
     e.preventDefault();
-    deleteAxios(`/products/${id}`);
-    openModal("deleteProduct");
+    try {
+      const res = await deleteAxios(`/products/${id}`);
+
+      if (res.status === 204) {
+        toast.success("✨상품이 삭제되었습니다.");
+      } else toast.warn("상품 삭제를 실패했습니다. 다시 시도해주세요.");
+    } catch (error) {
+      toast.error("상품 삭제 중 오류가 발생했습니다.");
+    }
   };
 
   const handleDeleteModalClick = () => {
@@ -121,7 +128,6 @@ const MyPage = () => {
     setFilteredCartItems(groupedCartItems);
   }, [purchasedItems]);
 
-  if (!sellingItems || !sellingItems || !purchasedItems) return null;
   return (
     <S.MyPageWrap>
       {modalType === "deleteProduct" && (
@@ -150,24 +156,26 @@ const MyPage = () => {
           <S.SellingBox>
             <S.TitleBox>판매중인 상품</S.TitleBox>
             <S.ItemGrid>
-              {sellingItems.map((sellingItem, idx) => {
-                const column = 3;
-                const row = Math.floor(idx / column) + 1;
+              {sellingItems.length > 0
+                ? sellingItems.map((sellingItem, idx) => {
+                    const column = 3;
+                    const row = Math.floor(idx / column) + 1;
 
-                return (
-                  <Link
-                    to={`/products/${sellingItem._id}`}
-                    key={sellingItem._id}
-                  >
-                    <ItemCard
-                      {...sellingItem}
-                      idx={idx}
-                      row={row}
-                      deleteProduct={deleteProduct}
-                    />
-                  </Link>
-                );
-              })}
+                    return (
+                      <Link
+                        to={`/products/${sellingItem._id}`}
+                        key={sellingItem._id}
+                      >
+                        <ItemCard
+                          {...sellingItem}
+                          idx={idx}
+                          row={row}
+                          deleteProduct={deleteProduct}
+                        />
+                      </Link>
+                    );
+                  })
+                : "판매 중인 상품이 없습니다."}
             </S.ItemGrid>
             <S.PaginationBox>
               <S.ArrowIconBox>
@@ -192,7 +200,7 @@ const MyPage = () => {
           </S.SellingBox>
           <S.PurchaseList>
             <S.TitleBox>구매 내역</S.TitleBox>
-            {filteredCartItems.length > 0 ? (
+            {purchasedItems.length > 0 ? (
               filteredCartItems.map(({ date, items }) => (
                 <div key={date}>
                   <S.DateTitle>{date}</S.DateTitle> {/* 날짜 제목 표시 */}
