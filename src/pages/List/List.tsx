@@ -16,6 +16,7 @@ import { ItemProps } from "components/ItemCard/ItemCard.tsx";
 import { CarouselItem } from "../../types/types.ts";
 
 import { S } from "./List.style";
+import useDropdown from "../../hooks/useDropdown";
 
 const options = ["최신순", "오래된순"];
 
@@ -23,6 +24,7 @@ const List = () => {
   const [items, setItems] = useState<ItemProps[]>([]);
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { selectedItem, handleSelect } = useDropdown(options);
 
   const location = useLocation();
 
@@ -30,13 +32,19 @@ const List = () => {
   const params = new URLSearchParams(location.search);
   const categoryName = params.get("categoryName");
 
-  console.log(categoryName);
-
   const currentPage = 1;
   const limit = 8;
   let url = `/products?currentPage=${currentPage}&limit=${limit}`;
   if (categoryName) {
     url += `&categoryName=${categoryName}`;
+  }
+  if (selectedItem) {
+    const sort = () => {
+      if (selectedItem === "오래된순") {
+        return "oldest";
+      } else return "latest";
+    };
+    url += `&sort=${sort()}`;
   }
 
   useEffect(() => {
@@ -45,7 +53,7 @@ const List = () => {
     });
 
     getCarousel();
-  }, [categoryName]);
+  }, [categoryName, selectedItem]);
 
   const getCarousel = async () => {
     try {
@@ -67,7 +75,11 @@ const List = () => {
         <S.ListContent>
           <Carousel carouselData={carouselData} />
           <S.DropdownWrap>
-            <Dropdown options={options} />
+            <Dropdown
+              options={options}
+              selectedItem={selectedItem}
+              onClick={handleSelect}
+            />
           </S.DropdownWrap>
 
           <S.ItemGrid>
