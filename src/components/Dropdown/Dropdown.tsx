@@ -7,15 +7,17 @@ interface DropdownProps {
   options: string[];
   width?: string;
   height?: string;
+  selectedItem: string;
+  onClick: (value: string) => void;
 }
 
-const Dropdown = ({ options }: DropdownProps) => {
-  const { isOpen, selectedItem, handleSelect, handleToggle } =
-    useDropdown(options);
+const Dropdown = ({ options, selectedItem, onClick }: DropdownProps) => {
+  const { isOpen, handleToggle } = useDropdown(options);
 
   const handleClickItem = (e: React.MouseEvent, option: string) => {
     e.stopPropagation();
-    handleSelect(option);
+    onClick(option);
+    handleToggle();
   };
 
   return (

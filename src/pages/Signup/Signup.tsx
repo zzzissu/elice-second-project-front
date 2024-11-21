@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as S from "./Signup.styled";
 import { Nav, FormContainer, InputField } from "components";
-import useAuthStore from "../../store/useAuthStore";
+import useAuthStore from "../../stores/useAuthStore";
 import AddressSearch from "./AddressSearch/AddressSearch";
 import {
   checkEmailAvailability,
