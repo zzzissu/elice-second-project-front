@@ -157,6 +157,8 @@ const PaymentPage: React.FC = () => {
 
         navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
       } else if (paymentMethod === "toss") {
+        const orderId = `ORDER_${Date.now()}`;
+
         const refinedItems = orderItems.map((item) => ({
           categoryName: item.categoryName,
           description: item.description || "",
@@ -167,6 +169,8 @@ const PaymentPage: React.FC = () => {
         }));
 
         const orderInfo = {
+          paymentKey: "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
+          orderId,
           name: addressInfo.name,
           phone: `${phoneFirst}${phoneSecond}`,
           postalCode: addressInfo.postalCode,
@@ -188,7 +192,7 @@ const PaymentPage: React.FC = () => {
 
         tossPayments.requestPayment("카드", {
           amount: totalAmount,
-          orderId: `ORDER_${Date.now()}`,
+          orderId,
           orderName: "상품 결제",
           customerName: addressInfo.name,
           successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
