@@ -29,7 +29,7 @@ const MyPage = () => {
       items: CartItems[];
     }[]
   >([]);
-  const { modalType, openModal, closeModal } = useModalStore();
+  const { modalType, closeModal } = useModalStore();
 
   let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
   let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;

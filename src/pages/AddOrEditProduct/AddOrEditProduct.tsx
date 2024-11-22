@@ -43,12 +43,11 @@ const AddOrEditProduct = () => {
 
   const [categories, setCategories] = useState<[]>([]);
 
-  const [isSelected, setIsSelected] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const [inputValue, handleInputChange] = useInputValue();
   const { isFocused, handleFocus, handleBlur } = useIsFocused();
-  const { modalType, openModal, closeModal } = useModalStore();
+  const { modalType, closeModal } = useModalStore();
 
   const [itemInfo, setItemInfo] = useState<ItemInfoProps | undefined>(
     undefined,
