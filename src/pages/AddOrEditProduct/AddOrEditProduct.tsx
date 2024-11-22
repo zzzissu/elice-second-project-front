@@ -173,16 +173,6 @@ const AddOrEditProduct = () => {
           modalText="로그인 후 다시 시도해주세요"
           onClick={redirectToLogin}
         />
-      ) : modalType === "postProduct" ? (
-        <ConfirmModal
-          modalText="상품이 등록되었습니다."
-          onClick={redirectToMypage}
-        />
-      ) : modalType === "putProduct" ? (
-        <ConfirmModal
-          modalText="상품 정보가 수정되었습니다."
-          onClick={redirectToMypage}
-        />
       ) : (
         ""
       )}
