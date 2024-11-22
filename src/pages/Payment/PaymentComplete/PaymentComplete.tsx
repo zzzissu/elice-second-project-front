@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import EmptyMessage from "../../../components/EmptyMessage/EmptyMessage";
 import ROUTE_LINK from "../../../routes/RouterLink";
+import { postAxios } from "../../../utils/axios";
 import { toast } from "react-toastify";
 
 const PaymentComplete: React.FC = () => {
@@ -21,20 +22,24 @@ const PaymentComplete: React.FC = () => {
       }
 
       try {
-        const response = await fetch("/api/payments/approval", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId, paymentKey, amount }),
+        const response = await postAxios("/payments/approval", {
+          orderId,
+          paymentKey,
+          amount,
         });
 
-        if (!response.ok) {
-          const { message } = await response.json();
-          throw new Error(message);
+        if (response.status !== 200) {
+          throw new Error(
+            response.data?.message || "결제 승인에 실패했습니다.",
+          );
         }
 
         toast.success("결제가 완료되었습니다.");
-      } catch {
-        toast.error("결제 승인에 실패했습니다.");
+      } catch (error) {
+        console.error("결제 승인 오류:", error);
+        toast.error(
+          error instanceof Error ? error.message : "결제 승인에 실패했습니다.",
+        );
         navigate(ROUTE_LINK.PAYMENT_FAIL.path);
       }
     };
