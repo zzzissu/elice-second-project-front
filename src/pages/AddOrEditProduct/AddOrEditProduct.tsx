@@ -9,7 +9,7 @@ import useInputValue from "../../hooks/UseUserInput";
 import { getAxios, postAxios, putAxios } from "../../utils/axios";
 
 import { S } from "./AddOrEditProduct.style";
-// import useModalState from "../../hooks/useModalState";
+
 import useModalStore from "../../stores/modal/index";
 import { toast } from "react-toastify";
 
@@ -154,8 +154,10 @@ const AddOrEditProduct = () => {
   };
 
   useEffect(() => {
-    if (location.pathname === "editProduct") getOriginProductInfo();
+    if (location.pathname === "/editproduct") getOriginProductInfo();
   }, []);
+
+  console.log(itemInfo);
 
   const handleImgInputClick = () => {
     if (imgInputRef.current) {
@@ -276,11 +278,18 @@ const AddOrEditProduct = () => {
         <S.GridContent>
           <UserInput
             name="productPrice"
-            type="number"
+            type="text"
             width="234px"
             placeholder="상품 가격을 입력해주세요"
             value={inputValue.productPrice}
-            onChange={(value) => handleInputChange("productPrice", value)}
+            onChange={(value: string) => {
+              if (/^\d*$/.test(value)) {
+                handleInputChange("productPrice", value);
+              } else {
+                handleInputChange("productPrice", "");
+                toast.error("숫자만 입력해주세요");
+              }
+            }}
           />
         </S.GridContent>
 
