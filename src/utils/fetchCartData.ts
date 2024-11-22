@@ -13,85 +13,48 @@ interface CartItem {
   checked: boolean;
 }
 
-interface Shop {
-  shopName: string;
-  shopId: string;
-  items: CartItem[];
-}
-
-export const fetchCartData = async (): Promise<Shop[]> => {
+export const fetchCartData = async (): Promise<
+  { shopName: string; items: CartItem[] }[]
+> => {
   const localCart = JSON.parse(localStorage.getItem("products") || "[]");
 
-  // 각 아이템의 세부 정보를 가져오기
-  const shopRequests = localCart.map(async (shop: Shop) => {
-    const updatedItems = await Promise.all(
-      shop.items.map(async (item: CartItem) => {
-        try {
-          console.log(`아이템 ID: ${item._id}`);
+  const requests = localCart.map(
+    async (cartItem: {
+      id: string;
+      shop: { nickname: string; _id: string };
+    }) => {
+      const response = await getAxios(`/products/${cartItem.id}`);
+      const product = response.data;
 
-          const response = await getAxios(`/products/${item._id}`);
-          const product = response.data;
+      return {
+        ...product,
+        shop: cartItem.shop,
+        checked: false,
+      };
+    },
+  );
 
-          return {
-            ...product,
-            shopId: shop.shopId,
-            shopName: shop.shopName,
-            checked: item.checked || false, // 기존 체크 상태 유지
-          };
-        } catch (error) {
-          console.error(`Error fetching product with ID ${item._id}:`, error);
-          return item; // 요청 실패 시 기존 데이터를 반환
-        }
-      }),
-    );
+  const items = await Promise.all(requests);
 
-    return {
-      shopName: shop.shopName,
-      shopId: shop.shopId,
-      items: updatedItems,
-    };
-  });
+  const groupedByShop = items.reduce(
+    (acc: Record<string, { shopId: string; items: CartItem[] }>, item) => {
+      const shopKey = item.shop.nickname;
 
-  // 요청 완료 후 데이터 반환
-  return await Promise.all(shopRequests);
+      if (!acc[shopKey]) {
+        acc[shopKey] = {
+          shopId: item.shop._id,
+          items: [],
+        };
+      }
+      acc[shopKey].items.push(item);
+      return acc;
+    },
+    {},
+  );
 
-  // const requests = localCart.map(
-  //   async (cartItem: {
-  //     id: string;
-  //     shop: { nickname: string; _id: string };
-  //   }) => {
-  //     const response = await getAxios(`/products/${cartItem.id}`);
-  //     const product = response.data;
-
-  //     return {
-  //       ...product,
-  //       shop: cartItem.shop,
-  //       checked: false,
-  //     };
-  //   },
-  // );
-
-  // const items = await Promise.all(requests);
-
-  // const groupedByShop = items.reduce(
-  //   (acc: Record<string, { shopId: string; items: CartItem[] }>, item) => {
-  //     const shopKey = item.shop.nickname;
-
-  //     if (!acc[shopKey]) {
-  //       acc[shopKey] = {
-  //         shopId: item.shop._id,
-  //         items: [],
-  //       };
-  //     }
-  //     acc[shopKey].items.push(item);
-  //     return acc;
-  //   },
-  //   {},
-  // );
-
-  // return Object.entries(groupedByShop).map(([shopName, { shopId, items }]) => ({
-  //   shopName,
-  //   shopId,
-  //   items,
-  // }));
+  return Object.entries(groupedByShop).map(([shopName, { shopId, items }]) => ({
+    shopName,
+    shopId,
+    items,
+  }));
 };
