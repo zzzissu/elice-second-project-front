@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button, UserInput, Nav, ConfirmModal } from "components";
@@ -47,7 +47,10 @@ const AddOrEditProduct = () => {
 
   const [inputValue, handleInputChange] = useInputValue();
   const { isFocused, handleFocus, handleBlur } = useIsFocused();
-  const { modalType, closeModal } = useModalStore();
+  const { modalType, openModal, closeModal } = useModalStore();
+  const imgInputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState(Object);
+  const [hasFile, setHasFile] = useState(false);
 
   const [itemInfo, setItemInfo] = useState<ItemInfoProps | undefined>(
     undefined,
@@ -111,7 +114,7 @@ const AddOrEditProduct = () => {
       } catch (error) {
         toast.error("상품 등록 중 오류가 발생했습니다.");
       }
-    }
+    } else openModal("valid");
   };
 
   const putProduct = async () => {
@@ -142,7 +145,7 @@ const AddOrEditProduct = () => {
       } catch (error) {
         toast.error("상품 정보 수정 중 오류가 발생했습니다.");
       }
-    }
+    } else openModal("valid");
   };
 
   const redirectToLogin = () => {
@@ -150,14 +153,39 @@ const AddOrEditProduct = () => {
     closeModal();
   };
 
-  const redirectToMypage = () => {
-    navigate("/users/my");
-    closeModal();
+  useEffect(() => {
+    if (location.pathname === "editProduct") getOriginProductInfo();
+  }, []);
+
+  const handleImgInputClick = () => {
+    if (imgInputRef.current) {
+      imgInputRef.current.click();
+    }
   };
 
-  useEffect(() => {
-    getOriginProductInfo();
-  }, []);
+  const hadleImageChange = () => {
+    const files = imgInputRef.current?.files;
+
+    if (files && files[0]) {
+      const file = files[0];
+      const fileName = encodeURIComponent(file.name);
+      console.log(fileName);
+
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
+
+      if (objectUrl) setHasFile(true);
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        if (!imgInputRef.current) return;
+      };
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  };
+
+  console.log(preview, imgInputRef);
 
   if (location.pathname === "editproduct" && !itemInfo) return null;
   if (!categories) return null;
@@ -173,27 +201,35 @@ const AddOrEditProduct = () => {
           modalText="로그인 후 다시 시도해주세요"
           onClick={redirectToLogin}
         />
-      ) : modalType === "postProduct" ? (
-        <ConfirmModal
-          modalText="상품이 등록되었습니다."
-          onClick={redirectToMypage}
-        />
-      ) : modalType === "putProduct" ? (
-        <ConfirmModal
-          modalText="상품 정보가 수정되었습니다."
-          onClick={redirectToMypage}
-        />
       ) : (
         ""
       )}
       <Nav />
       <S.TitleBox>상품 정보</S.TitleBox>
-      <S.UploadImgBox>
-        <S.UploadIcon />
-        <S.UploadText>이미지 등록</S.UploadText>
-        <S.Essential>필수 등록</S.Essential>
+
+      <S.UploadImgBox onClick={handleImgInputClick}>
+        {hasFile ? (
+          <>
+            <S.UploadedImg src={preview} alt="미리보기" />
+          </>
+        ) : (
+          <>
+            <S.UploadIcon />
+            <S.UploadText>이미지 등록</S.UploadText>
+            <S.Essential>필수 등록</S.Essential>
+          </>
+        )}
+        <S.ImgUpload
+          type="file"
+          accept="image/jpg, image/jpeg, image/png"
+          multiple
+          ref={imgInputRef}
+          onChange={hadleImageChange}
+        />
       </S.UploadImgBox>
-      <S.InfoTable>
+      {hasFile && <S.EditImgBtn>사진 수정하기</S.EditImgBtn>}
+
+      <S.InfoTable hasFile={hasFile}>
         <S.GridTitle>
           카테고리<S.Essential>필수 입력</S.Essential>
         </S.GridTitle>
