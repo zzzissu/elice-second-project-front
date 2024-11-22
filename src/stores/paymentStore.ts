@@ -6,6 +6,8 @@ interface PaymentState {
   setOrderInfo: (info: OrderInfo) => void;
   paymentStatus: "pending" | "success" | "failure";
   setPaymentStatus: (status: "pending" | "success" | "failure") => void;
+  orderId: string | null;
+  setOrderId: (id: string | null) => void;
 }
 
 export const usePaymentStore = create<PaymentState>((set) => ({
@@ -13,4 +15,6 @@ export const usePaymentStore = create<PaymentState>((set) => ({
   setOrderInfo: (info) => set({ orderInfo: info }),
   paymentStatus: "pending",
   setPaymentStatus: (status) => set({ paymentStatus: status }),
+  orderId: null,
+  setOrderId: (id) => set({ orderId: id }),
 }));

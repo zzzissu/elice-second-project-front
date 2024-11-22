@@ -1,11 +1,15 @@
 export interface OrderItem {
-  categoryName: string;
-  description?: string;
+  _id: string;
   image: string;
-  name: string;
   price: number;
-  sellerId: string;
+  description: string;
+  categoryName: string;
+  name: string;
+  sellerId: {
+    _id: string;
+  };
 }
+
 
 export interface OrderInfo {
   name: string;
