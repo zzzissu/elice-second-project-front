@@ -13,6 +13,7 @@ import {
   Nav,
   EmptyMessage,
 } from "components";
+import { toast } from "react-toastify";
 
 interface CartItem {
   _id: string;
@@ -45,34 +46,38 @@ const CartPage: React.FC = () => {
     loadCartData();
   }, []);
 
-  const calculateTotalAmount = (items: CartItem[]) => {
-    return items.reduce((sum, item) => sum + item.price, 0);
+  const calculateShopTotalAmount = (items: CartItem[]) => {
+    return items
+      .filter((item) => item.checked)
+      .reduce((sum, item) => sum + item.price, 0);
   };
 
-  const getSelectedItems = () => {
-    return cartData.flatMap((shop) =>
-      shop.items.filter((item) => item.checked),
+  const calculateShopSelectedItemsCount = (items: CartItem[]) => {
+    return items.filter((item) => item.checked).length;
+  };
+
+  const handlePurchase = (shopIndex: number) => {
+    const selectedItems = cartData[shopIndex].items.filter(
+      (item) => item.checked,
     );
-  };
-
-  const calculateSelectedItemsCount = () => {
-    return getSelectedItems().length;
-  };
-
-  const handlePurchase = () => {
-    const selectedItems = getSelectedItems();
     if (selectedItems.length === 0) {
-      alert("구매할 상품을 선택해주세요!");
+      toast.error("구매할 상품을 선택해주세요!");
       return;
     }
-
     navigate(ROUTE_LINK.PAYMENT.path, { state: { selectedItems } });
   };
 
   const handleDeleteShop = (shopIndex: number) => {
+    const shopItemsIds = cartData[shopIndex].items.map((item) => item._id);
+
+    const localProducts = JSON.parse(localStorage.getItem("products") || "[]");
+    const updatedLocalProducts = localProducts.filter(
+      (product: { id: string }) => !shopItemsIds.includes(product.id),
+    );
+    localStorage.setItem("products", JSON.stringify(updatedLocalProducts));
+
     const updatedCart = cartData.filter((_, sIndex) => sIndex !== shopIndex);
     setCartData(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
   const handleItemCheck = (shopIndex: number, itemId: string) => {
@@ -118,6 +123,16 @@ const CartPage: React.FC = () => {
           : shop,
       )
       .filter((shop) => shop.items.length > 0);
+
+    const localProducts = JSON.parse(localStorage.getItem("products") || "[]");
+    const selectedItemIds = cartData[shopIndex].items
+      .filter((item) => item.checked)
+      .map((item) => item._id);
+    const updatedLocalProducts = localProducts.filter(
+      (product: { id: string }) => !selectedItemIds.includes(product.id),
+    );
+    localStorage.setItem("products", JSON.stringify(updatedLocalProducts));
+
     setCartData(updatedCart);
   };
 
@@ -132,6 +147,13 @@ const CartPage: React.FC = () => {
           : shop,
       )
       .filter((shop) => shop.items.length > 0);
+
+    const localProducts = JSON.parse(localStorage.getItem("products") || "[]");
+    const updatedLocalProducts = localProducts.filter(
+      (product: { id: string }) => product.id !== itemId,
+    );
+    localStorage.setItem("products", JSON.stringify(updatedLocalProducts));
+
     setCartData(updatedCart);
   };
 
@@ -152,8 +174,6 @@ const CartPage: React.FC = () => {
         ]}
       />
     );
-
-  const totalSelectedItems = calculateSelectedItemsCount();
 
   return (
     <>
@@ -213,11 +233,13 @@ const CartPage: React.FC = () => {
                   <div>
                     <S.TotalAmount>
                       총 상품 금액:{" "}
-                      {calculateTotalAmount(shop.items).toLocaleString()}원
+                      {calculateShopTotalAmount(shop.items).toLocaleString()}원
                     </S.TotalAmount>
                     <Button
-                      btnText={`${totalSelectedItems}개 상품 구매하기`}
-                      onClick={handlePurchase}
+                      btnText={`${calculateShopSelectedItemsCount(
+                        shop.items,
+                      )}개 상품 구매하기`}
+                      onClick={() => handlePurchase(shopIndex)}
                       width="100%"
                       height="48px"
                       bgcolor="orange70"
