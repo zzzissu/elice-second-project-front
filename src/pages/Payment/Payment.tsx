@@ -16,12 +16,14 @@ import AddressSearch from "./AddressSearch/AddressSearch";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { toast } from "react-toastify";
 import { usePaymentStore } from "../../stores/paymentStore";
-import {
-  createOrder,
-  approvePayment,
-  callTossPaymentsApi,
-} from "../../utils/paymentApi";
-import { OrderInfo, OrderItem, ApprovalInfo } from "../../types/paymentTypes";
+// import {
+//   createOrder,
+//   approvePayment,
+//   callTossPaymentsApi,
+// } from "../../utils/paymentApi";
+import { OrderInfo, OrderItem } from "../../types/paymentTypes";
+
+import { loadTossPayments } from "@tosspayments/payment-sdk";
 
 export interface FormValues {
   name: string;
@@ -67,7 +69,7 @@ const PaymentPage: React.FC = () => {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string>("bank");
   const [requestMessage, setRequestMessage] = useState("");
-  const { setOrderId } = usePaymentStore();
+  // const { setOrderId } = usePaymentStore();
 
   useEffect(() => {
     const authStorage = JSON.parse(
@@ -173,30 +175,40 @@ const PaymentPage: React.FC = () => {
       if (paymentMethod === "bank") {
         // 무통장 입금
 
-        const approvalInfo: ApprovalInfo = {
-          ...orderInfo,
-          orderId: "bank-" + Date.now().toString(), // 임의의 orderId 생성
-        };
+        // const approvalInfo: ApprovalInfo = {
+        //   ...orderInfo,
+        //   orderId: "bank-" + Date.now().toString(), // 임의의 orderId 생성
+        // };
 
-        const response = await approvePayment(approvalInfo); // 결제 승인 API 호출
-        if (response.status === "success") {
-          toast.success("무통장 입금 결제가 완료되었습니다!");
-          localStorage.setItem("paymentInfo", JSON.stringify(orderInfo));
-          localStorage.removeItem("products");
-          navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
-        } else {
-          toast.error("결제 승인에 실패했습니다.");
-        }
+        // const response = await approvePayment(approvalInfo); // 결제 승인 API 호출
+        // if (response.status === "success") {
+        //   toast.success("무통장 입금 결제가 완료되었습니다!");
+        //   localStorage.setItem("paymentInfo", JSON.stringify(orderInfo));
+        //   localStorage.removeItem("products");
+        //   navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+        // } else {
+        //   toast.error("결제 승인에 실패했습니다.");
+        // }
+
+        toast.success("무통장 입금 결제가 완료되었습니다!");
+        localStorage.setItem("paymentInfo", JSON.stringify(orderInfo));
+        localStorage.removeItem("products");
+        navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
       } else if (paymentMethod === "toss") {
-        // 토스페이먼츠 결제
-        const orderResponse = await createOrder(orderInfo);
-        setOrderId(orderResponse.orderId);
-
-        const tossResponse = await callTossPaymentsApi(
-          orderResponse.orderId,
-          orderInfo.totalAmount,
+        console.log("Toss Payments 초기화 중...");
+        const tossPayments = await loadTossPayments(
+          "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
         );
-        window.location.href = tossResponse.paymentUrl; // 사용자 리디렉션
+        console.log("Toss Payments 객체:", tossPayments);
+
+        tossPayments.requestPayment("카드", {
+          amount: totalAmount,
+          orderId: `ORDER_${Date.now()}`,
+          orderName: "상품 결제",
+          customerName: addressInfo.name,
+          successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
+          failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
+        });
       }
     } catch (error) {
       console.error("결제 처리 중 오류 발생:", error);
