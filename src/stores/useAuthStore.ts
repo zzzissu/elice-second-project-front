@@ -4,6 +4,8 @@ import { postAxios, putAxios } from "../utils/axios";
 import { toast } from "react-toastify";
 
 interface UserProfile {
+  id?: string;
+  nickname?: string;
   email?: string;
   name?: string;
   phone?: string;
@@ -19,6 +21,7 @@ interface UserState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: {
+    _id: string;
     email: string;
     password: string;
     name: string;
@@ -55,6 +58,8 @@ const useAuthStore = create<UserState>()(
           set({
             isAuthenticated: true,
             user: {
+              id: user._id,
+              nickname: user.nickname,
               email: user.email,
               name: user.name,
               phone: user.phone,
