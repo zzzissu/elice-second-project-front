@@ -2,35 +2,55 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
 
-import { Nav, Button, ItemCard, CartItem } from "components";
+import { Nav, Button, ItemCard, CartItem, ConfirmModal } from "components";
 
-import { getAxios } from "../../utils/axios";
+import { deleteAxios, getAxios } from "../../utils/axios";
 
-import { CartItems, ItemProps } from "../../types/types";
+import { CartItems } from "../../types/types";
+import { ItemProps } from "../../components/ItemCard/ItemCard";
 
 import { S } from "./MyPage.style";
+import useModalStore from "../../stores/modal";
+import { toast } from "react-toastify";
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [sellingItems, setSellingItems] = useState<ItemProps[]>([]);
-  const [cartItems, setCartItems] = useState<CartItems[]>([]);
+
+  const [pageNum, setPageNum] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const limit = 6;
+
+  const [purchasedItems, setPurchasedItems] = useState<CartItems[]>([]);
   const [filteredCartItems, setFilteredCartItems] = useState<
     {
       date: string;
       items: CartItems[];
     }[]
   >([]);
+  const { modalType, closeModal } = useModalStore();
 
-  const [pageNum, setPageNum] = useState<number[]>([]);
+  let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
+  let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const getSellingItems = () => {
+    getAxios(sellingurl).then((res) => {
+      setSellingItems(res.data.myProducts);
+      setTotalPage(res.data.totalPages);
+    });
+  };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedItems = sellingItems.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
+  const getPurchased = () => {
+    getAxios(purchasedurl).then((res) => {
+      setPurchasedItems(res.data.orders);
+      setTotalPage(res.data.totalPages);
+    });
+  };
+  useEffect(() => {
+    getSellingItems();
+    getPurchased();
+  }, []);
 
   const editProfile = () => {
     navigate(ROUTE_LINK.PASSWORD_CHECK.path);
@@ -41,9 +61,8 @@ const MyPage = () => {
   };
 
   const paginationNum = () => {
-    const num = Math.ceil(sellingItems.length / itemsPerPage);
-    let nums = [];
-    for (let i = 1; i <= num; i++) {
+    let nums: number[] = [];
+    for (let i = 1; i <= totalPage; i++) {
       nums.push(i);
     }
 
@@ -56,49 +75,67 @@ const MyPage = () => {
     } else return;
   };
   const goToNextPage = () => {
-    if (currentPage !== pageNum[-1]) {
+    if (currentPage < totalPage) {
       setCurrentPage((prev) => prev + 1);
     } else return;
   };
 
-  const showMore = () => {};
-
-  const fetchItems = async () => {
-    getAxios("/data/items.json").then((res) => setSellingItems(res.data));
-  };
-
-  const fetchCartItems = async () => {
-    getAxios("/data/cartItem.json").then((res) => setCartItems(res.data));
-  };
-
   useEffect(() => {
-    fetchItems();
-    fetchCartItems();
-  }, []);
+    getSellingItems();
+  }, [currentPage]);
 
   useEffect(() => {
     paginationNum();
   }, [sellingItems]);
 
+  const deleteProduct = async (
+    id: string,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    e.stopPropagation();
+    e.preventDefault();
+    try {
+      const res = await deleteAxios(`/products/${id}`);
+
+      if (res.status === 204) {
+        toast.success("✨상품이 삭제되었습니다.");
+      } else toast.warn("상품 삭제를 실패했습니다. 다시 시도해주세요.");
+    } catch (error) {
+      toast.error("상품 삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleDeleteModalClick = () => {
+    getSellingItems();
+    closeModal();
+  };
+
   useEffect(() => {
     let dates: string[] = [];
 
     const uniqueDates = [
-      ...new Set(cartItems.map((item) => item.purchaseDate)),
+      ...new Set(purchasedItems.map((item) => item.purchaseDate)),
     ];
     dates = uniqueDates;
 
     const groupedCartItems = dates.map((date) => ({
       date,
-      items: cartItems.filter((cartItem) => cartItem.purchaseDate === date),
+      items: purchasedItems.filter(
+        (cartItem) => cartItem.purchaseDate === date,
+      ),
     }));
 
     setFilteredCartItems(groupedCartItems);
-  }, [cartItems]);
+  }, [purchasedItems]);
 
-  if (!paginatedItems || !sellingItems || !pageNum || !cartItems) return null;
   return (
     <S.MyPageWrap>
+      {modalType === "deleteProduct" && (
+        <ConfirmModal
+          modalText="상품이 삭제되었습니다"
+          onClick={handleDeleteModalClick}
+        />
+      )}
       <Nav />
       <S.MyPage>
         <S.SideProfile>
@@ -119,16 +156,26 @@ const MyPage = () => {
           <S.SellingBox>
             <S.TitleBox>판매중인 상품</S.TitleBox>
             <S.ItemGrid>
-              {paginatedItems.map((sellingItem, idx) => {
-                const column = 4;
-                const row = Math.floor(idx / column) + 1;
+              {sellingItems.length > 0
+                ? sellingItems.map((sellingItem, idx) => {
+                    const column = 3;
+                    const row = Math.floor(idx / column) + 1;
 
-                return (
-                  <Link to={ROUTE_LINK.DETAIL.path} key={sellingItem._id}>
-                    <ItemCard {...sellingItem} idx={idx} row={row} />
-                  </Link>
-                );
-              })}
+                    return (
+                      <Link
+                        to={`/products/${sellingItem._id}`}
+                        key={sellingItem._id}
+                      >
+                        <ItemCard
+                          {...sellingItem}
+                          idx={idx}
+                          row={row}
+                          deleteProduct={deleteProduct}
+                        />
+                      </Link>
+                    );
+                  })
+                : "판매 중인 상품이 없습니다."}
             </S.ItemGrid>
             <S.PaginationBox>
               <S.ArrowIconBox>
@@ -138,6 +185,8 @@ const MyPage = () => {
                 return (
                   <S.PaginationNum
                     key={num}
+                    num={num}
+                    currentPage={currentPage}
                     onClick={() => setCurrentPage(num)}
                   >
                     {num}
@@ -151,7 +200,7 @@ const MyPage = () => {
           </S.SellingBox>
           <S.PurchaseList>
             <S.TitleBox>구매 내역</S.TitleBox>
-            {filteredCartItems.length > 0 ? (
+            {purchasedItems.length > 0 ? (
               filteredCartItems.map(({ date, items }) => (
                 <div key={date}>
                   <S.DateTitle>{date}</S.DateTitle> {/* 날짜 제목 표시 */}
@@ -180,11 +229,6 @@ const MyPage = () => {
               <S.EmptyCart>구매 내역이 없습니다.</S.EmptyCart>
             )}
           </S.PurchaseList>
-          {cartItems.length > 0 ? (
-            <S.MoreBtn onClick={showMore}>더보기</S.MoreBtn>
-          ) : (
-            ""
-          )}
         </S.MyPageContent>
       </S.MyPage>
     </S.MyPageWrap>

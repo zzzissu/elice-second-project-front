@@ -1,37 +1,210 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import * as S from "./Payment.styled";
 import PaymentMethodButtons from "./PaymentMethodButtons/PaymentMethodButtons";
-import { CartItem, Checkbox, Button, Nav } from "components";
+import {
+  CartItem,
+  Checkbox,
+  Button,
+  Nav,
+  InputField,
+  FormContainer,
+} from "components";
+import { useLocation, useNavigate } from "react-router-dom";
+import AddressSearch from "./AddressSearch/AddressSearch";
+import ROUTE_LINK from "../../routes/RouterLink";
+import { toast } from "react-toastify";
 
-interface AddressInfo {
+import { loadTossPayments } from "@tosspayments/payment-sdk";
+
+export interface FormValues {
   name: string;
+  phoneFirst: string;
+  phoneSecond: string;
+  postalCode: string;
   address: string;
-  phone: string;
+  detailAddress: string;
+  profileImage?: File;
+  phone?: string;
 }
-
 interface OrderItem {
-  id: number;
-  imageSrc: string;
+  _id: string;
+  image: string;
   price: number;
   description: string;
+  categoryName: string;
+  name: string;
+  sellerId: {
+    _id: string;
+  };
 }
 
-interface PaymentPageProps {
-  addressInfo: AddressInfo;
-  orderItems: OrderItem[];
-}
+const PaymentPage: React.FC = () => {
+  const methods = useForm<FormValues>();
+  const { setValue, clearErrors, handleSubmit } = methods;
+  const location = useLocation();
+  // const singleProduct = location.state;
+  const navigate = useNavigate();
 
-const PaymentPage: React.FC<PaymentPageProps> = ({
-  addressInfo,
-  orderItems,
-}) => {
   const [isChecked, setIsChecked] = useState(false);
-  const totalAmount = orderItems.reduce((total, item) => total + item.price, 0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [phoneFirst, setPhoneFirst] = useState("");
+  const [phoneSecond, setPhoneSecond] = useState("");
+  const [addressInfo, setAddressInfo] = useState<FormValues>({
+    name: "",
+    phoneFirst: "",
+    phoneSecond: "",
+    postalCode: "",
+    address: "",
+    detailAddress: "",
+  });
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [paymentMethod, setPaymentMethod] = useState<string>("bank");
+  const [requestMessage, setRequestMessage] = useState("");
+
+  useEffect(() => {
+    const authStorage = JSON.parse(
+      localStorage.getItem("auth-storage") || "{}",
+    );
+    const userInfo = authStorage.state?.user;
+
+    if (userInfo) {
+      const userAddressInfo = {
+        name: userInfo.name || "",
+        phoneFirst: userInfo.phone?.slice(0, 3) || "",
+        phoneSecond: userInfo.phone?.slice(3) || "",
+        postalCode: userInfo.postalCode || "",
+        address: userInfo.basicAdd || "",
+        detailAddress: userInfo.detailAdd || "",
+      };
+
+      setPhoneFirst(userAddressInfo.phoneFirst);
+      setPhoneSecond(userAddressInfo.phoneSecond);
+
+      setAddressInfo(userAddressInfo);
+
+      if (isEditing) {
+        setValue("name", userAddressInfo.name);
+        setValue("phoneFirst", userAddressInfo.phoneFirst);
+        setValue("phoneSecond", userAddressInfo.phoneSecond);
+        setValue("postalCode", userAddressInfo.postalCode);
+        setValue("address", userAddressInfo.address);
+        setValue("detailAddress", userAddressInfo.detailAddress);
+      }
+    }
+
+    if (location.state && location.state.selectedItems) {
+      setOrderItems(location.state.selectedItems);
+    }
+  }, [location.state, setValue, isEditing]);
+
+  const handleEditAddress = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveAddress = (data: FormValues) => {
+    setIsEditing(false);
+
+    const combinedPhone = `${data.phoneFirst}${data.phoneSecond}`;
+
+    const updatedAddressInfo = {
+      ...data,
+      phoneFirst: data.phoneFirst,
+      phoneSecond: data.phoneSecond,
+    };
+
+    setAddressInfo({ ...updatedAddressInfo, phone: combinedPhone });
+
+    const authStorage = JSON.parse(
+      localStorage.getItem("auth-storage") || "{}",
+    );
+    if (authStorage.state?.user) {
+      authStorage.state.user = {
+        ...authStorage.state.user,
+        name: data.name,
+        phone: combinedPhone,
+        postalCode: data.postalCode,
+        basicAdd: data.address,
+        detailAdd: data.detailAddress,
+      };
+      localStorage.setItem("auth-storage", JSON.stringify(authStorage));
+    }
+  };
 
   const handleCheckBoxChange = () => {
     setIsChecked((prev) => !prev);
     console.log("주문내역 확인 및 결제 동의 체크:", !isChecked);
   };
+
+  const handlePayment = async () => {
+    if (!isChecked) {
+      alert("주문내역 확인 및 결제 동의를 체크해주세요.");
+      return;
+    }
+    try {
+      if (paymentMethod === "bank") {
+        const paymentInfo = {
+          items: orderItems,
+          totalAmount: orderItems.reduce(
+            (total, item) => total + item.price,
+            0,
+          ),
+        };
+
+        localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
+
+        localStorage.removeItem("products");
+
+        navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+      } else if (paymentMethod === "toss") {
+        const refinedItems = orderItems.map((item) => ({
+          categoryName: item.categoryName,
+          description: item.description || "",
+          image: item.image,
+          name: item.name,
+          price: item.price,
+          sellerId: item.sellerId._id,
+        }));
+
+        const orderInfo = {
+          name: addressInfo.name,
+          phone: `${phoneFirst}${phoneSecond}`,
+          postalCode: addressInfo.postalCode,
+          address: addressInfo.address,
+          detailAddress: addressInfo.detailAddress,
+          requestMessage,
+          items: refinedItems,
+          totalAmount: orderItems.reduce(
+            (total, item) => total + item.price,
+            0,
+          ),
+        };
+
+        console.log("Toss Payments 초기화 중...");
+        const tossPayments = await loadTossPayments(
+          "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
+        );
+        console.log("Toss Payments 객체:", tossPayments);
+
+        tossPayments.requestPayment("카드", {
+          amount: totalAmount,
+          orderId: `ORDER_${Date.now()}`,
+          orderName: "상품 결제",
+          customerName: addressInfo.name,
+          successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
+          failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
+        });
+
+        localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+        localStorage.removeItem("products");
+      }
+    } catch (error) {
+      console.error("결제 처리 중 오류 발생:", error);
+      toast.error("결제 요청에 실패했습니다.");
+    }
+  };
+
+  const totalAmount = orderItems.reduce((total, item) => total + item.price, 0);
 
   return (
     <>
@@ -43,20 +216,107 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
           <S.Section>
             <S.SectionTitle>주문자 정보</S.SectionTitle>
             <S.OrderInfo>
-              <S.AddressInfo>
-                <div>
-                  <strong>{addressInfo.name}</strong>
-                  <span>{addressInfo.address}</span>
-                  <span>{addressInfo.phone}</span>
-                </div>
-                <S.EditButton onClick={() => console.log("주소변경하기")}>
-                  변경
-                </S.EditButton>
-              </S.AddressInfo>
+              {isEditing ? (
+                <FormContainer onSubmit={handleSaveAddress} methods={methods}>
+                  <S.InputContainer>
+                    <InputField
+                      name="name"
+                      label="이름"
+                      placeholder="이름을 입력하세요"
+                      value={addressInfo.name}
+                      onChange={(e) =>
+                        setAddressInfo({ ...addressInfo, name: e.target.value })
+                      }
+                    />
+                  </S.InputContainer>
+                  <S.InputContainer>
+                    <InputField
+                      name="postalCode"
+                      label="우편번호"
+                      placeholder="우편번호를 입력하세요"
+                      readOnly
+                      value={addressInfo.postalCode}
+                    />
+                    <AddressSearch
+                      setValue={setValue}
+                      clearErrors={clearErrors}
+                    />
+                  </S.InputContainer>
+                  <S.InputContainer
+                    style={{ flexDirection: "column", gap: "10px" }}
+                  >
+                    <InputField
+                      name="address"
+                      placeholder="주소를 입력하세요"
+                      readOnly
+                      value={addressInfo.address}
+                      onChange={(e) =>
+                        setAddressInfo({
+                          ...addressInfo,
+                          address: e.target.value,
+                        })
+                      }
+                    />
+                    <InputField
+                      name="detailAddress"
+                      placeholder="상세 주소를 입력하세요"
+                      value={addressInfo.detailAddress}
+                      onChange={(e) =>
+                        setAddressInfo({
+                          ...addressInfo,
+                          detailAddress: e.target.value,
+                        })
+                      }
+                    />
+                  </S.InputContainer>
+                  <S.InputContainer style={{ gap: "10px" }}>
+                    <InputField
+                      name="phoneFirst"
+                      label="전화번호"
+                      placeholder="앞자리"
+                      value={phoneFirst}
+                      onChange={(e) => setPhoneFirst(e.target.value)}
+                    />
+                    <InputField
+                      name="phoneSecond"
+                      placeholder="나머지 번호"
+                      value={phoneSecond}
+                      onChange={(e) => setPhoneSecond(e.target.value)}
+                    />
+                  </S.InputContainer>
+                  <Button
+                    width="100%"
+                    btnText="저장하기"
+                    onClick={handleSubmit(handleSaveAddress)}
+                    bgcolor="blue70"
+                  />
+                </FormContainer>
+              ) : (
+                <S.AddressInfo>
+                  <div>
+                    <strong>{addressInfo.name}</strong>
+                    <div className="flexWrap">
+                      <span>({addressInfo.postalCode})</span>
+                      <span>{addressInfo.detailAddress}</span>
+                      <span>{addressInfo.address}</span>
+                    </div>
+                    <span>
+                      {addressInfo.phoneFirst}
+                      {addressInfo.phoneSecond}
+                    </span>
+                  </div>
+                  <S.EditButton onClick={handleEditAddress}>변경</S.EditButton>
+                </S.AddressInfo>
+              )}
               <S.RequestContainer>
                 <label>거래 요청 사항</label>
                 <span>판매자에게 전달되는 요청사항이에요.</span>
-                <input type="text" placeholder="예: 포장 꼼꼼하게 부탁드려요" />
+                <input
+                  type="text"
+                  placeholder="예: 포장 꼼꼼하게 부탁드려요"
+                  value={requestMessage}
+                  onChange={(e) => setRequestMessage(e.target.value)}
+                />
               </S.RequestContainer>
             </S.OrderInfo>
           </S.Section>
@@ -67,8 +327,8 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
               {orderItems.map((item) => (
                 <CartItem
                   page="cart"
-                  key={item.id}
-                  imageSrc={item.imageSrc}
+                  key={item._id}
+                  imageSrc={item.image}
                   title={`${item.price.toLocaleString()}원`}
                   description={item.description}
                 />
@@ -79,7 +339,10 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
           <S.Section>
             <S.SectionTitle>결제수단</S.SectionTitle>
             <S.PaymentMethod>
-              <PaymentMethodButtons />
+              <PaymentMethodButtons
+                selectedMethod={paymentMethod}
+                setPaymentMethod={setPaymentMethod}
+              />
             </S.PaymentMethod>
           </S.Section>
         </S.LeftSection>
@@ -105,7 +368,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
             </div>
             <Button
               btnText="결제하기"
-              onClick={() => console.log("결제하기")}
+              onClick={handlePayment}
               bgcolor="orange70"
               width="100%"
             />

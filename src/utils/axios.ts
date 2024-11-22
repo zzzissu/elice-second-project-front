@@ -26,13 +26,21 @@ export const getAxios = async (url: string) => {
   return res;
 };
 
-export const postAxios = async <T>(url: string, option: T) => {
-  const res = await api.post(url, option);
+export const postAxios = async <T>(
+  url: string,
+  option: T,
+  config?: AxiosRequestConfig,
+) => {
+  const res = await api.post(url, option, config);
   return res;
 };
 
-export const putAxios = async <T>(url: string, option: T) => {
-  const res = await api.put(url, option);
+export const putAxios = async <T>(
+  url: string,
+  option: T,
+  config?: AxiosRequestConfig,
+) => {
+  const res = await api.put(url, option, config);
   return res;
 };
 

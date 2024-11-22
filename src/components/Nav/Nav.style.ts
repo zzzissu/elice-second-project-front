@@ -1,5 +1,15 @@
 import styled from "styled-components";
 
+interface LocationProps {
+  location: string;
+}
+
+const getUserIconUrl = (location: string) =>
+  location === "/users/my" ? "/icons/orangeUser.svg" : "/icons/user.svg";
+
+const getCartIconUrl = (location: string) =>
+  location === "/cart" ? "/icons/orangeCart.svg" : "/icons/cart.svg";
+
 export const S = {
   Nav: styled.div`
     z-index: 10;
@@ -43,7 +53,7 @@ export const S = {
     width: 28px;
     height: 27px;
   `,
-  SignInBtn: styled.button`
+  NavBtn: styled.button`
     padding: 0px;
 
     background-color: ${(props) => props.theme.color.white};
@@ -60,4 +70,31 @@ export const S = {
       outline: none;
     }
   `,
+  UserBox: styled.div`
+    display: flex;
+    gap: 16px;
+  `,
+  UserIcon: styled.div<LocationProps>`
+    background-image: url(${(props) => getUserIconUrl(props.location)});
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  `,
+  CartIcon: styled.div<LocationProps>`
+    background-image: url(${(props) => getCartIconUrl(props.location)});
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  `,
+  ActiveCartIcon: styled.div``,
 };

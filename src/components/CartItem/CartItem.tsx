@@ -12,15 +12,18 @@ const CartItem: React.FC<CartItemProps> = ({
   imageSrc,
   title,
   description,
-  page,
-}) => (
-  <S.Container>
-    <S.Image src={imageSrc} alt="상품이미지" />
-    <S.Info>
-      <S.Title>{title}</S.Title>
-      <S.Description>{description}</S.Description>
-    </S.Info>
-  </S.Container>
-);
+  page: _,
+}) => {
+  void _;
+  return (
+    <S.Container>
+      <S.Image src={imageSrc} alt="상품이미지" />
+      <S.Info>
+        <S.Title>{title}</S.Title>
+        <S.Description>{description}</S.Description>
+      </S.Info>
+    </S.Container>
+  );
+};
 
 export default CartItem;
