@@ -9,6 +9,10 @@ interface SelectedProps {
   selectedCategory: string;
 }
 
+interface HasFileProps {
+  hasFile: boolean;
+}
+
 export const S = {
   AddOrEditProduct: styled.main`
     display: flex;
@@ -31,7 +35,32 @@ export const S = {
 
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
   `,
+  ImgUpload: styled.input`
+    display: none;
+  `,
+  UploadedImg: styled.img`
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  `,
+  EditImgBtn: styled.div`
+    padding-top: 18px;
+    font-size: ${(props) => props.theme.font.small};
 
+    background-color: ${(props) => props.theme.color.white};
+    color: ${(props) => props.theme.color.grey};
+
+    border: none;
+    cursor: pointer;
+
+    outline: none;
+    &:focus {
+      outline: none;
+    }
+    &:hover {
+      outline: none;
+    }
+  `,
   UploadImgBox: styled.div`
     display: flex;
     flex-direction: column;
@@ -56,10 +85,10 @@ export const S = {
     color: ${(props) => props.theme.color.deepGrey};
   `,
 
-  InfoTable: styled.div`
+  InfoTable: styled.div<HasFileProps>`
     display: grid;
     grid-template-columns: 1fr 4fr;
-    margin-top: 40px;
+    margin-top: ${(props) => (props.hasFile ? "20px" : "56px")};
     margin-bottom: 40px;
 
     border-top: 1px solid ${(props) => props.theme.color.lightGrey};
@@ -68,8 +97,10 @@ export const S = {
   `,
   GridTitle: styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
   `,
@@ -80,6 +111,13 @@ export const S = {
     align-items: center;
 
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
+  `,
+  Essential: styled.div`
+    color: ${(props) => props.theme.color.orange};
+    font-size: ${(props) => props.theme.font.small};
+    width: 100%;
+
+    text-align: center;
   `,
   CategoryWrap: styled.div`
     display: flex;

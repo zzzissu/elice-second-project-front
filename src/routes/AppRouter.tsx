@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ROUTE_LINK from "./RouterLink.ts";
 import List from "../pages/List/List.tsx";
@@ -9,25 +9,12 @@ import AddOrEditProduct from "../pages/AddOrEditProduct/AddOrEditProduct.tsx";
 import MyPage from "../pages/MyPage/MyPage.tsx";
 import CartPage from "../pages/Cart/Cart.tsx";
 import PaymentPage from "../pages/Payment/Payment.tsx";
-import { fetchAddressInfo, fetchOrderItems } from "../utils/mockData.ts";
 import PasswordCheckPage from "../pages/PasswordCheck/PasswordCheck.tsx";
 import UserDataEditPage from "../pages/UserDataEdit/UserDataEdit.tsx";
+import PaymentComplete from "../pages/Payment/PaymentComplete/PaymentComplete.tsx";
+import PaymentFail from "../pages/Payment/PaymentFail/PaymentFail.tsx";
 
 function AppRouter() {
-  const [addressInfo, setAddressInfo] = useState(null);
-  const [orderItems, setOrderItems] = useState(null);
-
-  useEffect(() => {
-    const loadData = async () => {
-      const address = await fetchAddressInfo();
-      const items = await fetchOrderItems();
-      setAddressInfo(address);
-      setOrderItems(items);
-    };
-
-    loadData();
-  }, []);
-
   const router = createBrowserRouter([
     {
       path: ROUTE_LINK.LIST.path,
@@ -71,12 +58,15 @@ function AppRouter() {
     },
     {
       path: ROUTE_LINK.PAYMENT.path,
-      element:
-        addressInfo && orderItems ? (
-          <PaymentPage addressInfo={addressInfo} orderItems={orderItems} />
-        ) : (
-          <div>Loading...</div>
-        ),
+      element: <PaymentPage />,
+    },
+    {
+      path: ROUTE_LINK.PAYMENT_COMPLETE.path,
+      element: <PaymentComplete />,
+    },
+    {
+      path: ROUTE_LINK.PAYMENT_FAIL.path,
+      element: <PaymentFail />,
     },
   ]);
 

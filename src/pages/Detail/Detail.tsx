@@ -1,58 +1,128 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import ROUTE_LINK from "../../routes/RouterLink";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Nav, Button, Sidebar } from "components";
+import { Nav, Button, ConfirmModal } from "components";
 
+import { getAxios } from "../../utils/axios";
 import formatPrice from "../../utils/formatPrice";
 
-import { ItemProps } from "../../types/types";
+import { ItemProps } from "components/ItemCard/ItemCard";
 
 import { S } from "./Detail.style";
+import useModalStore from "../../stores/modal/index";
+import { toast } from "react-toastify";
+
+interface CartItemsProps {
+  id: string;
+  checked: boolean;
+  sellerId: { _id: string; nickname: string };
+}
 
 const Detail = () => {
+  const navigate = useNavigate();
+  const { productId } = useParams<{ productId: string }>();
   const [item, setItem] = useState<ItemProps | null>(null);
 
-  const getItem = async () => {
-    try {
-      const res = await axios.get("/data/items.json");
-      setItem(res.data[0]);
-    } catch (err) {
-      console.error("Error fetching item: ", err);
-    }
-  };
+  const sellerBoxRef = useRef<HTMLDivElement | null>(null);
+  const [, setIsSellerBoxVisible] = useState(false);
+
+  const { modalType, closeModal } = useModalStore();
 
   useEffect(() => {
-    getItem();
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsSellerBoxVisible(entry.isIntersecting);
+    });
+
+    if (sellerBoxRef.current) {
+      observer.observe(sellerBoxRef.current);
+    }
+
+    return () => {
+      if (sellerBoxRef.current) {
+        observer.unobserve(sellerBoxRef.current);
+      }
+    };
   }, []);
 
-  const addToCart = () => {};
+  useEffect(() => {
+    getAxios(`/products/${productId}`).then((res) => setItem(res.data));
+    closeModal();
+  }, []);
 
-  const purchase = () => {};
+  const addToCart = () => {
+    const cartItems = localStorage.getItem("products")
+      ? JSON.parse(localStorage.getItem("products")!)
+      : [];
+
+    const newItem = { id: productId, checked: false, shop: item?.sellerId };
+
+    const check = cartItems.find(
+      (item: CartItemsProps) => item.id === productId,
+    );
+
+    if (!check) {
+      cartItems.push(newItem);
+      localStorage.setItem("products", JSON.stringify(cartItems));
+      toast.success("✨장바구니에 상품이 등록되었습니다.");
+    } else toast.error("이미 장바구니에 등록된 상품입니다.");
+  };
+
+  const handleModalBtnClick = () => {
+    closeModal();
+    navigate("/cart");
+  };
+
+  const handleEditBtn = () => {
+    navigate("/editproduct", { state: productId });
+  };
+
+  const purchase = () => {
+    const newItem = { id: productId, checked: false, shop: item?.sellerId };
+
+    navigate("/payment", { state: newItem });
+  };
+
+  const handleSellerInfoClick = () => {
+    if (sellerBoxRef.current) {
+      sellerBoxRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   if (!item) return null;
   return (
     <S.DetailWrap>
+      {modalType === "addCartItem" && (
+        <ConfirmModal
+          width="140px"
+          modalText="장바구니로 이동하시겠습니까?"
+          onClick={handleModalBtnClick}
+        />
+      )}
+      {modalType === "existCartItem" && (
+        <ConfirmModal
+          modalText="이미 장바구니에 담겨있습니다."
+          onClick={closeModal}
+        />
+      )}
       <Nav />
       <S.Detail>
-        <Sidebar />
-
         <S.StickyWrap>
           <S.UpperWrap>
             <S.ProductImg imgUrl={item.image} />
             <S.ProductInfo>
               <div>
-                <Link to={ROUTE_LINK.EDIT_PRODUCT.path}>
-                  <S.EditBtn />
-                </Link>
+                <S.EditBtn onClick={handleEditBtn} />
+
                 <S.ProductName>{item.name}</S.ProductName>
                 <S.ProductPrice>
                   <S.Bold>{formatPrice(item.price)}</S.Bold> 원
                 </S.ProductPrice>
                 <S.InfoBox>
                   <S.SellerIcon />
-                  <S.greyText>랄랄라</S.greyText>
+                  <S.greyText>{item.sellerId.nickname}</S.greyText>
                 </S.InfoBox>
                 <S.InfoBox>
                   <S.DeliveryIcon />
@@ -80,15 +150,17 @@ const Detail = () => {
               <S.NavText>상품 정보</S.NavText>
             </S.NavCell>
             <S.NavCell>
-              <S.NavText>판매자 정보</S.NavText>
+              <S.NavText onClick={handleSellerInfoClick}>판매자 정보</S.NavText>
             </S.NavCell>
           </S.NavBar>
 
           <S.LowerWrap>
-            <S.Description>{item.description}</S.Description>
-            <S.SellerBox>
+            <S.Description>
+              <pre>{item.description}</pre>
+            </S.Description>
+            <S.SellerBox ref={sellerBoxRef}>
               <S.SellerIcon />
-              <S.greyText>랄랄라</S.greyText>
+              <S.greyText>{item.sellerId.nickname}</S.greyText>
             </S.SellerBox>
           </S.LowerWrap>
         </S.StickyWrap>

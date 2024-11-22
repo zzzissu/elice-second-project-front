@@ -15,12 +15,15 @@ import {
 } from "components";
 
 interface CartItem {
-  id: number;
-  itemName: string;
-  imageSrc: string;
+  _id: string;
+  name: string;
+  image: string;
   price: number;
   description: string;
-  shopName: string;
+  shop: {
+    nickname: string;
+    _id: string;
+  };
   checked?: boolean;
 }
 
@@ -46,18 +49,39 @@ const CartPage: React.FC = () => {
     return items.reduce((sum, item) => sum + item.price, 0);
   };
 
+  const getSelectedItems = () => {
+    return cartData.flatMap((shop) =>
+      shop.items.filter((item) => item.checked),
+    );
+  };
+
+  const calculateSelectedItemsCount = () => {
+    return getSelectedItems().length;
+  };
+
+  const handlePurchase = () => {
+    const selectedItems = getSelectedItems();
+    if (selectedItems.length === 0) {
+      alert("구매할 상품을 선택해주세요!");
+      return;
+    }
+
+    navigate(ROUTE_LINK.PAYMENT.path, { state: { selectedItems } });
+  };
+
   const handleDeleteShop = (shopIndex: number) => {
     const updatedCart = cartData.filter((_, sIndex) => sIndex !== shopIndex);
     setCartData(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const handleItemCheck = (shopIndex: number, itemId: number) => {
+  const handleItemCheck = (shopIndex: number, itemId: string) => {
     const updatedCart = cartData.map((shop, sIndex) =>
       sIndex === shopIndex
         ? {
             ...shop,
             items: shop.items.map((item) =>
-              item.id === itemId ? { ...item, checked: !item.checked } : item,
+              item._id === itemId ? { ...item, checked: !item.checked } : item,
             ),
           }
         : shop,
@@ -97,13 +121,13 @@ const CartPage: React.FC = () => {
     setCartData(updatedCart);
   };
 
-  const handleRemoveItem = (shopIndex: number, itemId: number) => {
+  const handleRemoveItem = (shopIndex: number, itemId: string) => {
     const updatedCart = cartData
       .map((shop, sIndex) =>
         sIndex === shopIndex
           ? {
               ...shop,
-              items: shop.items.filter((item) => item.id !== itemId),
+              items: shop.items.filter((item) => item._id !== itemId),
             }
           : shop,
       )
@@ -122,12 +146,14 @@ const CartPage: React.FC = () => {
         buttons={[
           {
             btnText: "상품 담으러 가기",
-            handleClick: () => navigate(ROUTE_LINK.LIST.path),
+            onClick: () => navigate(ROUTE_LINK.LIST.path),
             bgcolor: "blue70",
           },
         ]}
       />
     );
+
+  const totalSelectedItems = calculateSelectedItemsCount();
 
   return (
     <>
@@ -154,19 +180,20 @@ const CartPage: React.FC = () => {
               <S.WrapBox style={{ marginTop: "12px" }}>
                 <S.ItemsContainer>
                   {shop.items.map((item) => (
-                    <S.ItemRow key={item.id}>
+                    <S.ItemRow key={item._id}>
                       <Checkbox
                         checked={item.checked || false}
-                        onChange={() => handleItemCheck(shopIndex, item.id)}
+                        onChange={() => handleItemCheck(shopIndex, item._id)}
                       />
                       <CartItem
+                        key={item._id}
                         page="cart"
-                        imageSrc={item.imageSrc}
+                        imageSrc={item.image}
                         title={item.price}
-                        description={item.itemName}
+                        description={item.name}
                       />
                       <S.RemoveButton
-                        onClick={() => handleRemoveItem(shopIndex, item.id)}
+                        onClick={() => handleRemoveItem(shopIndex, item._id)}
                       >
                         <IoCloseOutline />
                       </S.RemoveButton>
@@ -189,8 +216,8 @@ const CartPage: React.FC = () => {
                       {calculateTotalAmount(shop.items).toLocaleString()}원
                     </S.TotalAmount>
                     <Button
-                      btnText="구매하기"
-                      onClick={() => navigate(ROUTE_LINK.PAYMENT.path)}
+                      btnText={`${totalSelectedItems}개 상품 구매하기`}
+                      onClick={handlePurchase}
                       width="100%"
                       height="48px"
                       bgcolor="orange70"

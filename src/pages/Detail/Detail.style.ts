@@ -24,7 +24,6 @@ export const S = {
     justify-content: space-between;
   `,
   StickyWrap: styled.div`
-    overflow-y: auto;
     height: calc(100vh - 60px);
     width: 982px;
   `,
