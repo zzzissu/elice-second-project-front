@@ -11,6 +11,7 @@ import { ItemProps } from "components/ItemCard/ItemCard";
 import { S } from "./Detail.style";
 import useModalStore from "../../stores/modal/index";
 import { toast } from "react-toastify";
+import useAuthStore from "../../stores/useAuthStore";
 
 interface CartItemsProps {
   id: string;
@@ -27,6 +28,7 @@ const Detail = () => {
   const [, setIsSellerBoxVisible] = useState(false);
 
   const { modalType, closeModal } = useModalStore();
+  const user = useAuthStore();
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
@@ -73,7 +75,11 @@ const Detail = () => {
   };
 
   const handleEditBtn = () => {
-    navigate("/editproduct", { state: productId });
+    const userId = user.user?.id;
+
+    if (userId === item?.sellerId._id) {
+      navigate("/editproduct", { state: productId });
+    } else toast.error("다른 사람의 상품입니다.");
   };
 
   const purchase = () => {
