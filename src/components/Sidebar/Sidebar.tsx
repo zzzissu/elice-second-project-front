@@ -1,4 +1,3 @@
-import { useState } from "react";
 import * as S from "./Sidebar.styled";
 import {
   FaCamera,
@@ -22,7 +21,7 @@ interface CategoryProps {
   setSelectedCategory: (value: string) => void;
 }
 const Sidebar = ({ selectedCategory, setSelectedCategory }: CategoryProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const handleCategoryClick = (id: string) => {
     setSelectedCategory(id);

@@ -1,12 +1,11 @@
 import formatPrice from "../../utils/formatPrice";
 import { S } from "./ItemCard.style";
-import { deleteAxios } from "../../utils/axios";
 
 export interface ItemProps {
   idx: number;
   row: number;
 
-  id: string;
+  _id: string;
   name: string;
   image: string;
   price: number;

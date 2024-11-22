@@ -24,9 +24,9 @@ const Detail = () => {
   const [item, setItem] = useState<ItemProps | null>(null);
 
   const sellerBoxRef = useRef<HTMLDivElement | null>(null);
-  const [isSellerBoxVisible, setIsSellerBoxVisible] = useState(false);
+  const [, setIsSellerBoxVisible] = useState(false);
 
-  const { modalType, openModal, closeModal } = useModalStore();
+  const { modalType, closeModal } = useModalStore();
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
