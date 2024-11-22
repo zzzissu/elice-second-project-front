@@ -12,7 +12,6 @@ import { S } from "./AddOrEditProduct.style";
 
 import useModalStore from "../../stores/modal/index";
 import { toast } from "react-toastify";
-import useAuthStore from "../../stores/useAuthStore";
 
 interface CategoryProps {
   id: number;
