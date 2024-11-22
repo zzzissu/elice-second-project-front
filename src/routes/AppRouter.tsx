@@ -13,6 +13,7 @@ import PasswordCheckPage from "../pages/PasswordCheck/PasswordCheck.tsx";
 import UserDataEditPage from "../pages/UserDataEdit/UserDataEdit.tsx";
 import PaymentComplete from "../pages/Payment/PaymentComplete/PaymentComplete.tsx";
 import PaymentFail from "../pages/Payment/PaymentFail/PaymentFail.tsx";
+import BankPaymentComplete from "../pages/Payment/BankPaymentComplete/BankPaymentComplete.tsx";
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -63,6 +64,10 @@ function AppRouter() {
     {
       path: ROUTE_LINK.PAYMENT_COMPLETE.path,
       element: <PaymentComplete />,
+    },
+    {
+      path: ROUTE_LINK.BANK_PAYMENT_COMPLETE.path,
+      element: <BankPaymentComplete />,
     },
     {
       path: ROUTE_LINK.PAYMENT_FAIL.path,
