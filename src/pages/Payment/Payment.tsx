@@ -12,9 +12,10 @@ import {
 } from "components";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddressSearch from "./AddressSearch/AddressSearch";
-// import { postAxios } from "../../utils/axios";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { toast } from "react-toastify";
+
+import { loadTossPayments } from "@tosspayments/payment-sdk";
 
 export interface FormValues {
   name: string;
@@ -140,47 +141,66 @@ const PaymentPage: React.FC = () => {
       alert("주문내역 확인 및 결제 동의를 체크해주세요.");
       return;
     }
+    try {
+      if (paymentMethod === "bank") {
+        const paymentInfo = {
+          items: orderItems,
+          totalAmount: orderItems.reduce(
+            (total, item) => total + item.price,
+            0,
+          ),
+        };
 
-    if (paymentMethod === "bank") {
-      const paymentInfo = {
-        items: orderItems,
-        totalAmount: orderItems.reduce((total, item) => total + item.price, 0),
-      };
+        localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
 
-      localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
+        localStorage.removeItem("products");
 
-      localStorage.removeItem("products");
+        navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+      } else if (paymentMethod === "toss") {
+        const refinedItems = orderItems.map((item) => ({
+          categoryName: item.categoryName,
+          description: item.description || "",
+          image: item.image,
+          name: item.name,
+          price: item.price,
+          sellerId: item.sellerId._id,
+        }));
 
-      toast.success("결제가 완료되었습니다!");
-      navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
-    } else if (paymentMethod === "toss") {
-      const refinedItems = orderItems.map((item) => ({
-        categoryName: item.categoryName,
-        description: item.description || "",
-        image: item.image,
-        name: item.name,
-        price: item.price,
-        sellerId: item.sellerId._id,
-      }));
+        const orderInfo = {
+          name: addressInfo.name,
+          phone: `${phoneFirst}${phoneSecond}`,
+          postalCode: addressInfo.postalCode,
+          address: addressInfo.address,
+          detailAddress: addressInfo.detailAddress,
+          requestMessage,
+          items: refinedItems,
+          totalAmount: orderItems.reduce(
+            (total, item) => total + item.price,
+            0,
+          ),
+        };
 
-      const orderInfo = {
-        name: addressInfo.name,
-        phone: `${phoneFirst}${phoneSecond}`,
-        postalCode: addressInfo.postalCode,
-        address: addressInfo.address,
-        detailAddress: addressInfo.detailAddress,
-        requestMessage,
-        items: refinedItems,
-        totalAmount: orderItems.reduce((total, item) => total + item.price, 0),
-      };
+        console.log("Toss Payments 초기화 중...");
+        const tossPayments = await loadTossPayments(
+          "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
+        );
+        console.log("Toss Payments 객체:", tossPayments);
 
-      console.log("토스페이 API 호출");
+        tossPayments.requestPayment("카드", {
+          amount: totalAmount,
+          orderId: `ORDER_${Date.now()}`,
+          orderName: "상품 결제",
+          customerName: addressInfo.name,
+          successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
+          failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
+        });
 
-      localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
-
-      localStorage.removeItem("products");
-      toast.success("결제가 완료되었습니다!");
-      navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+        localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+        localStorage.removeItem("products");
+      }
+    } catch (error) {
+      console.error("결제 처리 중 오류 발생:", error);
+      toast.error("결제 요청에 실패했습니다.");
     }
   };
 
