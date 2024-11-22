@@ -135,13 +135,13 @@ const PaymentPage: React.FC = () => {
     }
 
     if (paymentMethod === "bank") {
-      // 무통장 결제 로직
       const paymentInfo = {
         items: orderItems,
         totalAmount: orderItems.reduce((total, item) => total + item.price, 0),
       };
 
       localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
+
       alert("결제가 완료되었습니다!");
       navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
     } else if (paymentMethod === "toss") {
@@ -157,15 +157,19 @@ const PaymentPage: React.FC = () => {
         totalAmount: orderItems.reduce((total, item) => total + item.price, 0),
       };
 
+      console.log("토스페이 API 호출");
+      alert("결제가 완료되었습니다!");
+      localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+
       try {
         // 서버 API 호출
         // const response = await postAxios("/order", orderInfo);
         // console.log("주문 생성 응답:", response.data);
-        console.log(orderInfo);
 
         // 토스페이 API 호출 (가정)
         console.log("토스페이 API 호출");
         alert("결제가 완료되었습니다!");
+        localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
 
         navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
       } catch (error) {
