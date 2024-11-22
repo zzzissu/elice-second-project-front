@@ -47,7 +47,7 @@ const AddOrEditProduct = () => {
 
   const [inputValue, handleInputChange] = useInputValue();
   const { isFocused, handleFocus, handleBlur } = useIsFocused();
-  const { modalType, closeModal } = useModalStore();
+  const { modalType, openModal, closeModal } = useModalStore();
 
   const [itemInfo, setItemInfo] = useState<ItemInfoProps | undefined>(
     undefined,
@@ -111,7 +111,7 @@ const AddOrEditProduct = () => {
       } catch (error) {
         toast.error("상품 등록 중 오류가 발생했습니다.");
       }
-    }
+    } else openModal("valid");
   };
 
   const putProduct = async () => {
@@ -142,7 +142,7 @@ const AddOrEditProduct = () => {
       } catch (error) {
         toast.error("상품 정보 수정 중 오류가 발생했습니다.");
       }
-    }
+    } else openModal("valid");
   };
 
   const redirectToLogin = () => {
