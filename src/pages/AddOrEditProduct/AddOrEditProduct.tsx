@@ -278,11 +278,18 @@ const AddOrEditProduct = () => {
         <S.GridContent>
           <UserInput
             name="productPrice"
-            type="number"
+            type="text"
             width="234px"
             placeholder="상품 가격을 입력해주세요"
             value={inputValue.productPrice}
-            onChange={(value) => handleInputChange("productPrice", value)}
+            onChange={(value: string) => {
+              if (/^\d*$/.test(value)) {
+                handleInputChange("productPrice", value);
+              } else {
+                handleInputChange("productPrice", "");
+                toast.error("숫자만 입력해주세요");
+              }
+            }}
           />
         </S.GridContent>
 
