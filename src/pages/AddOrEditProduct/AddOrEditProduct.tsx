@@ -9,7 +9,7 @@ import useInputValue from "../../hooks/UseUserInput";
 import { getAxios, postAxios, putAxios } from "../../utils/axios";
 
 import { S } from "./AddOrEditProduct.style";
-// import useModalState from "../../hooks/useModalState";
+
 import useModalStore from "../../stores/modal/index";
 import { toast } from "react-toastify";
 
@@ -154,8 +154,10 @@ const AddOrEditProduct = () => {
   };
 
   useEffect(() => {
-    if (location.pathname === "editProduct") getOriginProductInfo();
+    if (location.pathname === "/editproduct") getOriginProductInfo();
   }, []);
+
+  console.log(itemInfo);
 
   const handleImgInputClick = () => {
     if (imgInputRef.current) {
