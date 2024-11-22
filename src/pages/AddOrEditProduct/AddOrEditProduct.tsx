@@ -12,6 +12,7 @@ import { S } from "./AddOrEditProduct.style";
 
 import useModalStore from "../../stores/modal/index";
 import { toast } from "react-toastify";
+import useAuthStore from "../../stores/useAuthStore";
 
 interface CategoryProps {
   id: number;
@@ -188,6 +189,7 @@ const AddOrEditProduct = () => {
   };
 
   console.log(preview, imgInputRef);
+  console.log();
 
   if (location.pathname === "editproduct" && !itemInfo) return null;
   if (!categories) return null;
