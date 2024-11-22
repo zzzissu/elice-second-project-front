@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 
 import { Nav, ItemCard, Dropdown, Sidebar } from "components";
 import Carousel from "./Carousel/Carousel.tsx";
@@ -25,6 +25,7 @@ const List = () => {
   const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { selectedItem, handleSelect } = useDropdown(options);
+  const [, setSearchParams] = useSearchParams();
 
   const location = useLocation();
 
@@ -46,6 +47,12 @@ const List = () => {
       );
       setTotalPage(res.data.totalPages);
     });
+  };
+
+  const handleCategoryClick = (id: string) => {
+    setSelectedCategory(id);
+    setCurrentPage(1);
+    setSearchParams({ categoryName: id, currentPage: "1" }); // currentPage는 문자열로 저장
   };
 
   const handleClickMoreBtn = () => {
@@ -76,7 +83,7 @@ const List = () => {
       <S.List>
         <Sidebar
           selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
+          onClick={handleCategoryClick}
         />
         <S.ListContent>
           <Carousel carouselData={carouselData} />

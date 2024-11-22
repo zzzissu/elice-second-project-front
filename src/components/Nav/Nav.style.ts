@@ -80,6 +80,10 @@ export const S = {
     background-repeat: no-repeat;
     width: 20px;
     height: 20px;
+
+    &:hover {
+      cursor: pointer;
+    }
   `,
   CartIcon: styled.div<LocationProps>`
     background-image: url(${(props) => getCartIconUrl(props.location)});
@@ -87,6 +91,10 @@ export const S = {
     background-repeat: no-repeat;
     width: 20px;
     height: 20px;
+
+    &:hover {
+      cursor: pointer;
+    }
   `,
   ActiveCartIcon: styled.div``,
 };

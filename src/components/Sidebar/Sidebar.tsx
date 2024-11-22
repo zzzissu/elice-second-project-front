@@ -6,7 +6,6 @@ import {
   FaTv,
   FaMusic,
 } from "react-icons/fa";
-import { useSearchParams } from "react-router-dom";
 
 const categories = [
   { id: "camera", name: "카메라", icon: <FaCamera /> },
@@ -18,23 +17,21 @@ const categories = [
 
 interface CategoryProps {
   selectedCategory: string | null;
-  setSelectedCategory: (value: string) => void;
+
+  onClick: (value: string) => void;
 }
-const Sidebar = ({ selectedCategory, setSelectedCategory }: CategoryProps) => {
-  const [, setSearchParams] = useSearchParams();
+const Sidebar = ({
+  selectedCategory,
 
-  const handleCategoryClick = (id: string) => {
-    setSelectedCategory(id);
-    setSearchParams({ categoryName: id });
-  };
-
+  onClick,
+}: CategoryProps) => {
   return (
     <S.SidebarContainer>
       {categories.map((category) => (
         <S.CategoryButton
           key={category.id}
           isSelected={selectedCategory === category.id}
-          onClick={() => handleCategoryClick(category.id)}
+          onClick={() => onClick(category.id)}
         >
           {category.icon}
           <S.CategoryName>{category.name}</S.CategoryName>
