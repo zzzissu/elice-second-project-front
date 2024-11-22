@@ -75,6 +75,8 @@ const useAuthStore = create<UserState>()(
         set({ isAuthenticated: false, user: null });
         localStorage.removeItem("token");
         localStorage.removeItem("auth-storage");
+        localStorage.removeItem("products");
+        localStorage.removeItem("orderInfo");
         toast.info("로그아웃 되었습니다 !");
       },
 

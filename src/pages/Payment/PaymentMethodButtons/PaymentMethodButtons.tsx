@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import * as S from "./PaymentMethodButtons.styled";
 
 const paymentMethods = [
@@ -11,11 +11,12 @@ interface PaymentMethodButtonsProps {
   setPaymentMethod: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const PaymentMethodButtons: React.FC<PaymentMethodButtonsProps> = () => {
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
-
+const PaymentMethodButtons: React.FC<PaymentMethodButtonsProps> = ({
+  selectedMethod,
+  setPaymentMethod,
+}) => {
   const handleSelectMethod = (methodId: string) => {
-    setSelectedMethod(methodId);
+    setPaymentMethod(methodId);
     console.log(`${methodId} 결제선택`);
   };
   return (
