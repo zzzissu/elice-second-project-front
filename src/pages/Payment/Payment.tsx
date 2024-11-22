@@ -39,6 +39,11 @@ interface OrderItem {
   };
 }
 
+interface TossPaymentError {
+  code: string;
+  message: string;
+}
+
 const PaymentPage: React.FC = () => {
   const methods = useForm<FormValues>();
   const { setValue, clearErrors, handleSubmit } = methods;
@@ -203,8 +208,28 @@ const PaymentPage: React.FC = () => {
         localStorage.removeItem("products");
       }
     } catch (error) {
-      console.error("결제 처리 중 오류 발생:", error);
-      toast.error("결제 요청에 실패했습니다.");
+      // console.error("결제 처리 중 오류 발생:", error);
+      // toast.error("결제 요청에 실패했습니다.");
+
+      const tossError = error as TossPaymentError;
+
+      console.error("결제 요청 중 오류:", tossError);
+
+      // 에러 메시지와 코드에 따라 분기 처리
+      if (tossError.code === "USER_CANCELLED") {
+        toast.error("결제가 취소되었습니다.");
+        navigate(ROUTE_LINK.PAYMENT_FAIL.path, {
+          state: { message: tossError.message, code: tossError.code },
+        });
+      } else {
+        toast.error("결제 중 오류가 발생했습니다.");
+        navigate(ROUTE_LINK.PAYMENT_FAIL.path, {
+          state: {
+            message: tossError.message || "알 수 없는 오류",
+            code: tossError.code || "UNKNOWN",
+          },
+        });
+      }
     }
   };
 

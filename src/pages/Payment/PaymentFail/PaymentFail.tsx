@@ -1,12 +1,12 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import EmptyMessage from "../../../components/EmptyMessage/EmptyMessage";
 import ROUTE_LINK from "../../../routes/RouterLink";
-import { useSearchParams } from "react-router-dom";
 
 const PaymentFail: React.FC = () => {
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const navigate = useNavigate();
+  const { message, code } = location.state || {};
   return (
     <>
       <EmptyMessage
@@ -25,8 +25,8 @@ const PaymentFail: React.FC = () => {
           },
         ]}
       />
-      <p>{`에러 코드: ${searchParams.get("code")}`}</p>
-      <p>{`실패 사유: ${searchParams.get("message")}`}</p>
+      {code && <p>{`에러 코드: ${code}`}</p>}
+      {message && <p>{`실패 사유: ${message}`}</p>}
     </>
   );
 };
