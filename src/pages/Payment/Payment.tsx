@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AddressSearch from "./AddressSearch/AddressSearch";
 // import { postAxios } from "../../utils/axios";
 import ROUTE_LINK from "../../routes/RouterLink";
+import { toast } from "react-toastify";
 
 export interface FormValues {
   name: string;
@@ -30,6 +31,11 @@ interface OrderItem {
   image: string;
   price: number;
   description: string;
+  categoryName: string;
+  name: string;
+  sellerId: {
+    _id: string;
+  };
 }
 
 const PaymentPage: React.FC = () => {
@@ -52,7 +58,8 @@ const PaymentPage: React.FC = () => {
     detailAddress: "",
   });
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState("bank");
+  const [paymentMethod, setPaymentMethod] = useState<string>("bank");
+  const [requestMessage, setRequestMessage] = useState("");
 
   useEffect(() => {
     const authStorage = JSON.parse(
@@ -142,40 +149,38 @@ const PaymentPage: React.FC = () => {
 
       localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
 
-      alert("결제가 완료되었습니다!");
+      localStorage.removeItem("products");
+
+      toast.success("결제가 완료되었습니다!");
       navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
     } else if (paymentMethod === "toss") {
-      // 토스페이먼츠 결제 로직
+      const refinedItems = orderItems.map((item) => ({
+        categoryName: item.categoryName,
+        description: item.description || "",
+        image: item.image,
+        name: item.name,
+        price: item.price,
+        sellerId: item.sellerId._id,
+      }));
+
       const orderInfo = {
         name: addressInfo.name,
         phone: `${phoneFirst}${phoneSecond}`,
         postalCode: addressInfo.postalCode,
         address: addressInfo.address,
         detailAddress: addressInfo.detailAddress,
-        requestMessage: "요청사항 예시", // 거래 요청 사항
-        items: orderItems,
+        requestMessage,
+        items: refinedItems,
         totalAmount: orderItems.reduce((total, item) => total + item.price, 0),
       };
 
       console.log("토스페이 API 호출");
-      alert("결제가 완료되었습니다!");
+
       localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
 
-      try {
-        // 서버 API 호출
-        // const response = await postAxios("/order", orderInfo);
-        // console.log("주문 생성 응답:", response.data);
-
-        // 토스페이 API 호출 (가정)
-        console.log("토스페이 API 호출");
-        alert("결제가 완료되었습니다!");
-        localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
-
-        navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
-      } catch (error) {
-        console.error("결제 처리 중 오류 발생:", error);
-        alert("결제 처리에 실패했습니다.");
-      }
+      localStorage.removeItem("products");
+      toast.success("결제가 완료되었습니다!");
+      navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
     }
   };
 
@@ -286,7 +291,12 @@ const PaymentPage: React.FC = () => {
               <S.RequestContainer>
                 <label>거래 요청 사항</label>
                 <span>판매자에게 전달되는 요청사항이에요.</span>
-                <input type="text" placeholder="예: 포장 꼼꼼하게 부탁드려요" />
+                <input
+                  type="text"
+                  placeholder="예: 포장 꼼꼼하게 부탁드려요"
+                  value={requestMessage}
+                  onChange={(e) => setRequestMessage(e.target.value)}
+                />
               </S.RequestContainer>
             </S.OrderInfo>
           </S.Section>
