@@ -21,7 +21,6 @@ interface UserState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: {
-    _id: string;
     email: string;
     password: string;
     name: string;
