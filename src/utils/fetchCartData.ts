@@ -14,8 +14,8 @@ interface CartItem {
 }
 
 interface Shop {
-  nickname: string;
-  _id: string;
+  shopName: string;
+  shopId: string;
   items: CartItem[];
 }
 
@@ -23,10 +23,12 @@ export const fetchCartData = async (): Promise<Shop[]> => {
   const localCart = JSON.parse(localStorage.getItem("products") || "[]");
 
   // 각 아이템의 세부 정보를 가져오기
-  const shopRequests = localCart.map(async (shop) => {
+  const shopRequests = localCart.map(async (shop: Shop) => {
     const updatedItems = await Promise.all(
-      shop.items.map(async (item) => {
+      shop.items.map(async (item: CartItem) => {
         try {
+          console.log(`아이템 ID: ${item._id}`);
+
           const response = await getAxios(`/products/${item._id}`);
           const product = response.data;
 

@@ -29,6 +29,7 @@ interface CartItem {
 
 interface Shop {
   shopName: string;
+  shopId: string;
   items: CartItem[];
 }
 
@@ -40,10 +41,13 @@ const CartPage: React.FC = () => {
     const loadCartData = async () => {
       const data = await fetchCartData();
       setCartData(data);
+      console.log(data);
+      
     };
 
     loadCartData();
   }, []);
+
 
   const calculateTotalAmount = (items: CartItem[]) => {
     return items.reduce((sum, item) => sum + item.price, 0);
