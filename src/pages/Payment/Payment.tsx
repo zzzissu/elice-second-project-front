@@ -231,7 +231,7 @@ const PaymentPage: React.FC = () => {
           throw new Error(response.data?.message || "주문 생성 실패");
         }
 
-        const createdOrder = response.data; 
+        const createdOrder = response.data;
         console.log("생성된 주문:", createdOrder);
 
         console.log("Toss Payments 초기화 중...");
@@ -244,7 +244,7 @@ const PaymentPage: React.FC = () => {
           orderId: createdOrder.order._id,
           orderName: "상품 결제",
           customerName: createdOrder.order.name,
-          successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
+          successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_PROCESSING.path}`,
           failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
         });
 
