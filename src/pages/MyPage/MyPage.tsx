@@ -12,6 +12,7 @@ import { ItemProps } from "../../components/ItemCard/ItemCard";
 import { S } from "./MyPage.style";
 import useModalStore from "../../stores/modal";
 import { toast } from "react-toastify";
+import useAuthStore from "../../stores/useAuthStore";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const MyPage = () => {
     }[]
   >([]);
   const { modalType, closeModal } = useModalStore();
+  const user = useAuthStore();
 
   let sellingurl = `products/my?currentPage=${currentPage}&limit=${limit}`;
   let purchasedurl = `orders?currentPage=${currentPage}&limit=${limit}`;
@@ -97,7 +99,7 @@ const MyPage = () => {
     try {
       const res = await deleteAxios(`/products/${id}`);
 
-      if (res.status === 204) {
+      if (res.status === 200) {
         toast.success("✨상품이 삭제되었습니다.");
       } else toast.warn("상품 삭제를 실패했습니다. 다시 시도해주세요.");
     } catch (error) {
@@ -140,7 +142,7 @@ const MyPage = () => {
       <S.MyPage>
         <S.SideProfile>
           <S.ProfileImg />
-          <S.UserName>엘리스</S.UserName>
+          <S.UserName>{user.user?.nickname}</S.UserName>
           <Button
             btnText="정보 수정하기"
             bgcolor="orange70"

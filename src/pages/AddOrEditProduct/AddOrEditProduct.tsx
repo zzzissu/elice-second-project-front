@@ -12,7 +12,7 @@ import { S } from "./AddOrEditProduct.style";
 
 import useModalStore from "../../stores/modal/index";
 import { toast } from "react-toastify";
-import useAuthStore from "../../stores/useAuthStore";
+import uploadImageToS3 from "../../hooks/uploadImageToS3";
 
 interface CategoryProps {
   id: number;
@@ -100,7 +100,7 @@ const AddOrEditProduct = () => {
       try {
         const res = await postAxios("/products", {
           name: inputValue.productName,
-          image: "/images/ss.jpg",
+          image: preview,
           price: Number(inputValue.productPrice),
           description: inputValue.productDescription,
           categoryName: selectedCategory,
@@ -130,14 +130,14 @@ const AddOrEditProduct = () => {
         const res = await putAxios(`/products/${location.state}`, {
           updateData: {
             name: inputValue.productName,
-            image: "/images/ss.jpg",
+            image: preview,
             price: Number(inputValue.productPrice),
             description: inputValue.productDescription,
             categoryName: selectedCategory,
           },
         });
 
-        if (res.status === 204) {
+        if (res.status === 200) {
           toast.success("✨상품 정보가 수정되었습니다.");
           navigate("/users/my");
         } else {
@@ -158,38 +158,30 @@ const AddOrEditProduct = () => {
     if (location.pathname === "/editproduct") getOriginProductInfo();
   }, []);
 
-  console.log(itemInfo);
-
   const handleImgInputClick = () => {
     if (imgInputRef.current) {
       imgInputRef.current.click();
     }
   };
 
-  const hadleImageChange = () => {
+  const hadleImageChange = async () => {
     const files = imgInputRef.current?.files;
 
     if (files && files[0]) {
       const file = files[0];
-      const fileName = encodeURIComponent(file.name);
-      console.log(fileName);
 
-      const objectUrl = URL.createObjectURL(file);
-      setPreview(objectUrl);
+      try {
+        // S3에 이미지 업로드 및 URL 가져오기
+        const uploadedImageUrl = await uploadImageToS3(file, location.pathname);
+        console.log("Uploaded image URL:", uploadedImageUrl);
 
-      if (objectUrl) setHasFile(true);
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        if (!imgInputRef.current) return;
-      };
-      return () => URL.revokeObjectURL(objectUrl);
+        setPreview(uploadedImageUrl);
+        setHasFile(true);
+      } catch (error) {
+        toast.error("이미지 업로드 중 오류가 발생했습니다.");
+      }
     }
   };
-
-  console.log(preview, imgInputRef);
-  console.log();
 
   if (location.pathname === "editproduct" && !itemInfo) return null;
   if (!categories) return null;
@@ -225,7 +217,7 @@ const AddOrEditProduct = () => {
         )}
         <S.ImgUpload
           type="file"
-          accept="image/jpg, image/jpeg, image/png"
+          accept="image/jpg, image/jpeg"
           multiple
           ref={imgInputRef}
           onChange={hadleImageChange}
@@ -289,7 +281,7 @@ const AddOrEditProduct = () => {
                 handleInputChange("productPrice", value);
               } else {
                 handleInputChange("productPrice", "");
-                toast.error("숫자만 입력해주세요");
+                toast.warn("숫자만 입력해주세요");
               }
             }}
           />
