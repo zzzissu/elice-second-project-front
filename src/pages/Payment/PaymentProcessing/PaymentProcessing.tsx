@@ -13,7 +13,7 @@ const spin = keyframes`
 const Loader = styled.div`
   margin: 50px auto;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
+  border-top: 5px solid #ff7105;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -50,7 +50,7 @@ const PaymentProcessing: React.FC = () => {
           amount,
         });
 
-        if (response.status !== 200) {
+        if (response.status !== 204) {
           throw new Error(
             response.data?.message || "결제 승인에 실패했습니다.",
           );
