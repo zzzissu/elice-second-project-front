@@ -13,6 +13,7 @@ const ROUTE_LINK = {
   PAYMENT_COMPLETE: { path: "/payment-complete" },
   BANK_PAYMENT_COMPLETE: { path: "/bank/payment-complete" },
   PAYMENT_FAIL: { path: "/payment-fail" },
+  PAYMENT_PROCESSING: { path: "/payment-processing" },
 };
 
 export default ROUTE_LINK;
