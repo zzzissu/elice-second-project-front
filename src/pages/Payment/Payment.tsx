@@ -201,8 +201,6 @@ const PaymentPage: React.FC = () => {
 
         navigate(ROUTE_LINK.BANK_PAYMENT_COMPLETE.path);
       } else if (paymentMethod === "toss") {
-        const orderId = `ORDER_${Date.now()}`;
-
         const refinedItems = orderItems.map((item) => ({
           categoryName: item.categoryName,
           description: item.description || "",
@@ -214,7 +212,6 @@ const PaymentPage: React.FC = () => {
 
         const orderInfo = {
           paymentKey: "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
-          orderId,
           name: addressInfo.name,
           phone: `${phoneFirst}${phoneSecond}`,
           postalCode: addressInfo.postalCode,
@@ -230,26 +227,28 @@ const PaymentPage: React.FC = () => {
 
         const response = await postAxios("/orders", orderInfo);
 
-        if (response.status !== 200) {
+        if (response.status !== 201) {
           throw new Error(response.data?.message || "주문 생성 실패");
         }
+
+        const createdOrder = response.data; 
+        console.log("생성된 주문:", createdOrder);
 
         console.log("Toss Payments 초기화 중...");
         const tossPayments = await loadTossPayments(
           "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
         );
-        console.log("Toss Payments 객체:", tossPayments);
 
         tossPayments.requestPayment("카드", {
-          amount: totalAmount,
-          orderId,
+          amount: createdOrder.order.totalAmount,
+          orderId: createdOrder.order._id,
           orderName: "상품 결제",
-          customerName: addressInfo.name,
+          customerName: createdOrder.order.name,
           successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
           failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
         });
 
-        localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+        localStorage.setItem("orderInfo", JSON.stringify(createdOrder));
         localStorage.removeItem("products");
       }
     } catch (error) {
