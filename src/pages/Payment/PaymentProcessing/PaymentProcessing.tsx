@@ -50,14 +50,14 @@ const PaymentProcessing: React.FC = () => {
           amount,
         });
 
-        if (response.status !== 204) {
+        if (response.status === 200 || response.status === 204) {
+          toast.success("결제가 완료되었습니다.");
+          navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+        } else {
           throw new Error(
             response.data?.message || "결제 승인에 실패했습니다.",
           );
         }
-
-        toast.success("결제가 완료되었습니다.");
-        navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
       } catch (error) {
         console.error("결제 승인 오류:", error);
         toast.error(
