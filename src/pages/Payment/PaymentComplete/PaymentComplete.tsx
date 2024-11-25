@@ -1,11 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import EmptyMessage from "../../../components/EmptyMessage/EmptyMessage";
 import ROUTE_LINK from "../../../routes/RouterLink";
+import { toast } from "react-toastify";
+import { postAxios } from "../../../utils/axios";
 
 const PaymentComplete: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const confirmPayment = async () => {
+      const orderId = searchParams.get("orderId");
+      const paymentKey = searchParams.get("paymentKey");
+      const amount = searchParams.get("amount");
+
+      if (!orderId || !paymentKey || !amount) {
+        toast.error("결제 정보가 올바르지 않습니다.");
+        navigate(ROUTE_LINK.PAYMENT_FAIL.path);
+        return;
+      }
+
+      try {
+        const response = await postAxios("/payments/approval", {
+          orderId,
+          paymentKey,
+          amount,
+        });
+
+        if (response.data?.success) {
+          throw new Error(
+            response.data?.message || "결제 승인에 실패했습니다.",
+          );
+        }
+      } catch (error) {
+        console.error("결제 승인 오류:", error);
+        navigate(ROUTE_LINK.PAYMENT_FAIL.path);
+      }
+    };
+
+    confirmPayment();
+  }, [navigate, searchParams]);
 
   return (
     <>
@@ -25,8 +60,6 @@ const PaymentComplete: React.FC = () => {
           },
         ]}
       />
-      <p>주문 번호: {searchParams.get("orderId")}</p>
-      <p>결제 금액: {searchParams.get("amount")}원</p>
     </>
   );
 };
