@@ -26,7 +26,8 @@ export default function UserDataEditPage() {
 
   const { setValue, clearErrors } = methods;
 
-  const [ setProfileImage] = useState<File | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const { imgInputRef, preview, hasFile, handleImageChange } =
     useHandleImageChange("profile");
 
