@@ -77,7 +77,7 @@ const PaymentPage: React.FC = () => {
     detailAddress: "",
   });
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<string>("bank");
+  const [paymentMethod, setPaymentMethod] = useState<string>("toss");
   const [requestMessage, setRequestMessage] = useState("");
 
   const buyerId = useAuthStore((state) => state.user?.id);
@@ -185,7 +185,7 @@ const PaymentPage: React.FC = () => {
 
   const handlePayment = async () => {
     if (!isChecked) {
-      alert("주문내역 확인 및 결제 동의를 체크해주세요.");
+      toast.warn("주문내역 확인 및 결제 동의를 체크해주세요.");
       return;
     }
     try {

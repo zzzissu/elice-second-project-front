@@ -28,14 +28,16 @@ const PaymentComplete: React.FC = () => {
           amount,
         });
 
-        if (response.data.success) {
+        if (response.data.success === true) {
+          toast.success("결제가 완료되었습니다!");
+        } else {
           throw new Error(
             response.data?.message || "결제 승인에 실패했습니다.",
           );
         }
       } catch (error) {
         console.error("결제 승인 오류:", error);
-        navigate(ROUTE_LINK.PAYMENT_FAIL.path);
+        // navigate(ROUTE_LINK.PAYMENT_FAIL.path);
       }
     };
 
