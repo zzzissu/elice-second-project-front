@@ -130,6 +130,8 @@ const MyPage = () => {
     setFilteredCartItems(groupedCartItems);
   }, [purchasedItems]);
 
+  console.log(user.user);
+
   return (
     <S.MyPageWrap>
       {modalType === "deleteProduct" && (
@@ -141,7 +143,9 @@ const MyPage = () => {
       <Nav />
       <S.MyPage>
         <S.SideProfile>
-          <S.ProfileImg />
+          <S.ProfileImg
+            src={user.user?.image ? user.user.image : "/icons/profile.svg"}
+          />
           <S.UserName>{user.user?.nickname}</S.UserName>
           <Button
             btnText="정보 수정하기"

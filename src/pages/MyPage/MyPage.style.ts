@@ -29,19 +29,19 @@ export const S = {
     align-items: center;
 
     width: 350px;
-    height: 400px;
+    height: 440px;
+    padding: 32px 6px;
 
     border-radius: 5px;
 
     border: 1px solid ${(props) => props.theme.color.lightGrey};
   `,
-  ProfileImg: styled.div`
+  ProfileImg: styled.img`
     width: 170px;
     height: 170px;
 
-    background-image: url("/icons/profile.svg");
-    background-repeat: no-repeat;
-    background-size: contain;
+    border-radius: 50%;
+    object-fit: cover;
   `,
   UserName: styled.div`
     font-size: ${(props) => props.theme.font.title};
