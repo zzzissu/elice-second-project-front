@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  useFormContext,
-  RegisterOptions,
-  UseFormRegister,
-} from "react-hook-form";
+import { RegisterOptions, UseFormRegister } from "react-hook-form";
 import * as S from "./InputFiled.styled";
 
 interface InputFieldProps {
@@ -25,15 +21,11 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   type = "text",
   rules,
-  error,
   register,
   value,
   onChange,
   readOnly,
 }) => {
-  const {
-    formState: { errors },
-  } = useFormContext();
   return (
     <>
       <S.InputContainer>
@@ -55,7 +47,6 @@ const InputField: React.FC<InputFieldProps> = ({
             readOnly={readOnly}
           />
         )}
-        {/* {error && <S.ErrorText>{errors[name]?.message as string}</S.ErrorText>} */}
       </S.InputContainer>
     </>
   );
