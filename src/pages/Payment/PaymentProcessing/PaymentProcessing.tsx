@@ -1,11 +1,33 @@
 import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import EmptyMessage from "../../../components/EmptyMessage/EmptyMessage";
 import ROUTE_LINK from "../../../routes/RouterLink";
-import { toast } from "react-toastify";
 import { postAxios } from "../../../utils/axios";
+import { toast } from "react-toastify";
+import styled, { keyframes } from "styled-components";
 
-const PaymentComplete: React.FC = () => {
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const Loader = styled.div`
+  margin: 50px auto;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #ff7105;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: ${spin} 1s linear infinite;
+`;
+
+const Message = styled.div`
+  text-align: center;
+  font-size: 1.2em;
+  color: #333;
+  margin-top: 20px;
+`;
+
+const PaymentProcessing: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -29,12 +51,16 @@ const PaymentComplete: React.FC = () => {
         });
 
         if (response.data?.success) {
-          throw new Error(
-            response.data?.message || "결제 승인에 실패했습니다.",
-          );
+          toast.success("결제가 완료되었습니다.");
+          navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+        } else {
+          throw new Error("결제 승인에 실패했습니다.");
         }
       } catch (error) {
         console.error("결제 승인 오류:", error);
+        toast.error(
+          error instanceof Error ? error.message : "결제 승인에 실패했습니다.",
+        );
         navigate(ROUTE_LINK.PAYMENT_FAIL.path);
       }
     };
@@ -43,25 +69,11 @@ const PaymentComplete: React.FC = () => {
   }, [navigate, searchParams]);
 
   return (
-    <>
-      <EmptyMessage
-        iconType="card"
-        message="결제가 완료되었습니다."
-        buttons={[
-          {
-            btnText: "쇼핑하러 가기",
-            onClick: () => navigate(ROUTE_LINK.LIST.path),
-            bgcolor: "orange70",
-          },
-          {
-            btnText: "구매내역 보기",
-            onClick: () => navigate(ROUTE_LINK.MYPAGE.path),
-            bgcolor: "blue70",
-          },
-        ]}
-      />
-    </>
+    <div>
+      <Loader />
+      <Message>결제 중입니다. 잠시만 기다려주세요...</Message>
+    </div>
   );
 };
 
-export default PaymentComplete;
+export default PaymentProcessing;

@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AddressSearch from "./AddressSearch/AddressSearch";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { toast } from "react-toastify";
+import { getAxios, postAxios } from "../../utils/axios";
 
 import { loadTossPayments } from "@tosspayments/payment-sdk";
 
@@ -39,11 +40,26 @@ interface OrderItem {
   };
 }
 
+interface TossPaymentError {
+  code: string;
+  message: string;
+}
+
+function isTossPaymentError(error: unknown): error is TossPaymentError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    "message" in error &&
+    typeof (error as TossPaymentError).code === "string" &&
+    typeof (error as TossPaymentError).message === "string"
+  );
+}
+
 const PaymentPage: React.FC = () => {
   const methods = useForm<FormValues>();
   const { setValue, clearErrors, handleSubmit } = methods;
   const location = useLocation();
-  // const singleProduct = location.state;
   const navigate = useNavigate();
 
   const [isChecked, setIsChecked] = useState(false);
@@ -98,6 +114,32 @@ const PaymentPage: React.FC = () => {
     }
   }, [location.state, setValue, isEditing]);
 
+  useEffect(() => {
+    const productId = location.state?.id;
+
+    if (productId) {
+      getAxios(`/products/${productId}`)
+        .then((response) => {
+          const product = response.data;
+          setOrderItems([
+            {
+              _id: product._id,
+              name: product.name,
+              image: product.image,
+              price: product.price,
+              description: product.description,
+              categoryName: product.categoryName,
+              sellerId: product.sellerId,
+            },
+          ]);
+        })
+        .catch(() => {
+          toast.error("상품 정보를 불러오는 데 실패했습니다.");
+          navigate(ROUTE_LINK.DETAIL.path.replace(":productId", productId));
+        });
+    }
+  }, [location.state, navigate]);
+
   const handleEditAddress = () => {
     setIsEditing(true);
   };
@@ -151,14 +193,14 @@ const PaymentPage: React.FC = () => {
           ),
         };
 
+        await postAxios("/payments/account", paymentInfo);
+
         localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
 
         localStorage.removeItem("products");
 
-        navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+        navigate(ROUTE_LINK.BANK_PAYMENT_COMPLETE.path);
       } else if (paymentMethod === "toss") {
-        const orderId = `ORDER_${Date.now()}`;
-
         const refinedItems = orderItems.map((item) => ({
           categoryName: item.categoryName,
           description: item.description || "",
@@ -170,7 +212,6 @@ const PaymentPage: React.FC = () => {
 
         const orderInfo = {
           paymentKey: "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
-          orderId,
           name: addressInfo.name,
           phone: `${phoneFirst}${phoneSecond}`,
           postalCode: addressInfo.postalCode,
@@ -184,27 +225,54 @@ const PaymentPage: React.FC = () => {
           ),
         };
 
+        const response = await postAxios("/orders", orderInfo);
+
+        if (response.status !== 201) {
+          throw new Error(response.data?.message || "주문 생성 실패");
+        }
+
+        const createdOrder = response.data;
+        console.log("생성된 주문:", createdOrder);
+
         console.log("Toss Payments 초기화 중...");
         const tossPayments = await loadTossPayments(
           "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
         );
-        console.log("Toss Payments 객체:", tossPayments);
 
         tossPayments.requestPayment("카드", {
-          amount: totalAmount,
-          orderId,
+          amount: createdOrder.order.totalAmount,
+          orderId: createdOrder.order._id,
           orderName: "상품 결제",
-          customerName: addressInfo.name,
+          customerName: createdOrder.order.name,
           successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
           failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
         });
 
-        localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+        localStorage.setItem("orderInfo", JSON.stringify(createdOrder));
         localStorage.removeItem("products");
       }
     } catch (error) {
-      console.error("결제 처리 중 오류 발생:", error);
-      toast.error("결제 요청에 실패했습니다.");
+      if (isTossPaymentError(error)) {
+        console.error("결제 요청 중 오류:", error);
+
+        if (error.code === "USER_CANCELLED") {
+          toast.error("결제가 취소되었습니다.");
+          navigate(ROUTE_LINK.PAYMENT_FAIL.path, {
+            state: { message: error.message, code: error.code },
+          });
+        } else {
+          toast.error("결제 중 오류가 발생했습니다.");
+          navigate(ROUTE_LINK.PAYMENT_FAIL.path, {
+            state: {
+              message: error.message || "알 수 없는 오류",
+              code: error.code || "UNKNOWN",
+            },
+          });
+        }
+      } else {
+        console.error("알 수 없는 오류 발생:", error);
+        toast.error("예상치 못한 오류가 발생했습니다.");
+      }
     }
   };
 
