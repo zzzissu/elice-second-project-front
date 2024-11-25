@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { getAxios, postAxios } from "../../utils/axios";
 
 import { loadTossPayments } from "@tosspayments/payment-sdk";
+import useAuthStore from "../../stores/useAuthStore";
 
 export interface FormValues {
   name: string;
@@ -78,6 +79,8 @@ const PaymentPage: React.FC = () => {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string>("bank");
   const [requestMessage, setRequestMessage] = useState("");
+
+  const buyerId = useAuthStore((state) => state.user?.id);
 
   useEffect(() => {
     const authStorage = JSON.parse(
@@ -196,6 +199,7 @@ const PaymentPage: React.FC = () => {
             0,
           ),
           payedAt: formattedDate,
+          buyerId,
         };
 
         await postAxios("/payments/account", paymentInfo);
@@ -229,6 +233,7 @@ const PaymentPage: React.FC = () => {
             (total, item) => total + item.price,
             0,
           ),
+          buyerId,
         };
 
         const response = await postAxios("/orders", orderInfo);
