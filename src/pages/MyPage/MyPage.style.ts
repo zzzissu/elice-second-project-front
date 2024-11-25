@@ -132,9 +132,9 @@ export const S = {
 
     color: ${(props) => {
       if (props.currentPage === props.num) {
-        return props.theme.color.orange; // 현재 페이지일 경우 orange 색상 반환
+        return props.theme.color.orange;
       } else {
-        return props.theme.color.grey; // 그렇지 않으면 grey 색상 반환
+        return props.theme.color.grey;
       }
     }};
 

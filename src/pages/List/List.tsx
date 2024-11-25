@@ -49,12 +49,10 @@ const List = () => {
     });
   };
 
-  console.log(items);
-
   const handleCategoryClick = (id: string) => {
     setSelectedCategory(id);
     setCurrentPage(1);
-    setSearchParams({ categoryName: id, currentPage: "1" }); // currentPage는 문자열로 저장
+    setSearchParams({ categoryName: id, currentPage: "1" });
   };
 
   const handleClickMoreBtn = () => {

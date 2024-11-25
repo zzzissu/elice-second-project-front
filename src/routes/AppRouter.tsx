@@ -1,4 +1,3 @@
-// import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ROUTE_LINK from "./RouterLink.ts";
 import List from "../pages/List/List.tsx";

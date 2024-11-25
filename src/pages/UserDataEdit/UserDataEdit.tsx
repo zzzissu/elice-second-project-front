@@ -67,14 +67,6 @@ export default function UserDataEditPage() {
     }
   };
 
-  // const handleProfilePictureChange = (
-  //   event: React.ChangeEvent<HTMLInputElement>,
-  // ) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     setProfileImage(event.target.files[0]);
-  //   }
-  // };
-
   const handleProfilePictureDelete = () => {
     setProfileImage(null);
     alert("프로필 사진이 초기화되었습니다.");
