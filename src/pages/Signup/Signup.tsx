@@ -10,6 +10,7 @@ import {
 } from "../../utils/userValidation";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import { toast } from "react-toastify";
 
 export interface FormValues {
   email: string;
@@ -45,6 +46,7 @@ export default function SignupPage() {
   const emailValue = watch("email");
   const passwordValue = watch("password");
   const confirmPasswordValue = watch("confirmPassword");
+  const nickname = watch("nickname");
 
   useEffect(() => {
     if (emailValue) {
@@ -58,7 +60,24 @@ export default function SignupPage() {
     }
   }, [emailValue, passwordValue, confirmPasswordValue, methods]);
 
+  useEffect(() => {
+    setEmailValid(null);
+  }, [emailValue]);
+
+  useEffect(() => {
+    setNicknameValid(null);
+  }, [nickname]);
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (emailValid === false) {
+      toast.warn("이미 사용중인 이메일입니다. 다른 이메일을 입력해주세요.");
+      return;
+    }
+
+    if (nicknameValid === false) {
+      toast.warn("이미 사용중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
+      return;
+    }
     const formattedPhone = `${data.phoneFirst}${data.phoneSecond}`;
     const payload = {
       email: data.email,
@@ -73,10 +92,11 @@ export default function SignupPage() {
 
     try {
       await registerUser(payload);
-      alert("회원가입이 완료되었습니다.");
+      toast.info("회원가입이 완료되었습니다.");
       navigate(ROUTE_LINK.LOGIN.path);
     } catch (error: unknown) {
       console.error("회원가입 실패:", error);
+      toast.error("회원가입에 실패했습니다.");
     }
   };
 
@@ -124,7 +144,11 @@ export default function SignupPage() {
               }}
               error={errors.email?.message}
             />
-            <S.CheckButton type="button" onClick={checkEmail}>
+            <S.CheckButton
+              type="button"
+              onClick={checkEmail}
+              disabled={!watch("email") || emailValid === true}
+            >
               중복확인
             </S.CheckButton>
           </S.InputContainer>
@@ -196,7 +220,11 @@ export default function SignupPage() {
               onChange={(e) => setValue("nickname", e.target.value)}
               error={errors.nickname?.message}
             />
-            <S.CheckButton type="button" onClick={checkNickname}>
+            <S.CheckButton
+              type="button"
+              onClick={checkNickname}
+              disabled={!watch("nickname") || nicknameValid === true}
+            >
               중복확인
             </S.CheckButton>
           </S.InputContainer>
@@ -244,7 +272,12 @@ export default function SignupPage() {
             </S.InputContainer>
           </div>
 
-          <S.SubmitButton type="submit">회원가입</S.SubmitButton>
+          <S.SubmitButton
+            type="submit"
+            disabled={emailValid !== true || nicknameValid !== true}
+          >
+            회원가입
+          </S.SubmitButton>
         </FormContainer>
       </S.Container>
     </>
