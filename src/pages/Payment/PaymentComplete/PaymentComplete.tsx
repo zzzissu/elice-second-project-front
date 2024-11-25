@@ -28,7 +28,7 @@ const PaymentComplete: React.FC = () => {
           amount,
         });
 
-        if (response.data?.success) {
+        if (response.data.success) {
           throw new Error(
             response.data?.message || "결제 승인에 실패했습니다.",
           );
