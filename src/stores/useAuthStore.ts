@@ -8,6 +8,7 @@ interface UserProfile {
   nickname?: string;
   email?: string;
   name?: string;
+  image?: string;
   phone?: string;
   postalCode?: string;
   basicAdd?: string;
@@ -24,6 +25,7 @@ interface UserState {
     email: string;
     password: string;
     name: string;
+    image: string;
     nickname: string;
     phone: string;
     postalCode: string;
@@ -61,6 +63,7 @@ const useAuthStore = create<UserState>()(
               nickname: user.nickname,
               email: user.email,
               name: user.name,
+              image: user.image,
               phone: user.phone,
               postalCode: user.postalCode || "",
               basicAdd: user.basicAdd || "",
