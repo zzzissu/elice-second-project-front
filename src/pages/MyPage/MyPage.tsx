@@ -101,6 +101,7 @@ const MyPage = () => {
 
       if (res.status === 200) {
         toast.success("✨상품이 삭제되었습니다.");
+        getSellingItems();
       } else toast.warn("상품 삭제를 실패했습니다. 다시 시도해주세요.");
     } catch (error) {
       toast.error("상품 삭제 중 오류가 발생했습니다.");
