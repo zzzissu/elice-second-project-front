@@ -43,41 +43,41 @@ export default function SignupPage() {
   const [emailValid, setEmailValid] = useState<boolean | null>(null);
   const [nicknameValid, setNicknameValid] = useState<boolean | null>(null);
 
-  const emailValue = watch("email");
+  // const emailValue = watch("email");
   const passwordValue = watch("password");
   const confirmPasswordValue = watch("confirmPassword");
   const nickname = watch("nickname");
 
   useEffect(() => {
-    if (emailValue) {
-      methods.trigger("email");
-    }
+    // if (emailValue) {
+    //   methods.trigger("email");
+    // }
     if (passwordValue) {
       methods.trigger("password");
     }
     if (confirmPasswordValue) {
       methods.trigger("confirmPassword");
     }
-  }, [emailValue, passwordValue, confirmPasswordValue, methods]);
+  }, [passwordValue, confirmPasswordValue, methods]);
 
-  useEffect(() => {
-    setEmailValid(null);
-  }, [emailValue]);
+  // useEffect(() => {
+  //   setEmailValid(null);
+  // }, [emailValue]);
 
   useEffect(() => {
     setNicknameValid(null);
   }, [nickname]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (emailValid === false) {
-      toast.warn("이미 사용중인 이메일입니다. 다른 이메일을 입력해주세요.");
-      return;
-    }
+    // if (emailValid === false) {
+    //   toast.warn("이미 사용중인 이메일입니다. 다른 이메일을 입력해주세요.");
+    //   return;
+    // }
 
-    if (nicknameValid === false) {
-      toast.warn("이미 사용중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
-      return;
-    }
+    // if (nicknameValid === false) {
+    //   toast.warn("이미 사용중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
+    //   return;
+    // }
     const formattedPhone = `${data.phoneFirst}${data.phoneSecond}`;
     const payload = {
       email: data.email,
