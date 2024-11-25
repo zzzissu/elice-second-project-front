@@ -1,4 +1,3 @@
-// import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ROUTE_LINK from "./RouterLink.ts";
 import List from "../pages/List/List.tsx";
@@ -13,6 +12,8 @@ import PasswordCheckPage from "../pages/PasswordCheck/PasswordCheck.tsx";
 import UserDataEditPage from "../pages/UserDataEdit/UserDataEdit.tsx";
 import PaymentComplete from "../pages/Payment/PaymentComplete/PaymentComplete.tsx";
 import PaymentFail from "../pages/Payment/PaymentFail/PaymentFail.tsx";
+import BankPaymentComplete from "../pages/Payment/BankPaymentComplete/BankPaymentComplete.tsx";
+import PaymentProcessing from "../pages/Payment/PaymentProcessing/PaymentProcessing.tsx";
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -65,8 +66,16 @@ function AppRouter() {
       element: <PaymentComplete />,
     },
     {
+      path: ROUTE_LINK.BANK_PAYMENT_COMPLETE.path,
+      element: <BankPaymentComplete />,
+    },
+    {
       path: ROUTE_LINK.PAYMENT_FAIL.path,
       element: <PaymentFail />,
+    },
+    {
+      path: ROUTE_LINK.PAYMENT_PROCESSING.path,
+      element: <PaymentProcessing />,
     },
   ]);
 

@@ -9,7 +9,7 @@ export const Container = styled.div`
   height: 100%;
   overflow-y: auto;
 
-  @media (max-width: 1320px) {
+  @media (max-width: 14750px) {
     margin: 60px 0 50px;
   }
 `;
@@ -72,4 +72,11 @@ export const SubmitButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.color.orange};
   }
+`;
+
+export const ErrorText = styled.span`
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+  display: block;
 `;

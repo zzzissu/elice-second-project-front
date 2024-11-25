@@ -11,7 +11,9 @@ const ROUTE_LINK = {
   INFO_EDIT: { path: "/users/my/info-edit" },
   PAYMENT: { path: "/payment" },
   PAYMENT_COMPLETE: { path: "/payment-complete" },
+  BANK_PAYMENT_COMPLETE: { path: "/bank/payment-complete" },
   PAYMENT_FAIL: { path: "/payment-fail" },
+  PAYMENT_PROCESSING: { path: "/payment-processing" },
 };
 
 export default ROUTE_LINK;

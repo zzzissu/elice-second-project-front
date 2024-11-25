@@ -11,6 +11,9 @@ import { ItemProps } from "components/ItemCard/ItemCard";
 import { S } from "./Detail.style";
 import useModalStore from "../../stores/modal/index";
 import { toast } from "react-toastify";
+import useAuthStore from "../../stores/useAuthStore";
+import ScrollUp from "../../components/ScrollUp/ScrollUp";
+import scrollToTop from "../../utils/scrollToTop";
 
 interface CartItemsProps {
   id: string;
@@ -27,6 +30,7 @@ const Detail = () => {
   const [, setIsSellerBoxVisible] = useState(false);
 
   const { modalType, closeModal } = useModalStore();
+  const user = useAuthStore();
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
@@ -73,7 +77,11 @@ const Detail = () => {
   };
 
   const handleEditBtn = () => {
-    navigate("/editproduct", { state: productId });
+    const userId = user.user?.id;
+
+    if (userId === item?.sellerId._id) {
+      navigate("/editproduct", { state: productId });
+    } else toast.warn("다른 사람의 상품입니다.");
   };
 
   const purchase = () => {
@@ -108,13 +116,16 @@ const Detail = () => {
         />
       )}
       <Nav />
+
       <S.Detail>
         <S.StickyWrap>
           <S.UpperWrap>
             <S.ProductImg imgUrl={item.image} />
             <S.ProductInfo>
               <div>
-                <S.EditBtn onClick={handleEditBtn} />
+                {user.user?.id === item.sellerId._id && (
+                  <S.EditBtn onClick={handleEditBtn} />
+                )}
 
                 <S.ProductName>{item.name}</S.ProductName>
                 <S.ProductPrice>
@@ -156,11 +167,12 @@ const Detail = () => {
 
           <S.LowerWrap>
             <S.Description>
-              <pre>{item.description}</pre>
+              <S.Pre>{item.description}</S.Pre>
             </S.Description>
             <S.SellerBox ref={sellerBoxRef}>
               <S.SellerIcon />
               <S.greyText>{item.sellerId.nickname}</S.greyText>
+              <ScrollUp onClick={scrollToTop} />
             </S.SellerBox>
           </S.LowerWrap>
         </S.StickyWrap>

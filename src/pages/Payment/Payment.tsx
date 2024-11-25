@@ -14,8 +14,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AddressSearch from "./AddressSearch/AddressSearch";
 import ROUTE_LINK from "../../routes/RouterLink";
 import { toast } from "react-toastify";
+import { getAxios, postAxios } from "../../utils/axios";
 
 import { loadTossPayments } from "@tosspayments/payment-sdk";
+import useAuthStore from "../../stores/useAuthStore";
 
 export interface FormValues {
   name: string;
@@ -37,13 +39,29 @@ interface OrderItem {
   sellerId: {
     _id: string;
   };
+  payedAt: string;
+}
+
+interface TossPaymentError {
+  code: string;
+  message: string;
+}
+
+function isTossPaymentError(error: unknown): error is TossPaymentError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    "message" in error &&
+    typeof (error as TossPaymentError).code === "string" &&
+    typeof (error as TossPaymentError).message === "string"
+  );
 }
 
 const PaymentPage: React.FC = () => {
   const methods = useForm<FormValues>();
   const { setValue, clearErrors, handleSubmit } = methods;
   const location = useLocation();
-  // const singleProduct = location.state;
   const navigate = useNavigate();
 
   const [isChecked, setIsChecked] = useState(false);
@@ -59,8 +77,10 @@ const PaymentPage: React.FC = () => {
     detailAddress: "",
   });
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<string>("bank");
+  const [paymentMethod, setPaymentMethod] = useState<string>("toss");
   const [requestMessage, setRequestMessage] = useState("");
+
+  const buyerId = useAuthStore((state) => state.user?.id);
 
   useEffect(() => {
     const authStorage = JSON.parse(
@@ -97,6 +117,33 @@ const PaymentPage: React.FC = () => {
       setOrderItems(location.state.selectedItems);
     }
   }, [location.state, setValue, isEditing]);
+
+  useEffect(() => {
+    const productId = location.state?.id;
+
+    if (productId) {
+      getAxios(`/products/${productId}`)
+        .then((response) => {
+          const product = response.data;
+          setOrderItems([
+            {
+              _id: product._id,
+              name: product.name,
+              image: product.image,
+              price: product.price,
+              description: product.description,
+              categoryName: product.categoryName,
+              sellerId: product.sellerId,
+              payedAt: product.payedAt,
+            },
+          ]);
+        })
+        .catch(() => {
+          toast.error("상품 정보를 불러오는 데 실패했습니다.");
+          navigate(ROUTE_LINK.DETAIL.path.replace(":productId", productId));
+        });
+    }
+  }, [location.state, navigate]);
 
   const handleEditAddress = () => {
     setIsEditing(true);
@@ -138,10 +185,12 @@ const PaymentPage: React.FC = () => {
 
   const handlePayment = async () => {
     if (!isChecked) {
-      alert("주문내역 확인 및 결제 동의를 체크해주세요.");
+      toast.warn("주문내역 확인 및 결제 동의를 체크해주세요.");
       return;
     }
     try {
+      const today = new Date();
+      const formattedDate = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`;
       if (paymentMethod === "bank") {
         const paymentInfo = {
           items: orderItems,
@@ -149,13 +198,16 @@ const PaymentPage: React.FC = () => {
             (total, item) => total + item.price,
             0,
           ),
+          payedAt: formattedDate,
+          buyerId,
         };
 
-        localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
+        await postAxios("/payments/account", paymentInfo);
 
+        localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
         localStorage.removeItem("products");
 
-        navigate(ROUTE_LINK.PAYMENT_COMPLETE.path);
+        navigate(ROUTE_LINK.BANK_PAYMENT_COMPLETE.path);
       } else if (paymentMethod === "toss") {
         const refinedItems = orderItems.map((item) => ({
           categoryName: item.categoryName,
@@ -164,9 +216,12 @@ const PaymentPage: React.FC = () => {
           name: item.name,
           price: item.price,
           sellerId: item.sellerId._id,
+          productId: item._id,
+          payedAt: formattedDate,
         }));
 
         const orderInfo = {
+          paymentKey: "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
           name: addressInfo.name,
           phone: `${phoneFirst}${phoneSecond}`,
           postalCode: addressInfo.postalCode,
@@ -178,19 +233,25 @@ const PaymentPage: React.FC = () => {
             (total, item) => total + item.price,
             0,
           ),
+          buyerId,
         };
 
-        console.log("Toss Payments 초기화 중...");
+        const response = await postAxios("/orders", orderInfo);
+
+        if (response.status !== 201) {
+          throw new Error(response.data?.message || "주문 생성 실패");
+        }
+
+        const createdOrder = response.data;
         const tossPayments = await loadTossPayments(
           "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
         );
-        console.log("Toss Payments 객체:", tossPayments);
 
         tossPayments.requestPayment("카드", {
-          amount: totalAmount,
-          orderId: `ORDER_${Date.now()}`,
+          amount: createdOrder.order.totalAmount,
+          orderId: createdOrder.order._id,
           orderName: "상품 결제",
-          customerName: addressInfo.name,
+          customerName: createdOrder.order.name,
           successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
           failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
         });
@@ -199,8 +260,27 @@ const PaymentPage: React.FC = () => {
         localStorage.removeItem("products");
       }
     } catch (error) {
-      console.error("결제 처리 중 오류 발생:", error);
-      toast.error("결제 요청에 실패했습니다.");
+      if (isTossPaymentError(error)) {
+        console.error("결제 요청 중 오류:", error);
+
+        if (error.code === "USER_CANCELLED") {
+          toast.error("결제가 취소되었습니다.");
+          navigate(ROUTE_LINK.PAYMENT_FAIL.path, {
+            state: { message: error.message, code: error.code },
+          });
+        } else {
+          toast.error("결제 중 오류가 발생했습니다.");
+          navigate(ROUTE_LINK.PAYMENT_FAIL.path, {
+            state: {
+              message: error.message || "알 수 없는 오류",
+              code: error.code || "UNKNOWN",
+            },
+          });
+        }
+      } else {
+        console.error("알 수 없는 오류 발생:", error);
+        toast.error("예상치 못한 오류가 발생했습니다.");
+      }
     }
   };
 
