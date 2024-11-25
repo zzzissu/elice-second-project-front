@@ -1,18 +1,18 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button, UserInput, Nav, ConfirmModal } from "components";
 
 import useIsFocused from "../../hooks/useIsFocused";
 import useInputValue from "../../hooks/UseUserInput";
+import useHandleImageChange from "../../hooks/useHandleImageChange";
 import { getAxios, postAxios, putAxios } from "../../utils/axios";
+import useModalStore from "../../stores/modal/index";
 
 import { S } from "./AddOrEditProduct.style";
-
-import useModalStore from "../../stores/modal/index";
-import { toast } from "react-toastify";
-import uploadImageToS3 from "../../hooks/uploadImageToS3";
 
 interface CategoryProps {
   id: number;
@@ -45,17 +45,16 @@ const AddOrEditProduct = () => {
   const [categories, setCategories] = useState<[]>([]);
 
   const [selectedCategory, setSelectedCategory] = useState("");
-
-  const [inputValue, handleInputChange] = useInputValue();
-  const { isFocused, handleFocus, handleBlur } = useIsFocused();
-  const { modalType, openModal, closeModal } = useModalStore();
-  const imgInputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState(Object);
-  const [hasFile, setHasFile] = useState(false);
-
   const [itemInfo, setItemInfo] = useState<ItemInfoProps | undefined>(
     undefined,
   );
+
+  const [inputValue, handleInputChange] = useInputValue();
+  const { isFocused, handleFocus, handleBlur } = useIsFocused();
+  const { imgInputRef, preview, hasFile, handleImageChange } =
+    useHandleImageChange();
+
+  const { modalType, openModal, closeModal } = useModalStore();
 
   const productId = location.state;
   const getCategory = async () => {
@@ -71,14 +70,13 @@ const AddOrEditProduct = () => {
     getCategory();
   }, []);
 
-  const handleRadioValue = (e: React.MouseEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    setSelectedCategory(value);
-  };
-
   const getOriginProductInfo = () => {
     getAxios(`/products/${productId}`).then((res) => setItemInfo(res.data));
   };
+
+  useEffect(() => {
+    if (location.pathname === "/editproduct") getOriginProductInfo();
+  }, []);
 
   useEffect(() => {
     if (itemInfo) {
@@ -88,6 +86,11 @@ const AddOrEditProduct = () => {
       setSelectedCategory(itemInfo.categoryName);
     }
   }, [itemInfo]);
+
+  const handleRadioValue = (e: React.MouseEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    setSelectedCategory(value);
+  };
 
   const postProducts = async () => {
     if (
@@ -154,32 +157,9 @@ const AddOrEditProduct = () => {
     closeModal();
   };
 
-  useEffect(() => {
-    if (location.pathname === "/editproduct") getOriginProductInfo();
-  }, []);
-
   const handleImgInputClick = () => {
     if (imgInputRef.current) {
       imgInputRef.current.click();
-    }
-  };
-
-  const hadleImageChange = async () => {
-    const files = imgInputRef.current?.files;
-
-    if (files && files[0]) {
-      const file = files[0];
-
-      try {
-        // S3에 이미지 업로드 및 URL 가져오기
-        const uploadedImageUrl = await uploadImageToS3(file, location.pathname);
-        console.log("Uploaded image URL:", uploadedImageUrl);
-
-        setPreview(uploadedImageUrl);
-        setHasFile(true);
-      } catch (error) {
-        toast.error("이미지 업로드 중 오류가 발생했습니다.");
-      }
     }
   };
 
@@ -220,11 +200,10 @@ const AddOrEditProduct = () => {
           accept="image/jpg, image/jpeg"
           multiple
           ref={imgInputRef}
-          onChange={hadleImageChange}
+          onChange={handleImageChange}
         />
       </S.UploadImgBox>
       {hasFile && <S.EditImgBtn>사진 수정하기</S.EditImgBtn>}
-
       <S.InfoTable hasFile={hasFile}>
         <S.GridTitle>
           카테고리<S.Essential>필수 입력</S.Essential>

@@ -49,6 +49,8 @@ const List = () => {
     });
   };
 
+  console.log(items);
+
   const handleCategoryClick = (id: string) => {
     setSelectedCategory(id);
     setCurrentPage(1);

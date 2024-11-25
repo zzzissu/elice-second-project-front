@@ -1,12 +1,19 @@
+import axios from "axios";
 import { BASE_URL } from "../config/config";
-import { getAxios, postAxios, putAxios } from "../utils/axios";
-const getPresignedUrl = async () => {
+
+const getPresignedUrl = async (file: File, type: string) => {
   try {
-    const response = await getAxios(`${BASE_URL}/upload/product`);
-    console.log("Presigned URL Response:", response.data);
+    const fileName = file.name;
+    const fileType = file.type;
+
+    const response = await axios.post(`${BASE_URL}/upload/${type}`, {
+      fileName,
+      fileType,
+    });
 
     if (response.data) {
-      return response.data;
+      const { presignedUrl, s3ObjectUrl } = response.data;
+      return { presignedUrl, s3ObjectUrl };
     }
     throw new Error("Presigned URL not found in response.");
   } catch (error) {
@@ -17,43 +24,17 @@ const getPresignedUrl = async () => {
 
 const uploadImageToS3 = async (file: File, type: string) => {
   try {
-    const fileName = file.name;
     const fileType = file.type;
 
-    // Presigned URL 가져오기
-    const presignedUrl = await getPresignedUrl();
+    const { presignedUrl, s3ObjectUrl } = await getPresignedUrl(file, type);
 
-    // Presigned URL로 파일 업로드
-    if (type === "addproduct") {
-      await postAxios(
-        presignedUrl,
-        {
-          fileName,
-          fileType,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-    }
-    if (type === "editproduct") {
-      await putAxios(
-        presignedUrl,
-        {
-          fileName,
-          fileType,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-    }
-    console.log(file);
-    console.log("✅ File uploaded successfully: ", presignedUrl);
+    await axios.put(presignedUrl, file, {
+      headers: {
+        "Content-Type": fileType,
+      },
+    });
+
+    return s3ObjectUrl;
   } catch (error) {
     console.error("😭 Image upload failed: ", error);
     throw new Error("Image upload failed");
