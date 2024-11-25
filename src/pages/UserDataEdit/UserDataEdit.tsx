@@ -26,7 +26,6 @@ export default function UserDataEditPage() {
 
   const { setValue, clearErrors } = methods;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const { imgInputRef, preview, hasFile, handleImageChange } =
     useHandleImageChange("profile");
@@ -82,10 +81,17 @@ export default function UserDataEditPage() {
 
           <Label>프로필 사진</Label>
           <S.ProfilePicture>
-            <S.ProfileImage
-              src={hasFile ? preview : "/icons/profile.svg"}
-              alt="Profile"
-            />
+            {profileImage ? (
+              <S.ProfileImage
+                src={hasFile ? preview : "/icons/profile.svg"}
+                alt="Profile"
+              />
+            ) : (
+              <S.ProfileImage
+                src={hasFile ? preview : "/icons/profile.svg"}
+                alt="Profile"
+              />
+            )}
           </S.ProfilePicture>
           <S.InputContainer>
             <S.FileInputLabel>
