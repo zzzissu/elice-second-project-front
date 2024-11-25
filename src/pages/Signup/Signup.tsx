@@ -10,6 +10,7 @@ import {
 } from "../../utils/userValidation";
 import { useNavigate } from "react-router-dom";
 import ROUTE_LINK from "../../routes/RouterLink";
+import { toast } from "react-toastify";
 
 export interface FormValues {
   email: string;
@@ -55,17 +56,18 @@ export default function SignupPage() {
 
     try {
       await registerUser(payload);
-      alert("회원가입이 완료되었습니다.");
+      toast.info("회원가입이 완료되었습니다.");
       navigate(ROUTE_LINK.LOGIN.path);
     } catch (error: unknown) {
       console.error("회원가입 실패:", error);
+      toast.error("회원가입에 실패했습니다.");
     }
   };
 
   const checkEmail = async () => {
     const email = watch("email");
     if (!email) {
-      alert("이메일을 입력해주세요.");
+      toast.warn("이메일을 입력해주세요.");
       return;
     }
 
@@ -76,7 +78,7 @@ export default function SignupPage() {
   const checkNickname = async () => {
     const nickname = watch("nickname");
     if (!nickname) {
-      alert("닉네임을 입력해주세요.");
+      toast.warn("닉네임을 입력해주세요.");
       return;
     }
 
