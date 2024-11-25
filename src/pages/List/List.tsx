@@ -110,7 +110,7 @@ const List = () => {
                 );
               })
             ) : (
-              <S.NoItem>"등록된 상품이 없습니다."</S.NoItem>
+              <S.NoItem>등록된 상품이 없습니다.</S.NoItem>
             )}
             {currentPage < totalPage && (
               <S.MoreBtnWrap>
