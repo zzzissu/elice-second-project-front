@@ -244,7 +244,7 @@ const PaymentPage: React.FC = () => {
           orderId: createdOrder.order._id,
           orderName: "상품 결제",
           customerName: createdOrder.order.name,
-          successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_PROCESSING.path}`,
+          successUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_COMPLETE.path}`,
           failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
         });
 
