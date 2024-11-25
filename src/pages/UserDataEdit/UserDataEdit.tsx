@@ -8,6 +8,7 @@ import { Nav, FormContainer, InputField } from "components";
 import useAuthStore from "../../stores/useAuthStore";
 import AddressSearch from "./AddressSearch/AddressSearch";
 import { toast } from "react-toastify";
+import useHandleImageChange from "../../hooks/useHandleImageChange";
 
 export interface FormValues {
   phoneFirst: string;
@@ -26,6 +27,8 @@ export default function UserDataEditPage() {
   const { setValue, clearErrors } = methods;
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const { imgInputRef, preview, hasFile, handleImageChange } =
+    useHandleImageChange("profile");
 
   useEffect(() => {
     if (user) {
@@ -51,7 +54,7 @@ export default function UserDataEditPage() {
       postalCode: data.postalCode,
       basicAdd: data.address,
       detailAdd: data.detailAddress,
-      image: profileImage ? profileImage.name : "",
+      image: hasFile ? preview : "",
     };
 
     try {
@@ -64,13 +67,13 @@ export default function UserDataEditPage() {
     }
   };
 
-  const handleProfilePictureChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    if (event.target.files && event.target.files[0]) {
-      setProfileImage(event.target.files[0]);
-    }
-  };
+  // const handleProfilePictureChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>,
+  // ) => {
+  //   if (event.target.files && event.target.files[0]) {
+  //     setProfileImage(event.target.files[0]);
+  //   }
+  // };
 
   const handleProfilePictureDelete = () => {
     setProfileImage(null);
@@ -87,11 +90,7 @@ export default function UserDataEditPage() {
           <Label>프로필 사진</Label>
           <S.ProfilePicture>
             <S.ProfileImage
-              src={
-                profileImage
-                  ? URL.createObjectURL(profileImage)
-                  : "/icons/profile.svg"
-              }
+              src={hasFile ? preview : "/icons/profile.svg"}
               alt="Profile"
             />
           </S.ProfilePicture>
@@ -101,7 +100,8 @@ export default function UserDataEditPage() {
               <S.FileInput
                 type="file"
                 accept="image/*"
-                onChange={handleProfilePictureChange}
+                ref={imgInputRef}
+                onChange={handleImageChange}
               />
             </S.FileInputLabel>
             <S.FileButton type="button" onClick={handleProfilePictureDelete}>

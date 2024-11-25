@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 import uploadImageToS3 from "./uploadImageToS3";
 
-const useHandleImageChange = () => {
+const useHandleImageChange = (type: string) => {
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string>("");
   const [hasFile, setHasFile] = useState<boolean>(false);
@@ -19,7 +19,7 @@ const useHandleImageChange = () => {
     const file = files[0];
 
     try {
-      const uploadedImageUrl = await uploadImageToS3(file, "product");
+      const uploadedImageUrl = await uploadImageToS3(file, type);
       setPreview(uploadedImageUrl);
       setHasFile(true);
     } catch (error) {

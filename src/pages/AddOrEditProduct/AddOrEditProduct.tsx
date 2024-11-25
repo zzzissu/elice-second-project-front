@@ -52,7 +52,7 @@ const AddOrEditProduct = () => {
   const [inputValue, handleInputChange] = useInputValue();
   const { isFocused, handleFocus, handleBlur } = useIsFocused();
   const { imgInputRef, preview, hasFile, handleImageChange } =
-    useHandleImageChange();
+    useHandleImageChange("product");
 
   const { modalType, openModal, closeModal } = useModalStore();
 
