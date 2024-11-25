@@ -1,5 +1,9 @@
 import React from "react";
-import { useFormContext, RegisterOptions } from "react-hook-form";
+import {
+  useFormContext,
+  RegisterOptions,
+  UseFormRegister,
+} from "react-hook-form";
 import * as S from "./InputFiled.styled";
 
 interface InputFieldProps {
@@ -12,6 +16,7 @@ interface InputFieldProps {
   readOnly?: boolean;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  register?: UseFormRegister<any>;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -21,21 +26,38 @@ const InputField: React.FC<InputFieldProps> = ({
   type = "text",
   rules,
   error,
+  register,
+  value,
+  onChange,
+  readOnly,
 }) => {
   const {
-    register,
     formState: { errors },
   } = useFormContext();
   return (
-    <S.InputContainer>
-      {label && <S.Label>{label}</S.Label>}
-      <S.Input
-        {...register(name, rules)}
-        type={type}
-        placeholder={placeholder}
-      />
-      {error && <S.ErrorText>{errors[name]?.message as string}</S.ErrorText>}
-    </S.InputContainer>
+    <>
+      <S.InputContainer>
+        {label && <S.Label>{label}</S.Label>}
+        {register ? (
+          <S.Input
+            {...register(name, rules)}
+            type={type}
+            placeholder={placeholder}
+            readOnly={readOnly}
+          />
+        ) : (
+          <S.Input
+            name={name}
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            readOnly={readOnly}
+          />
+        )}
+        {/* {error && <S.ErrorText>{errors[name]?.message as string}</S.ErrorText>} */}
+      </S.InputContainer>
+    </>
   );
 };
 

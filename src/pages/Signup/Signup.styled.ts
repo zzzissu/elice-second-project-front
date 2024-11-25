@@ -73,3 +73,10 @@ export const SubmitButton = styled.button`
     background-color: ${({ theme }) => theme.color.orange};
   }
 `;
+
+export const ErrorText = styled.span`
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+  display: block;
+`;
