@@ -12,6 +12,8 @@ import { S } from "./Detail.style";
 import useModalStore from "../../stores/modal/index";
 import { toast } from "react-toastify";
 import useAuthStore from "../../stores/useAuthStore";
+import ScrollUp from "../../components/ScrollUp/ScrollUp";
+import scrollToTop from "../../utils/scrollToTop";
 
 interface CartItemsProps {
   id: string;
@@ -114,6 +116,7 @@ const Detail = () => {
         />
       )}
       <Nav />
+
       <S.Detail>
         <S.StickyWrap>
           <S.UpperWrap>
@@ -167,6 +170,7 @@ const Detail = () => {
             <S.SellerBox ref={sellerBoxRef}>
               <S.SellerIcon />
               <S.greyText>{item.sellerId.nickname}</S.greyText>
+              <ScrollUp onClick={scrollToTop} />
             </S.SellerBox>
           </S.LowerWrap>
         </S.StickyWrap>

@@ -22,7 +22,6 @@ export const S = {
   ListContent: styled.div`
     padding-top: 40px;
 
-    height: calc(100vh - 60px);
     padding-bottom: 100px;
   `,
   DropdownWrap: styled.div`
@@ -35,12 +34,22 @@ export const S = {
   `,
 
   ItemGrid: styled.div`
+    position: relative;
+
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto;
     gap: 26px;
+  `,
+  NoItem: styled.div`
+    grid-column: 1 / -1;
 
-    padding-bottom: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 500px;
   `,
   MoreBtnWrap: styled.div`
     grid-column: 1 / -1;

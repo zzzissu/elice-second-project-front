@@ -42,6 +42,8 @@ export const S = {
     object-fit: cover;
     width: 100%;
     height: 100%;
+
+    border-radius: 5px;
   `,
   EditImgBtn: styled.div`
     padding-top: 18px;

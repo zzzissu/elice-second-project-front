@@ -12,6 +12,8 @@ import { CarouselItem } from "../../types/types.ts";
 
 import { S } from "./List.style";
 import useDropdown from "../../hooks/useDropdown";
+import ScrollUp from "../../components/ScrollUp/ScrollUp";
+import scrollToTop from "../../utils/scrollToTop";
 
 const options = ["최신순", "오래된순"];
 
@@ -96,21 +98,26 @@ const List = () => {
           </S.DropdownWrap>
 
           <S.ItemGrid>
-            {items.map((item, idx) => {
-              const column = 4;
-              const row = Math.floor(idx / column) + 1;
+            {items.length > 0 ? (
+              items.map((item, idx) => {
+                const column = 4;
+                const row = Math.floor(idx / column) + 1;
 
-              return (
-                <Link to={`/products/${item._id}`} key={item._id}>
-                  <ItemCard {...item} key={item._id} idx={idx} row={row} />
-                </Link>
-              );
-            })}
+                return (
+                  <Link to={`/products/${item._id}`} key={item._id}>
+                    <ItemCard {...item} key={item._id} idx={idx} row={row} />
+                  </Link>
+                );
+              })
+            ) : (
+              <S.NoItem>"등록된 상품이 없습니다."</S.NoItem>
+            )}
             {currentPage < totalPage && (
               <S.MoreBtnWrap>
                 <S.MoreBtn onClick={handleClickMoreBtn}>더보기</S.MoreBtn>
               </S.MoreBtnWrap>
             )}
+            <ScrollUp onClick={scrollToTop} />
           </S.ItemGrid>
         </S.ListContent>
       </S.List>
