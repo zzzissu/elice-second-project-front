@@ -81,10 +81,17 @@ export default function UserDataEditPage() {
 
           <Label>프로필 사진</Label>
           <S.ProfilePicture>
-            <S.ProfileImage
-              src={hasFile ? preview : "/icons/profile.svg"}
-              alt="Profile"
-            />
+            {profileImage ? (
+              <S.ProfileImage
+                src={hasFile ? preview : "/icons/profile.svg"}
+                alt="Profile"
+              />
+            ) : (
+              <S.ProfileImage
+                src={hasFile ? preview : "/icons/profile.svg"}
+                alt="Profile"
+              />
+            )}
           </S.ProfilePicture>
           <S.InputContainer>
             <S.FileInputLabel>
