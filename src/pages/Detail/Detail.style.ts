@@ -46,6 +46,8 @@ export const S = {
     border-radius: 10px;
   `,
   ProductInfo: styled.div`
+    position: relative;
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
