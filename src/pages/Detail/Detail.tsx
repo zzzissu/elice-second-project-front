@@ -165,7 +165,7 @@ const Detail = () => {
 
           <S.LowerWrap>
             <S.Description>
-              <pre>{item.description}</pre>
+              <S.Pre>{item.description}</S.Pre>
             </S.Description>
             <S.SellerBox ref={sellerBoxRef}>
               <S.SellerIcon />

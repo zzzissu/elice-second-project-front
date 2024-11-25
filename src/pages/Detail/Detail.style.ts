@@ -142,6 +142,12 @@ export const S = {
   Description: styled.div`
     padding: 20px;
   `,
+  Pre: styled.pre`
+    width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  `,
   SellerBox: styled.div`
     position: relative;
 
