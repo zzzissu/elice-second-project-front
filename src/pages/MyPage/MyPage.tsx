@@ -163,26 +163,28 @@ const MyPage = () => {
           <S.SellingBox>
             <S.TitleBox>판매중인 상품</S.TitleBox>
             <S.ItemGrid>
-              {sellingItems.length > 0
-                ? sellingItems.map((sellingItem, idx) => {
-                    const column = 3;
-                    const row = Math.floor(idx / column) + 1;
+              {sellingItems.length > 0 ? (
+                sellingItems.map((sellingItem, idx) => {
+                  const column = 3;
+                  const row = Math.floor(idx / column) + 1;
 
-                    return (
-                      <Link
-                        to={`/products/${sellingItem._id}`}
-                        key={sellingItem._id}
-                      >
-                        <ItemCard
-                          {...sellingItem}
-                          idx={idx}
-                          row={row}
-                          deleteProduct={deleteProduct}
-                        />
-                      </Link>
-                    );
-                  })
-                : "판매 중인 상품이 없습니다."}
+                  return (
+                    <Link
+                      to={`/products/${sellingItem._id}`}
+                      key={sellingItem._id}
+                    >
+                      <ItemCard
+                        {...sellingItem}
+                        idx={idx}
+                        row={row}
+                        deleteProduct={deleteProduct}
+                      />
+                    </Link>
+                  );
+                })
+              ) : (
+                <S.EmptyCart>판매 중인 상품이 없습니다.</S.EmptyCart>
+              )}
             </S.ItemGrid>
             <S.PaginationBox>
               <S.ArrowIconBox>

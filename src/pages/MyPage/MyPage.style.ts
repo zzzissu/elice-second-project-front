@@ -209,6 +209,9 @@ export const S = {
     margin-bottom: 100px;
   `,
   EmptyCart: styled.div`
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -217,6 +220,5 @@ export const S = {
     height: 300px;
 
     border-bottom: 1px solid ${(props) => props.theme.color.lightGrey};
-    margin-bottom: 100px;
   `,
 };
