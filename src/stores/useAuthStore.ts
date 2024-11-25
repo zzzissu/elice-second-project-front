@@ -25,7 +25,6 @@ interface UserState {
     email: string;
     password: string;
     name: string;
-    image: string;
     nickname: string;
     phone: string;
     postalCode: string;

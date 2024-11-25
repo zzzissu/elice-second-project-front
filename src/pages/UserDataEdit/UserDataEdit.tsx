@@ -26,7 +26,7 @@ export default function UserDataEditPage() {
 
   const { setValue, clearErrors } = methods;
 
-  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [ setProfileImage] = useState<File | null>(null);
   const { imgInputRef, preview, hasFile, handleImageChange } =
     useHandleImageChange("profile");
 
