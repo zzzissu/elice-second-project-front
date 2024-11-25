@@ -79,7 +79,7 @@ const Detail = () => {
 
     if (userId === item?.sellerId._id) {
       navigate("/editproduct", { state: productId });
-    } else toast.error("다른 사람의 상품입니다.");
+    } else toast.warn("다른 사람의 상품입니다.");
   };
 
   const purchase = () => {
