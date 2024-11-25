@@ -1,17 +1,18 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button, UserInput, Nav, ConfirmModal } from "components";
 
 import useIsFocused from "../../hooks/useIsFocused";
 import useInputValue from "../../hooks/UseUserInput";
+import useHandleImageChange from "../../hooks/useHandleImageChange";
 import { getAxios, postAxios, putAxios } from "../../utils/axios";
+import useModalStore from "../../stores/modal/index";
 
 import { S } from "./AddOrEditProduct.style";
-
-import useModalStore from "../../stores/modal/index";
-import { toast } from "react-toastify";
 
 interface CategoryProps {
   id: number;
@@ -44,17 +45,16 @@ const AddOrEditProduct = () => {
   const [categories, setCategories] = useState<[]>([]);
 
   const [selectedCategory, setSelectedCategory] = useState("");
-
-  const [inputValue, handleInputChange] = useInputValue();
-  const { isFocused, handleFocus, handleBlur } = useIsFocused();
-  const { modalType, openModal, closeModal } = useModalStore();
-  const imgInputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState(Object);
-  const [hasFile, setHasFile] = useState(false);
-
   const [itemInfo, setItemInfo] = useState<ItemInfoProps | undefined>(
     undefined,
   );
+
+  const [inputValue, handleInputChange] = useInputValue();
+  const { isFocused, handleFocus, handleBlur } = useIsFocused();
+  const { imgInputRef, preview, hasFile, handleImageChange } =
+    useHandleImageChange("product");
+
+  const { modalType, openModal, closeModal } = useModalStore();
 
   const productId = location.state;
   const getCategory = async () => {
@@ -70,14 +70,13 @@ const AddOrEditProduct = () => {
     getCategory();
   }, []);
 
-  const handleRadioValue = (e: React.MouseEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    setSelectedCategory(value);
-  };
-
   const getOriginProductInfo = () => {
     getAxios(`/products/${productId}`).then((res) => setItemInfo(res.data));
   };
+
+  useEffect(() => {
+    if (location.pathname === "/editproduct") getOriginProductInfo();
+  }, []);
 
   useEffect(() => {
     if (itemInfo) {
@@ -87,6 +86,11 @@ const AddOrEditProduct = () => {
       setSelectedCategory(itemInfo.categoryName);
     }
   }, [itemInfo]);
+
+  const handleRadioValue = (e: React.MouseEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    setSelectedCategory(value);
+  };
 
   const postProducts = async () => {
     if (
@@ -99,7 +103,7 @@ const AddOrEditProduct = () => {
       try {
         const res = await postAxios("/products", {
           name: inputValue.productName,
-          image: "/images/ss.jpg",
+          image: preview,
           price: Number(inputValue.productPrice),
           description: inputValue.productDescription,
           categoryName: selectedCategory,
@@ -129,14 +133,14 @@ const AddOrEditProduct = () => {
         const res = await putAxios(`/products/${location.state}`, {
           updateData: {
             name: inputValue.productName,
-            image: "/images/ss.jpg",
+            image: preview,
             price: Number(inputValue.productPrice),
             description: inputValue.productDescription,
             categoryName: selectedCategory,
           },
         });
 
-        if (res.status === 204) {
+        if (res.status === 200) {
           toast.success("✨상품 정보가 수정되었습니다.");
           navigate("/users/my");
         } else {
@@ -153,42 +157,11 @@ const AddOrEditProduct = () => {
     closeModal();
   };
 
-  useEffect(() => {
-    if (location.pathname === "/editproduct") getOriginProductInfo();
-  }, []);
-
-  console.log(itemInfo);
-
   const handleImgInputClick = () => {
     if (imgInputRef.current) {
       imgInputRef.current.click();
     }
   };
-
-  const hadleImageChange = () => {
-    const files = imgInputRef.current?.files;
-
-    if (files && files[0]) {
-      const file = files[0];
-      const fileName = encodeURIComponent(file.name);
-      console.log(fileName);
-
-      const objectUrl = URL.createObjectURL(file);
-      setPreview(objectUrl);
-
-      if (objectUrl) setHasFile(true);
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        if (!imgInputRef.current) return;
-      };
-      return () => URL.revokeObjectURL(objectUrl);
-    }
-  };
-
-  console.log(preview, imgInputRef);
-  console.log();
 
   if (location.pathname === "editproduct" && !itemInfo) return null;
   if (!categories) return null;
@@ -224,14 +197,13 @@ const AddOrEditProduct = () => {
         )}
         <S.ImgUpload
           type="file"
-          accept="image/jpg, image/jpeg, image/png"
+          accept="image/jpg, image/jpeg"
           multiple
           ref={imgInputRef}
-          onChange={hadleImageChange}
+          onChange={handleImageChange}
         />
       </S.UploadImgBox>
       {hasFile && <S.EditImgBtn>사진 수정하기</S.EditImgBtn>}
-
       <S.InfoTable hasFile={hasFile}>
         <S.GridTitle>
           카테고리<S.Essential>필수 입력</S.Essential>
@@ -288,7 +260,7 @@ const AddOrEditProduct = () => {
                 handleInputChange("productPrice", value);
               } else {
                 handleInputChange("productPrice", "");
-                toast.error("숫자만 입력해주세요");
+                toast.warn("숫자만 입력해주세요");
               }
             }}
           />
