@@ -123,7 +123,9 @@ const Detail = () => {
             <S.ProductImg imgUrl={item.image} />
             <S.ProductInfo>
               <div>
-                <S.EditBtn onClick={handleEditBtn} />
+                {user.user?.id === item.sellerId._id && (
+                  <S.EditBtn onClick={handleEditBtn} />
+                )}
 
                 <S.ProductName>{item.name}</S.ProductName>
                 <S.ProductPrice>
