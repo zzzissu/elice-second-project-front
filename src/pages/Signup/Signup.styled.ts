@@ -9,7 +9,7 @@ export const Container = styled.div`
   height: 100%;
   overflow-y: auto;
 
-  @media (max-width: 1320px) {
+  @media (max-width: 14750px) {
     margin: 60px 0 50px;
   }
 `;
