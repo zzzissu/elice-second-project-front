@@ -38,6 +38,7 @@ interface OrderItem {
   sellerId: {
     _id: string;
   };
+  payedAt: string;
 }
 
 interface TossPaymentError {
@@ -130,6 +131,7 @@ const PaymentPage: React.FC = () => {
               description: product.description,
               categoryName: product.categoryName,
               sellerId: product.sellerId,
+              payedAt: product.payedAt,
             },
           ]);
         })
@@ -184,6 +186,8 @@ const PaymentPage: React.FC = () => {
       return;
     }
     try {
+      const today = new Date();
+      const formattedDate = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`;
       if (paymentMethod === "bank") {
         const paymentInfo = {
           items: orderItems,
@@ -191,12 +195,12 @@ const PaymentPage: React.FC = () => {
             (total, item) => total + item.price,
             0,
           ),
+          payedAt: formattedDate,
         };
 
         await postAxios("/payments/account", paymentInfo);
 
         localStorage.setItem("paymentInfo", JSON.stringify(paymentInfo));
-
         localStorage.removeItem("products");
 
         navigate(ROUTE_LINK.BANK_PAYMENT_COMPLETE.path);
@@ -208,6 +212,8 @@ const PaymentPage: React.FC = () => {
           name: item.name,
           price: item.price,
           sellerId: item.sellerId._id,
+          productId: item._id,
+          payedAt: formattedDate,
         }));
 
         const orderInfo = {
@@ -232,9 +238,6 @@ const PaymentPage: React.FC = () => {
         }
 
         const createdOrder = response.data;
-        console.log("생성된 주문:", createdOrder);
-
-        console.log("Toss Payments 초기화 중...");
         const tossPayments = await loadTossPayments(
           "test_ck_0RnYX2w532o7GAGwo22RVNeyqApQ",
         );
@@ -248,7 +251,7 @@ const PaymentPage: React.FC = () => {
           failUrl: `${window.location.origin}${ROUTE_LINK.PAYMENT_FAIL.path}`,
         });
 
-        localStorage.setItem("orderInfo", JSON.stringify(createdOrder));
+        localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
         localStorage.removeItem("products");
       }
     } catch (error) {
